@@ -4,7 +4,11 @@
  *
  * 1. Writes the domain lists into the SafeWorldCore Swift package's resource
  *    bundle **scrambled**, so an unpacked .ipa yields no readable list.
- *    `Blocklists.swift` reverses them at runtime.
+ *    `Blocklists.swift` reverses them at runtime. These feed the Safari content
+ *    blocker, which needs literal domains and is capped accordingly.
+ * 1b. Writes the **uncapped** lists as binary fuse filters for the packet
+ *    tunnel, which does its own matching and so is not capped. This is the
+ *    same file format Android uses, byte for byte.
  * 2. Generates an *empty* default Safari Content Blocker rule list into the
  *    SafeWorldBlocker extension's bundle. It cannot hold the real rules: a
  *    content blocker list must contain literal domains, so shipping a populated
@@ -19,6 +23,8 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { CATEGORIES } from "../packages/core/src/index.js";
 import { SCRAMBLE_FORMAT, scrambleDomain } from "./scramble.js";
+import { BinaryFuse32, keyFromHexDigest } from "./binary-fuse.js";
+import { hashDomain } from "./build-android-blocklists.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = join(here, "..");
@@ -74,6 +80,20 @@ async function build(): Promise<void> {
     const outPath = join(iosResourcesDir, `${c.id}.json`);
     await writeFile(outPath, JSON.stringify(out, null, 2) + "\n");
     console.log(`${c.id}: ${out.domains.length} domains (scrambled) -> ${outPath}`);
+  }
+
+  // Uncapped filters for the packet tunnel. Unlike the Safari list above these
+  // carry every domain, because the tunnel matches in our own code.
+  for (const c of CATEGORIES) {
+    const file = await readCurated(c.id);
+    const digests = [...new Set(file.domains.map(hashDomain))].filter(Boolean).sort();
+    const filter = BinaryFuse32.build(digests.map(keyFromHexDigest));
+    const bytes = filter.serialize();
+    const outPath = join(iosResourcesDir, `${c.id}.filter`);
+    await writeFile(outPath, bytes);
+    console.log(
+      `${c.id}: ${digests.length} domains -> ${(bytes.length / 1048576).toFixed(2)} MB filter`,
+    );
   }
 
   // Deliberately empty — see the note at the top of this file.

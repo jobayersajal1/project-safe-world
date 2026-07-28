@@ -37,6 +37,10 @@ targets:
       properties:
         com.apple.security.application-groups:
           - group.com.safeworld.app
+        # The host app installs and starts the tunnel, so it needs the same
+        # capability as the extension that implements it.
+        com.apple.developer.networking.networkextension:
+          - packet-tunnel-provider
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.safeworld.app
@@ -45,6 +49,8 @@ targets:
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
     dependencies:
       - target: SafeWorldBlocker
+        embed: true
+      - target: SafeWorldTunnel
         embed: true
       - package: SafeWorldCore
         product: SafeWorldCore
@@ -77,12 +83,44 @@ targets:
       - package: SafeWorldCore
         product: SafeWorldCore
 
+  # System-wide DNS filtering. Unlike SafeWorldBlocker, which only affects
+  # Safari, this sees every app on the device.
+  #
+  # Requires the Network Extension capability on the developer account, with
+  # packet-tunnel-provider approved by Apple. Cannot be built or run in the
+  # Simulator — Network Extensions need a real device.
+  SafeWorldTunnel:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: SafeWorldTunnel
+        excludes:
+          - "*.entitlements"
+    info:
+      path: SafeWorldTunnel/Info.plist
+      properties:
+        CFBundleDisplayName: Safe World Tunnel
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.networkextension.packet-tunnel
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).PacketTunnelProvider
+    entitlements:
+      path: SafeWorldTunnel/SafeWorldTunnel.entitlements
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.safeworld.app.tunnel
+        PRODUCT_NAME: SafeWorldTunnel
+        INFOPLIST_KEY_CFBundleDisplayName: Safe World Tunnel
+    dependencies:
+      - package: SafeWorldCore
+        product: SafeWorldCore
+
 schemes:
   SafeWorld:
     build:
       targets:
         SafeWorld: all
         SafeWorldBlocker: all
+        SafeWorldTunnel: all
     test:
       targets: []
     run:

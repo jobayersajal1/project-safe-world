@@ -35,6 +35,20 @@
                ReferencedContainer = "container:SafeWorld.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "A1576E6289C94C88F6DF32C0"
+               BuildableName = "SafeWorldTunnel.appex"
+               BlueprintName = "SafeWorldTunnel"
+               ReferencedContainer = "container:SafeWorld.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction

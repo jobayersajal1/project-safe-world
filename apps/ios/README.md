@@ -88,6 +88,55 @@ xcodebuild -project apps/ios/SafeWorld.xcodeproj -scheme SafeWorld \
   -sdk iphonesimulator -destination 'platform=iOS Simulator,name=<a simulator name>' build
 ```
 
+## System-wide blocking (packet tunnel)
+
+`SafeWorldBlocker` only ever sees Safari. Everything else — other browsers, apps
+with embedded web views, anything resolving a hostname — bypasses it. The
+`SafeWorldTunnel` target closes that gap: an `NEPacketTunnelProvider` that
+claims DNS system-wide, answers blocked names with NXDOMAIN, and forwards the
+rest. It is the direct counterpart of Android's `SafeWorldVpnService`, and like
+it the tunnel goes **nowhere** — no remote server, no traffic leaving the device.
+
+`NEDNSProxyProvider` and `NEFilterDataProvider` would be tidier, but both require
+a supervised (MDM-managed) device, which rules them out for consumer use. A
+packet tunnel is the only mechanism a normal App Store app has.
+
+**Two lists, two mechanisms.** Safari gets the scrambled lists capped at 50k per
+category, because a content blocker needs literal domains and has a rule ceiling.
+The tunnel gets the **uncapped** 4.48M as binary fuse filters, because it matches
+in our own code — the same files Android ships, byte for byte.
+
+**Memory is the binding constraint.** Network Extensions run in a separate
+process under a hard cap far below the size of the blocklist, so `FuseFilter`
+memory-maps its file rather than reading it into an array: the pages stay
+file-backed and evictable, and a lookup touches three of them. A 19 MB heap copy
+would get the process killed. The app copies the filters into the App Group
+container on first start, because an extension cannot read the host app's bundle.
+
+### What is verified, and what is not
+
+Verified on macOS via `swift test` (61 tests): the filter format against vectors
+shared with the TypeScript generator and the Kotlin reader, the mmap path, DNS
+wire-format parsing and NXDOMAIN synthesis, IPv4/UDP parsing and checksums, and
+that `FilterEngine` agrees with `Matcher.decide` on every precedence case.
+
+**Not verified: the tunnel itself.** Network Extensions cannot run in the
+Simulator, so nothing here has carried a real packet. Shipping it needs:
+
+1. A paid Apple Developer account.
+2. The **Network Extension capability with `packet-tunnel-provider`**, which is
+   requested from Apple separately and is not granted automatically.
+3. A real device to test on.
+
+Two behaviours to check first on that device:
+
+- **Upstream resolver.** iOS gives an extension no way to read the system's DNS
+  servers, so allowed queries are forwarded to a fixed public resolver
+  (`1.1.1.1`) rather than to whatever DHCP provided. Android forwards to the
+  device's own resolvers; this is a real behavioural difference.
+- **Memory headroom.** The mmap design should keep the extension well inside its
+  budget, but that is reasoning, not a measurement.
+
 ## Next steps
 
 - [x] Scaffold the Xcode project (app + Safari Content Blocker extension target).

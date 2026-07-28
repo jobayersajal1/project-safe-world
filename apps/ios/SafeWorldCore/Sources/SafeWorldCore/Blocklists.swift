@@ -56,4 +56,15 @@ public enum Blocklists {
         for id in CategoryId.allCases { result[id] = Set(domains(for: id)) }
         return result
     }
+
+    /// The bundled fuse filter for a category, inside this package's resource
+    /// bundle.
+    ///
+    /// Exposed here because `Bundle.module` resolves to *this* package — the app
+    /// target cannot reach these files through its own bundle. The app copies
+    /// them into the App Group so the tunnel extension, which is a separate
+    /// process, can map them.
+    public static func bundledFilterURL(for category: CategoryId) -> URL? {
+        Bundle.module.url(forResource: category.rawValue, withExtension: "filter")
+    }
 }
