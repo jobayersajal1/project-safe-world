@@ -54,6 +54,27 @@ object DomainHasher {
     }
 
     /**
+     * The first 8 bytes of the same digest as a big-endian `Long` — the key a
+     * [FuseFilter] stores.
+     *
+     * Deliberately derived from the identical digest [hash] produces, so the
+     * filter and the hashed remote deltas describe the same domains and the
+     * generator can build one from the other. 64 bits is far more than the
+     * filter's own ~16-bit fingerprint resolution, so this truncation adds no
+     * meaningful collision risk on top of what the filter already has.
+     */
+    fun key(domain: String): Long {
+        val normalized = Matcher.normalizeHost(domain)
+        if (normalized.isEmpty()) return 0L
+        val digest = MessageDigest.getInstance("SHA-256")
+            .digest((SALT + normalized).toByteArray(Charsets.UTF_8))
+
+        var key = 0L
+        for (i in 0 until 8) key = (key shl 8) or (digest[i].toLong() and 0xFF)
+        return key
+    }
+
+    /**
      * The host plus every parent domain at a label boundary, e.g.
      * `a.b.example.com` -> `[a.b.example.com, b.example.com, example.com, com]`.
      *

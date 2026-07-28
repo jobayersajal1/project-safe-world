@@ -44,6 +44,10 @@ apps/android/core/src/main/resources/blocklists/
 *.keystore
 keystore.properties
 
+# macOS packaging scratch
+apps/macos/dmg-staging/
+apps/macos/dist/
+
 # Xcode / Swift
 .build/
 build/

@@ -3,12 +3,15 @@ import type { CategoryId } from "../packages/core/src/categories.js";
 /**
  * Upstream blocklist sources.
  *
- * **`redistributable` is the field that matters.** We publish a merged list to
- * a public repo, which is redistribution. Several well-known feeds don't permit
- * that — some are query-time APIs whose terms forbid republishing their data,
- * others are free only for personal use. Those are recorded here with
- * `redistributable: false` and skipped by default, so the licensing decision is
- * visible in code rather than being made by accident.
+ * **`redistributable` is the field that matters.** We ship a merged list inside
+ * every app, which is redistribution. Note that moving the lists to a private
+ * repo did **not** change this: shipping domains in an app redistributes them
+ * whether they are scrambled, hashed, or plain, and encoding is not a licence
+ * workaround. Several well-known feeds don't permit redistribution — some are
+ * query-time APIs whose terms forbid republishing their data, others are free
+ * only for personal use. Those are recorded here with `redistributable: false`
+ * and skipped, so the licensing decision is visible in code rather than being
+ * made by accident.
  *
  * If you enable a non-redistributable source you take on its terms; several
  * require a commercial agreement.
@@ -108,6 +111,79 @@ export const SOURCES: readonly Source[] = [
     id: "blocklistproject-youtube",
     category: "list5",
     url: "https://raw.githubusercontent.com/blocklistproject/Lists/master/youtube.txt",
+    format: "hosts",
+    license: "Unlicense (public domain)",
+    redistributable: true,
+    homepage: "https://github.com/blocklistproject/Lists",
+  },
+
+  {
+    id: "blocklistproject-malware",
+    category: "list1",
+    url: "https://raw.githubusercontent.com/blocklistproject/Lists/master/malware.txt",
+    format: "hosts",
+    license: "Unlicense (public domain)",
+    redistributable: true,
+    homepage: "https://github.com/blocklistproject/Lists",
+  },
+  {
+    id: "blocklistproject-phishing",
+    category: "list1",
+    url: "https://raw.githubusercontent.com/blocklistproject/Lists/master/phishing.txt",
+    format: "hosts",
+    license: "Unlicense (public domain)",
+    redistributable: true,
+    homepage: "https://github.com/blocklistproject/Lists",
+  },
+  {
+    id: "blocklistproject-fraud",
+    category: "list1",
+    url: "https://raw.githubusercontent.com/blocklistproject/Lists/master/fraud.txt",
+    format: "hosts",
+    license: "Unlicense (public domain)",
+    redistributable: true,
+    homepage: "https://github.com/blocklistproject/Lists",
+  },
+  {
+    id: "blocklistproject-scam",
+    category: "list1",
+    url: "https://raw.githubusercontent.com/blocklistproject/Lists/master/scam.txt",
+    format: "hosts",
+    license: "Unlicense (public domain)",
+    redistributable: true,
+    homepage: "https://github.com/blocklistproject/Lists",
+  },
+  {
+    id: "blocklistproject-ransomware",
+    category: "list1",
+    url: "https://raw.githubusercontent.com/blocklistproject/Lists/master/ransomware.txt",
+    format: "hosts",
+    license: "Unlicense (public domain)",
+    redistributable: true,
+    homepage: "https://github.com/blocklistproject/Lists",
+  },
+  {
+    id: "blocklistproject-abuse",
+    category: "list1",
+    url: "https://raw.githubusercontent.com/blocklistproject/Lists/master/abuse.txt",
+    format: "hosts",
+    license: "Unlicense (public domain)",
+    redistributable: true,
+    homepage: "https://github.com/blocklistproject/Lists",
+  },
+  {
+    id: "blocklistproject-gambling",
+    category: "list2",
+    url: "https://raw.githubusercontent.com/blocklistproject/Lists/master/gambling.txt",
+    format: "hosts",
+    license: "Unlicense (public domain)",
+    redistributable: true,
+    homepage: "https://github.com/blocklistproject/Lists",
+  },
+  {
+    id: "blocklistproject-porn",
+    category: "list3",
+    url: "https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
     format: "hosts",
     license: "Unlicense (public domain)",
     redistributable: true,
@@ -225,6 +301,36 @@ export const SOURCES: readonly Source[] = [
     redistributable: false,
     homepage: "https://github.com/badmojr/1Hosts",
     note: "Share-alike; mostly ads/tracking rather than our three categories.",
+  },
+  {
+    id: "sjhgvr-oisd",
+    category: "list3",
+    url: "https://raw.githubusercontent.com/sjhgvr/oisd/main/domainswild2_nsfw.txt",
+    format: "domains",
+    license: "Same terms as oisd upstream; redistribution restricted",
+    redistributable: false,
+    homepage: "https://github.com/sjhgvr/oisd",
+    note: "A repackaging of oisd, so it inherits oisd's terms — republishing it is no more permitted than republishing the original.",
+  },
+  {
+    id: "firebog",
+    category: "list1",
+    url: "https://v.firebog.net/hosts/lists.php?type=tick",
+    format: "domains",
+    license: "N/A — a directory of other lists",
+    redistributable: false,
+    homepage: "https://firebog.net/",
+    note: "Not a blocklist: it is an index of URLs to other people's lists, each with its own licence. Using it means pulling those lists, so the licence question just moves. The permissive ones it points at are already here directly.",
+  },
+  {
+    id: "cisco-talos",
+    category: "list1",
+    url: "https://talosintelligence.com/documents/ip-blacklist",
+    format: "domains",
+    license: "Proprietary; redistribution restricted",
+    redistributable: false,
+    homepage: "https://talosintelligence.com/",
+    note: "IP addresses, not domains — a DNS sinkhole cannot act on them, and the terms restrict redistribution regardless.",
   },
 ];
 
