@@ -1,0 +1,57 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+*.tsbuildinfo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Env
+.env
+.env.local
+
+# Blocklists — never tracked here, in ANY encoding.
+#
+# The complete list lives only in the private repo jobayersajal1/safe-world-listed,
+# scrambled. `npm run lists:pull` decodes it into a working copy, the build
+# scripts turn that into the per-platform artifacts below, and those go straight
+# into a built package. None of it is committed: a scrambled list in a public
+# repo is still a published list, just a slightly inconvenient one.
+#
+# If you are adding a build output that contains domains, add it here too.
+packages/core/src/blocklists/
+baseline/
+apps/chrome-extension/public/lists/
+apps/chrome-extension/src/rules/
+apps/ios/SafeWorldCore/Sources/SafeWorldCore/Resources/
+apps/ios/SafeWorldBlocker/Resources/blockerList.json
+apps/windows/SafeWorld.Core/Resources/
+apps/android/core/src/main/resources/blocklists/
+
+# Android signing. The keystore IS the app's identity — committing it lets
+# anyone publish an update that Android accepts as genuine. Back it up
+# somewhere private instead; it cannot be regenerated, only replaced.
+*.jks
+*.keystore
+keystore.properties
+
+# Xcode / Swift
+.build/
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+
+# .NET
+bin/
+obj/
+

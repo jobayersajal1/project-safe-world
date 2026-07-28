@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "Safe World",
+  "version": "0.1.0",
+  "description": "Protect yourself from scam, gambling, and adult/haram content by blocking known-bad sites.",
+  "minimum_chrome_version": "102",
+  "permissions": [
+    "declarativeNetRequest",
+    "storage",
+    "alarms",
+    "webNavigation"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "src/background.ts",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_title": "Safe World"
+  },
+  "options_page": "src/options/options.html",
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/blocked/blocked.html"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1147 @@
+<title>Safe World — Protect your family online, without the privacy trade-off</title>
+<meta name="description" content="Safe World blocks scams, gambling, and adult content for your whole family — filtered entirely on-device across Chrome, Android, and iOS, so no cloud service ever sees what anyone browses." />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Safe World — Protect your family online, without the privacy trade-off" />
+<meta property="og:description" content="Family-safe content filtering that runs entirely on-device. No cloud DNS. No account. No log of what your family browses." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 4 54 13v16c0 16-9.5 26.5-22 31C19.5 55.5 10 45 10 29V13Z' fill='%2312161c' stroke='%23e3a542' stroke-width='3'/%3E%3Ccircle cx='32' cy='30' r='7' fill='%23e3a542'/%3E%3C/svg%3E" />
+
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #12161c;
+    --bg-raised: #1a2029;
+    --bg-sunken: #0d1015;
+    --ink: #edebe4;
+    --ink-dim: #9ba3ae;
+    --accent: #e3a542;
+    --accent-ink: #241704;
+    --cloud: #6f92b8;
+    --line: #262d38;
+    --ok: #5fae94;
+    --danger: #c9584a;
+    --shadow: rgba(0, 0, 0, 0.35);
+
+    --font-display: "Iowan Old Style", "Palatino Linotype", Georgia, "Noto Serif", serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Noto Sans Mono", monospace;
+
+    --measure: 42rem;
+    --radius: 14px;
+  }
+
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --bg: #eef1f4;
+    --bg-raised: #ffffff;
+    --bg-sunken: #e3e8ed;
+    --ink: #1b222c;
+    --ink-dim: #566072;
+    --accent: #b5731a;
+    --accent-ink: #ffffff;
+    --cloud: #3a6089;
+    --line: #d7dee6;
+    --ok: #2f7a5e;
+    --danger: #b23f30;
+    --shadow: rgba(30, 40, 55, 0.1);
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      color-scheme: light;
+      --bg: #eef1f4;
+      --bg-raised: #ffffff;
+      --bg-sunken: #e3e8ed;
+      --ink: #1b222c;
+      --ink-dim: #566072;
+      --accent: #b5731a;
+      --accent-ink: #ffffff;
+      --cloud: #3a6089;
+      --line: #d7dee6;
+      --ok: #2f7a5e;
+      --danger: #b23f30;
+      --shadow: rgba(30, 40, 55, 0.1);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 600; text-wrap: balance; margin: 0; }
+  p { margin: 0; }
+  a { color: inherit; }
+
+  .skip-link {
+    position: absolute;
+    inset-inline-start: -999px;
+    top: 0;
+    background: var(--accent);
+    color: var(--accent-ink);
+    padding: 0.6em 1em;
+    border-radius: 0 0 8px 0;
+    z-index: 100;
+  }
+  .skip-link:focus { inset-inline-start: 0; }
+
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .wrap {
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  /* ---------- Nav ---------- */
+  header.site {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-block-end: 1px solid var(--line);
+  }
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding-block: 0.9rem;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.15rem;
+    text-decoration: none;
+    margin-inline-end: auto;
+  }
+  .brand svg { flex: none; }
+  .nav-links {
+    display: flex;
+    gap: 1.4rem;
+    font-size: 0.92rem;
+    color: var(--ink-dim);
+  }
+  .nav-links a { text-decoration: none; }
+  .nav-links a:hover { color: var(--ink); }
+  @media (max-width: 760px) { .nav-links { display: none; } }
+
+  select#lang {
+    background: var(--bg-raised);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.4em 0.6em;
+    font-size: 0.88rem;
+    font-family: var(--font-body);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    border-radius: 999px;
+    padding: 0.6em 1.15em;
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    border: 1px solid transparent;
+    cursor: pointer;
+  }
+  .btn-accent { background: var(--accent); color: var(--accent-ink); }
+  .btn-ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+  .btn-accent:hover { filter: brightness(1.06); }
+  .btn-ghost:hover { border-color: var(--ink-dim); }
+  .btn-soon { background: transparent; color: var(--ink-dim); border-color: var(--line); cursor: default; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    position: relative;
+    padding-block: clamp(3.5rem, 9vw, 6.5rem) clamp(3rem, 7vw, 5rem);
+    overflow: clip;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 50%;
+    top: -6rem;
+    width: 46rem;
+    height: 30rem;
+    translate: -50% 0;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 20%, transparent), transparent 70%);
+    pointer-events: none;
+  }
+  .hero-inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.75rem;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .hero-inner { grid-template-columns: minmax(0, 1fr) auto; gap: 3.5rem; }
+  }
+  .hero-text { max-width: 34rem; }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: block;
+    margin-block-end: 1rem;
+  }
+  .hero h1 { font-size: clamp(2.1rem, 5vw, 3.4rem); line-height: 1.1; }
+  .hero-point {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-block-start: 0.7rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .hero-point:first-of-type { margin-block-start: 1.4rem; }
+  .hero-point svg { flex: none; color: var(--accent); }
+  .hero p.sub {
+    margin-block-start: 0.9rem;
+    font-size: 1.05rem;
+    color: var(--ink-dim);
+    max-width: 38rem;
+  }
+  .hero-ctas { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-block-start: 2rem; }
+  .hero-note {
+    margin-block-start: 1.75rem;
+    font-size: 0.85rem;
+    color: var(--ink-dim);
+    font-family: var(--font-mono);
+  }
+
+  /* ---------- Hero phone mockup ---------- */
+  .hero-visual { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.75rem; }
+  .download-now { align-self: center; }
+  .phone-mock { position: relative; width: clamp(150px, 32vw, 210px); }
+  .phone-glow {
+    position: absolute;
+    inset: -22% -35%;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 24%, transparent), transparent 72%);
+    pointer-events: none;
+  }
+  .phone-badge {
+    position: absolute;
+    top: -24px;
+    inset-inline-start: -24px;
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 14px 30px var(--shadow);
+    z-index: 2;
+  }
+  .phone-frame {
+    position: relative;
+    aspect-ratio: 9 / 19.5;
+    border-radius: 34px;
+    border: 9px solid #1b1f26;
+    background: #05070a;
+    box-shadow: 0 24px 48px var(--shadow);
+  }
+  .phone-notch {
+    position: absolute;
+    top: 9px;
+    inset-inline-start: 50%;
+    translate: -50% 0;
+    width: 38%;
+    height: 13px;
+    border-radius: 9px;
+    background: #1b1f26;
+  }
+  .phone-screen {
+    position: absolute;
+    inset: 9px;
+    border-radius: 25px;
+    background: var(--bg-sunken);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 1.6rem 1.1rem;
+    text-align: center;
+  }
+  .block-icon { color: var(--danger); margin-block-end: 0.25rem; }
+  .block-title { font-weight: 600; font-size: 0.95rem; margin: 0; }
+  .block-chip {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: color-mix(in srgb, var(--danger) 16%, transparent);
+    color: var(--danger);
+    border-radius: 999px;
+    padding: 0.3em 0.75em;
+    margin-block-start: 0.5rem;
+  }
+  .block-back {
+    font-size: 0.7rem;
+    color: var(--ink-dim);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.35em 0.95em;
+    margin-block-start: 0.7rem;
+  }
+
+  /* ---------- Download ---------- */
+  .download-card { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.7rem; }
+  .download-icon { color: var(--accent); }
+  .download-card h3 { margin: 0; }
+  .download-card .btn { margin-block-start: 0.3rem; }
+
+  /* ---------- Section scaffolding ---------- */
+  section { padding-block: clamp(3rem, 7vw, 5.5rem); border-block-end: 1px solid var(--line); }
+  section:last-of-type { border-block-end: none; }
+  .section-head { max-width: var(--measure); margin-block-end: 2.5rem; }
+  .section-head h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); margin-block-start: 0.6rem; }
+  .section-head p { color: var(--ink-dim); margin-block-start: 1rem; font-size: 1.02rem; }
+
+  .reveal { opacity: 1; translate: 0 0; }
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal { opacity: 0; translate: 0 14px; transition: opacity 0.6s ease, translate 0.6s ease; }
+    .reveal.in { opacity: 1; translate: 0 0; }
+  }
+
+  /* ---------- Cards / grid ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15.5rem, 1fr));
+    gap: 1.1rem;
+  }
+  .card {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+  }
+  .card h3 { font-size: 1.05rem; margin-block-end: 0.6rem; }
+  .card p { color: var(--ink-dim); font-size: 0.94rem; }
+  .card .tag { font-family: var(--font-mono); }
+
+  .contact-link { color: var(--accent); text-decoration: none; font-weight: 600; word-break: break-word; }
+  .contact-link:hover { text-decoration: underline; }
+  .contact-unavailable { font-style: italic; }
+
+  /* ---------- Comparison table ---------- */
+  .table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); }
+  table { width: 100%; border-collapse: collapse; min-width: 34rem; }
+  th, td { text-align: start; padding: 0.9rem 1.1rem; font-size: 0.94rem; border-block-end: 1px solid var(--line); }
+  thead th { font-family: var(--font-mono); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-dim); background: var(--bg-sunken); }
+  tbody th { font-weight: 500; color: var(--ink-dim); }
+  tbody tr:last-child td, tbody tr:last-child th { border-block-end: none; }
+  td.sw { color: var(--ok); }
+  td.cloud { color: var(--cloud); }
+
+  /* ---------- Status list ---------- */
+  .status-list { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .status-item {
+    display: grid;
+    grid-template-columns: auto 9rem 1fr;
+    gap: 1.25rem;
+    align-items: start;
+    padding: 1.1rem 1.3rem;
+    background: var(--bg-raised);
+  }
+  .status-item + .status-item { border-block-start: 1px solid var(--line); }
+  @media (max-width: 640px) { .status-item { grid-template-columns: 1fr; gap: 0.4rem; } }
+  .chip {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    padding: 0.3em 0.65em;
+    border-radius: 999px;
+    white-space: nowrap;
+    align-self: start;
+  }
+  .chip-shipping { background: color-mix(in srgb, var(--ok) 18%, transparent); color: var(--ok); }
+  .chip-progress { background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--accent); }
+  .status-platform { font-weight: 600; }
+  .status-desc { color: var(--ink-dim); font-size: 0.94rem; }
+
+  /* ---------- OSS / footer ---------- */
+  .oss-cta { margin-block-start: 1.75rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+  .license-note { font-family: var(--font-mono); font-size: 0.85rem; color: var(--ink-dim); }
+
+  footer.site {
+    padding-block: 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    color: var(--ink-dim);
+    font-size: 0.9rem;
+  }
+  footer.site .foot-links { display: flex; gap: 1.4rem; }
+  footer.site a { text-decoration: none; }
+  footer.site a:hover { color: var(--ink); }
+</style>
+
+<a class="skip-link" href="#main" data-i18n="a11y.skip">Skip to content</a>
+
+<header class="site">
+  <div class="wrap nav">
+    <a class="brand" href="#main">
+      <svg width="22" height="22" viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M32 4 54 13v16c0 16-9.5 26.5-22 31C19.5 55.5 10 45 10 29V13Z" fill="none" stroke="var(--accent)" stroke-width="3.5"/>
+        <circle cx="32" cy="30" r="6.5" fill="var(--accent)"/>
+      </svg>
+      <span data-i18n="nav.brand">Safe World</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#download" data-i18n="nav.download">Download</a>
+      <a href="#how" data-i18n="nav.how">How it works</a>
+      <a href="#compare" data-i18n="nav.compare">Compare</a>
+      <a href="#platforms" data-i18n="nav.platforms">Platforms</a>
+      <a href="#oss" data-i18n="nav.oss">Open source</a>
+      <a href="#help" data-i18n="nav.help">Help</a>
+    </nav>
+    <select id="lang" aria-label="Language">
+      <option value="en">English</option>
+      <option value="bn">বাংলা</option>
+      <option value="es">Español</option>
+      <option value="ar">العربية</option>
+    </select>
+    <a class="btn btn-accent" href="#download" data-i18n="hero.download_cta">Download now</a>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <div class="hero-text">
+        <span class="eyebrow" data-i18n="hero.eyebrow">Free protection for the whole family</span>
+        <h1 data-i18n="hero.h1">Protect your kids and family — from harmful websites and content.</h1>
+        <p class="hero-point">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3 19 6v5.2c0 5-3 8.6-7 9.8-4-1.2-7-4.8-7-9.8V6Z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+          <span data-i18n="hero.point1">It's 100% free to download.</span>
+        </p>
+        <p class="hero-point">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3 19 6v5.2c0 5-3 8.6-7 9.8-4-1.2-7-4.8-7-9.8V6Z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+          <span data-i18n="hero.point2">Nothing about your family's browsing ever leaves your device.</span>
+        </p>
+        <p class="sub" data-i18n="hero.sub">A phone or laptop connected to the internet is part of everyday life now — but it also means your child could stumble onto scam websites, gambling sites, or adult content, or that some other "safety" app quietly collects and stores your family's personal information. Safe World checks every website right there on your own device and blocks the harmful ones automatically — for free, with nothing about your family ever sent anywhere.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-accent" href="#download" data-i18n="hero.cta_primary">Download for free</a>
+          <a class="btn btn-ghost" href="#how" data-i18n="hero.cta_secondary">See how it works</a>
+        </div>
+        <p class="hero-note" data-i18n="hero.note">Free · No account or sign-up needed</p>
+      </div>
+      <div class="hero-visual">
+        <div class="phone-mock" aria-hidden="true">
+          <div class="phone-glow"></div>
+          <div class="phone-badge">
+            <svg viewBox="0 0 24 24" width="38" height="38">
+              <path d="M12 2.2 19.5 5v6c0 5.3-3.3 8.7-7.5 9.8C8 19.7 4.5 16.3 4.5 11V5Z" fill="none" stroke="#14161a" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M8.3 12.3 10.7 14.7 15.6 9.5" fill="none" stroke="#1f9d55" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="phone-frame">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="block-icon">
+                <svg viewBox="0 0 24 24" width="34" height="34">
+                  <circle cx="12" cy="12" r="9.25" fill="none" stroke="currentColor" stroke-width="2"/>
+                  <line x1="5.7" y1="18.3" x2="18.3" y2="5.7" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <p class="block-title" data-i18n="hero.mock_blocked">Site blocked</p>
+              <span class="block-chip" data-i18n="hero.mock_category">Harmful content</span>
+              <span class="block-back" data-i18n="hero.mock_back">Go back</span>
+            </div>
+          </div>
+        </div>
+        <a class="btn btn-accent download-now" href="#download" data-i18n="hero.download_cta">Download now</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="download">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow" data-i18n="download.eyebrow">Get Safe World</span>
+        <h2 data-i18n="download.h2">Get Safe World for your device.</h2>
+        <p data-i18n="download.body">Pick your device below and download Safe World — completely free, no account needed.</p>
+      </div>
+      <div class="grid reveal">
+        <div class="card download-card">
+          <svg class="download-icon" viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/>
+            <circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M12 3v6M12 15v6M4.5 7.5l5.2 3M14.3 13.5l5.2 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+          <h3 data-i18n="arch.chrome_name">Chrome</h3>
+          <a class="btn btn-accent" href="https://github.com/jobayersajal1/project-safe-world/releases/download/v0.1.0/SafeWorld-chrome-0.1.0.zip" data-i18n="download.btn">Download</a>
+        </div>
+        <div class="card download-card">
+          <svg class="download-icon" viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
+            <path d="M7 10v5.5a1 1 0 0 0 1 1h.5v2.3a1.2 1.2 0 0 0 2.4 0V16.5h2.2v2.3a1.2 1.2 0 0 0 2.4 0V16.5h.5a1 1 0 0 0 1-1V10Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+            <path d="M7 10a5 5 0 0 1 10 0" fill="none" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M5.5 10.2v3.6M18.5 10.2v3.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            <path d="M9 6.3 8 4.8M15 6.3l1-1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            <circle cx="9.7" cy="8.3" r="0.5" fill="currentColor"/>
+            <circle cx="14.3" cy="8.3" r="0.5" fill="currentColor"/>
+          </svg>
+          <h3 data-i18n="arch.android_name">Android</h3>
+          <a class="btn btn-accent" href="https://github.com/jobayersajal1/project-safe-world/releases/download/v0.1.0/SafeWorld-0.1.0.apk" data-i18n="download.btn">Download</a>
+        </div>
+        <div class="card download-card">
+          <svg class="download-icon" viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
+            <path fill="currentColor" d="M16.365 1.43c0 1.14-.468 2.213-1.235 3.02-.832.86-2.115 1.53-3.19 1.44-.14-1.1.42-2.24 1.185-3.02.83-.86 2.24-1.5 3.24-1.44zM20.5 17.02c-.51 1.18-.76 1.71-1.42 2.75-.92 1.46-2.22 3.28-3.83 3.3-1.43.02-1.8-.93-3.75-.92-1.95.01-2.35.94-3.79.92-1.61-.02-2.84-1.65-3.76-3.11-2.58-4.08-2.85-8.86-1.26-11.4.99-1.6 2.83-2.6 4.6-2.6 1.64 0 2.67 1.02 4.03 1.02 1.32 0 2.13-1.02 4.03-1.02 1.31 0 2.69.71 3.68 1.94-3.23 1.77-2.71 6.4.51 9.12z"/>
+          </svg>
+          <h3 data-i18n="arch.ios_name">iOS</h3>
+          <span class="btn btn-soon" data-i18n="download.coming_soon">Coming soon</span>
+        </div>
+        <div class="card download-card">
+          <svg class="download-icon" viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
+            <path fill="currentColor" d="M16.365 1.43c0 1.14-.468 2.213-1.235 3.02-.832.86-2.115 1.53-3.19 1.44-.14-1.1.42-2.24 1.185-3.02.83-.86 2.24-1.5 3.24-1.44zM20.5 17.02c-.51 1.18-.76 1.71-1.42 2.75-.92 1.46-2.22 3.28-3.83 3.3-1.43.02-1.8-.93-3.75-.92-1.95.01-2.35.94-3.79.92-1.61-.02-2.84-1.65-3.76-3.11-2.58-4.08-2.85-8.86-1.26-11.4.99-1.6 2.83-2.6 4.6-2.6 1.64 0 2.67 1.02 4.03 1.02 1.32 0 2.13-1.02 4.03-1.02 1.31 0 2.69.71 3.68 1.94-3.23 1.77-2.71 6.4.51 9.12z"/>
+          </svg>
+          <h3 data-i18n="download.macos_name">macOS</h3>
+          <a class="btn btn-accent" href="https://github.com/jobayersajal1/project-safe-world/releases/download/v0.1.0/SafeWorld-0.1.0-macOS.dmg" data-i18n="download.btn">Download</a>
+        </div>
+        <div class="card download-card">
+          <svg class="download-icon" viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
+            <path fill="none" stroke="currentColor" stroke-width="1.6" d="M3 6.2 10.4 5.1V11.6H3ZM11.3 5 21 3.6V11.6H11.3ZM3 12.4H10.4V19L3 17.8ZM11.3 12.4H21V20.4L11.3 19Z"/>
+          </svg>
+          <h3 data-i18n="download.windows_name">Windows</h3>
+          <a class="btn btn-accent" href="https://github.com/jobayersajal1/project-safe-world/releases/download/v0.1.0/SafeWorld-0.1.0-win-x64.exe" data-i18n="download.btn">Download</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="problem">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow" data-i18n="problem.eyebrow">Why this matters</span>
+        <h2 data-i18n="problem.h2">Your family needs protection online — without losing your privacy.</h2>
+        <p data-i18n="problem.body">A phone, tablet, or laptop with internet access is part of everyday life now — for school, homework, games, and staying in touch with friends. But that same connection can expose your child to scam websites trying to steal money, gambling sites, and adult content they're too young to see. On top of that, many so-called "safety" apps quietly collect and store everything your family browses, and can even sell or share that information. Your family deserves real protection from harmful websites — without handing your personal data to another company to get it.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="differentiators">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow" data-i18n="diff.eyebrow">How Safe World is different</span>
+        <h2 data-i18n="diff.h2">Real protection, without the trade-offs.</h2>
+      </div>
+      <div class="grid reveal">
+        <div class="card">
+          <h3 data-i18n="diff.card1_title">100% free</h3>
+          <p data-i18n="diff.card1_body">Safe World is free to download and free to use, for as long as you need it — no subscription, no trial, no hidden cost.</p>
+        </div>
+        <div class="card">
+          <h3 data-i18n="diff.card2_title">We never see your family's data</h3>
+          <p data-i18n="diff.card2_body">Every decision about what to block happens privately, right there on your own phone or computer. We don't collect your family's browsing activity, and nothing about the sites you visit is ever sent anywhere — not to us, not to anyone.</p>
+        </div>
+        <div class="card">
+          <h3 data-i18n="diff.card3_title">Open for anyone to check</h3>
+          <p data-i18n="diff.card3_body">The list of blocked sites and the code that decides what to block are both public for anyone to look at. You don't have to just take our word for it.</p>
+        </div>
+        <div class="card">
+          <h3 data-i18n="diff.card4_title">Works on the devices you already use</h3>
+          <p data-i18n="diff.card4_body">Chrome, Android, Mac, and Windows are ready today, with iPhone support on the way — so wherever your family goes online, Safe World can go too.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow" data-i18n="arch.eyebrow">Under the hood</span>
+        <h2 data-i18n="arch.h2">Same rules, three on-device engines.</h2>
+      </div>
+      <div class="grid reveal">
+        <div class="card">
+          <h3 data-i18n="arch.chrome_name">Chrome</h3>
+          <p data-i18n="arch.chrome_body">Static declarativeNetRequest rulesets, one per category, block or redirect requests before they leave the browser. Toggling a category enables or disables its ruleset — no traffic is inspected by a remote service.</p>
+        </div>
+        <div class="card">
+          <h3 data-i18n="arch.android_name">Android</h3>
+          <p data-i18n="arch.android_body">A local VpnService tunnels only the device's DNS traffic — to nowhere but itself. Every query is checked on-device; blocked names get a synthesized NXDOMAIN, everything else is forwarded unmodified to the resolver your device already uses.</p>
+        </div>
+        <div class="card">
+          <h3 data-i18n="arch.ios_name">iOS</h3>
+          <p data-i18n="arch.ios_body">SafeWorldCore compiles your settings into a single Safari Content Blocker list, executed by Safari's own on-device engine — the same primitive Apple ships for ad blockers, applied to harmful-content categories instead.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="compare">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow" data-i18n="compare.eyebrow">Safe World vs. cloud DNS filters</span>
+        <h2 data-i18n="compare.h2">The same protection, without the middleman.</h2>
+      </div>
+      <div class="table-scroll reveal">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th data-i18n="compare.col_sw">Safe World</th>
+              <th data-i18n="compare.col_cloud">Cloud DNS filters</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th data-i18n="compare.row1_label">Where filtering happens</th><td class="sw" data-i18n="compare.row1_sw">On your device</td><td class="cloud" data-i18n="compare.row1_cloud">On a third-party server</td></tr>
+            <tr><th data-i18n="compare.row2_label">Can the provider see your DNS queries?</th><td class="sw" data-i18n="compare.row2_sw">No — it never leaves the device</td><td class="cloud" data-i18n="compare.row2_cloud">Yes, every query, by design</td></tr>
+            <tr><th data-i18n="compare.row3_label">Requires an account?</th><td class="sw" data-i18n="compare.row3_sw">No</td><td class="cloud" data-i18n="compare.row3_cloud">Usually</td></tr>
+            <tr><th data-i18n="compare.row4_label">Works fully offline?</th><td class="sw" data-i18n="compare.row4_sw">Yes, with the bundled lists</td><td class="cloud" data-i18n="compare.row4_cloud">No — needs their resolver</td></tr>
+            <tr><th data-i18n="compare.row5_label">Source code</th><td class="sw" data-i18n="compare.row5_sw">Public, MIT-licensed</td><td class="cloud" data-i18n="compare.row5_cloud">Closed</td></tr>
+            <tr><th data-i18n="compare.row6_label">Cost</th><td class="sw" data-i18n="compare.row6_sw">Free and open source</td><td class="cloud" data-i18n="compare.row6_cloud">Free tier plus paid plans</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="platforms">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow" data-i18n="status.eyebrow">Where things stand</span>
+        <h2 data-i18n="status.h2">Five platforms, one shared rule set.</h2>
+      </div>
+      <div class="status-list reveal">
+        <div class="status-item">
+          <span class="chip chip-shipping" data-i18n="status.chip_shipping">Shipping</span>
+          <span class="status-platform" data-i18n="arch.chrome_name">Chrome</span>
+          <span class="status-desc" data-i18n="status.chrome_body">Manifest V3 extension using declarativeNetRequest — load it unpacked today.</span>
+        </div>
+        <div class="status-item">
+          <span class="chip chip-shipping" data-i18n="status.chip_shipping">Shipping</span>
+          <span class="status-platform" data-i18n="arch.android_name">Android</span>
+          <span class="status-desc" data-i18n="status.android_body">Compose app and local VpnService DNS sinkhole for device-wide blocking.</span>
+        </div>
+        <div class="status-item">
+          <span class="chip chip-shipping" data-i18n="status.chip_shipping">Shipping</span>
+          <span class="status-platform" data-i18n="download.macos_name">macOS</span>
+          <span class="status-desc" data-i18n="status.macos_body">Menu-bar app managing a system-wide hosts-file sinkhole.</span>
+        </div>
+        <div class="status-item">
+          <span class="chip chip-shipping" data-i18n="status.chip_shipping">Shipping</span>
+          <span class="status-platform" data-i18n="download.windows_name">Windows</span>
+          <span class="status-desc" data-i18n="status.windows_body">Tray app managing a system-wide hosts-file sinkhole.</span>
+        </div>
+        <div class="status-item">
+          <span class="chip chip-progress" data-i18n="status.chip_progress">In progress</span>
+          <span class="status-platform" data-i18n="arch.ios_name">iOS</span>
+          <span class="status-desc" data-i18n="status.ios_body">SwiftUI app and Safari Content Blocker, backed by the SafeWorldCore package.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="oss">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow" data-i18n="oss.eyebrow">Verify, don't trust</span>
+        <h2 data-i18n="oss.h2">The blocklists and the code are the same thing you can read.</h2>
+        <p data-i18n="oss.body">Every category — scam, gambling, adult content — is a plain list of domains plus the matching logic that chooses between them, both public on GitHub. Found a site that should, or shouldn't, be listed? Open an issue or a pull request.</p>
+      </div>
+      <div class="oss-cta reveal">
+        <a class="btn btn-accent" href="https://github.com/jobayersajal1/project-safe-world" target="_blank" rel="noopener" data-i18n="oss.cta">Browse the repository</a>
+        <span class="license-note" data-i18n="oss.license">MIT licensed</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="help">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow" data-i18n="help.eyebrow">Need help?</span>
+        <h2 data-i18n="help.h2">Get in touch.</h2>
+      </div>
+      <div class="grid reveal">
+        <div class="card">
+          <h3 data-i18n="help.whatsapp_title">WhatsApp</h3>
+          <p><a class="contact-link" href="https://wa.me/6584963885" target="_blank" rel="noopener">+65 8496 3885</a></p>
+        </div>
+        <div class="card">
+          <h3 data-i18n="help.facebook_title">Facebook</h3>
+          <p class="contact-unavailable" data-i18n="help.facebook_unavailable">Group link temporarily unavailable</p>
+        </div>
+        <div class="card">
+          <h3 data-i18n="help.email_title">Email</h3>
+          <p><a class="contact-link" href="mailto:safeworldwebsiteblock@gmail.com">safeworldwebsiteblock@gmail.com</a></p>
+        </div>
+        <div class="card">
+          <h3 data-i18n="help.github_title">GitHub</h3>
+          <p><a class="contact-link" href="https://github.com/jobayersajal1/project-safe-world" target="_blank" rel="noopener">github.com/jobayersajal1/project-safe-world</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site wrap">
+  <span data-i18n="footer.tagline">Content filtering that stays on your device.</span>
+  <div class="foot-links">
+    <a href="privacy.html" data-i18n="footer.privacy">Privacy</a>
+    <a href="https://github.com/jobayersajal1/project-safe-world" target="_blank" rel="noopener" data-i18n="footer.github">GitHub</a>
+    <a href="https://github.com/jobayersajal1/project-safe-world/blob/main/LICENSE" target="_blank" rel="noopener" data-i18n="footer.license">License</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var translations = {
+    en: {
+      "a11y.skip": "Skip to content",
+      "nav.brand": "Safe World",
+      "nav.how": "How it works",
+      "nav.compare": "Compare",
+      "nav.platforms": "Platforms",
+      "nav.oss": "Open source",
+      "nav.help": "Help",
+      "nav.download": "Download",
+      "hero.eyebrow": "Free protection for the whole family",
+      "hero.h1": "Protect your kids and family — from harmful websites and content.",
+      "hero.point1": "It's 100% free to download.",
+      "hero.point2": "Nothing about your family's browsing ever leaves your device.",
+      "hero.sub": "A phone or laptop connected to the internet is part of everyday life now — but it also means your child could stumble onto scam websites, gambling sites, or adult content, or that some other \"safety\" app quietly collects and stores your family's personal information. Safe World checks every website right there on your own device and blocks the harmful ones automatically — for free, with nothing about your family ever sent anywhere.",
+      "hero.cta_primary": "Download for free",
+      "hero.cta_secondary": "See how it works",
+      "hero.note": "Free · No account or sign-up needed",
+      "hero.mock_blocked": "Site blocked",
+      "hero.mock_category": "Harmful content",
+      "hero.mock_back": "Go back",
+      "hero.download_cta": "Download now",
+      "download.eyebrow": "Get Safe World",
+      "download.h2": "Get Safe World for your device.",
+      "download.body": "Pick your device below and download Safe World — completely free, no account needed.",
+      "download.btn": "Download",
+      "download.coming_soon": "Coming soon",
+      "download.macos_name": "macOS",
+      "download.windows_name": "Windows",
+      "problem.eyebrow": "Why this matters",
+      "problem.h2": "Your family needs protection online — without losing your privacy.",
+      "problem.body": "A phone, tablet, or laptop with internet access is part of everyday life now — for school, homework, games, and staying in touch with friends. But that same connection can expose your child to scam websites trying to steal money, gambling sites, and adult content they're too young to see. On top of that, many so-called \"safety\" apps quietly collect and store everything your family browses, and can even sell or share that information. Your family deserves real protection from harmful websites — without handing your personal data to another company to get it.",
+      "diff.eyebrow": "How Safe World is different",
+      "diff.h2": "Real protection, without the trade-offs.",
+      "diff.card1_title": "100% free",
+      "diff.card1_body": "Safe World is free to download and free to use, for as long as you need it — no subscription, no trial, no hidden cost.",
+      "diff.card2_title": "We never see your family's data",
+      "diff.card2_body": "Every decision about what to block happens privately, right there on your own phone or computer. We don't collect your family's browsing activity, and nothing about the sites you visit is ever sent anywhere — not to us, not to anyone.",
+      "diff.card3_title": "Open for anyone to check",
+      "diff.card3_body": "The list of blocked sites and the code that decides what to block are both public for anyone to look at. You don't have to just take our word for it.",
+      "diff.card4_title": "Works on the devices you already use",
+      "diff.card4_body": "Chrome, Android, Mac, and Windows are ready today, with iPhone support on the way — so wherever your family goes online, Safe World can go too.",
+      "arch.eyebrow": "Under the hood",
+      "arch.h2": "Same rules, three on-device engines.",
+      "arch.chrome_name": "Chrome",
+      "arch.chrome_body": "Static declarativeNetRequest rulesets, one per category, block or redirect requests before they leave the browser. Toggling a category enables or disables its ruleset — no traffic is inspected by a remote service.",
+      "arch.android_name": "Android",
+      "arch.android_body": "A local VpnService tunnels only the device's DNS traffic — to nowhere but itself. Every query is checked on-device; blocked names get a synthesized NXDOMAIN, everything else is forwarded unmodified to the resolver your device already uses.",
+      "arch.ios_name": "iOS",
+      "arch.ios_body": "SafeWorldCore compiles your settings into a single Safari Content Blocker list, executed by Safari's own on-device engine — the same primitive Apple ships for ad blockers, applied to harmful-content categories instead.",
+      "compare.eyebrow": "Safe World vs. cloud DNS filters",
+      "compare.h2": "The same protection, without the middleman.",
+      "compare.col_sw": "Safe World",
+      "compare.col_cloud": "Cloud DNS filters",
+      "compare.row1_label": "Where filtering happens",
+      "compare.row1_sw": "On your device",
+      "compare.row1_cloud": "On a third-party server",
+      "compare.row2_label": "Can the provider see your DNS queries?",
+      "compare.row2_sw": "No — it never leaves the device",
+      "compare.row2_cloud": "Yes, every query, by design",
+      "compare.row3_label": "Requires an account?",
+      "compare.row3_sw": "No",
+      "compare.row3_cloud": "Usually",
+      "compare.row4_label": "Works fully offline?",
+      "compare.row4_sw": "Yes, with the bundled lists",
+      "compare.row4_cloud": "No — needs their resolver",
+      "compare.row5_label": "Source code",
+      "compare.row5_sw": "Public, MIT-licensed",
+      "compare.row5_cloud": "Closed",
+      "compare.row6_label": "Cost",
+      "compare.row6_sw": "Free and open source",
+      "compare.row6_cloud": "Free tier plus paid plans",
+      "status.eyebrow": "Where things stand",
+      "status.h2": "Five platforms, one shared rule set.",
+      "status.chip_shipping": "Shipping",
+      "status.chip_progress": "In progress",
+      "status.chrome_body": "Manifest V3 extension using declarativeNetRequest — load it unpacked today.",
+      "status.ios_body": "SwiftUI app and Safari Content Blocker, backed by the SafeWorldCore package.",
+      "status.android_body": "Compose app and local VpnService DNS sinkhole for device-wide blocking.",
+      "status.macos_body": "Menu-bar app managing a system-wide hosts-file sinkhole.",
+      "status.windows_body": "Tray app managing a system-wide hosts-file sinkhole.",
+      "oss.eyebrow": "Verify, don't trust",
+      "oss.h2": "The blocklists and the code are the same thing you can read.",
+      "oss.body": "Every category — scam, gambling, adult content — is a plain list of domains plus the matching logic that chooses between them, both public on GitHub. Found a site that should, or shouldn't, be listed? Open an issue or a pull request.",
+      "oss.cta": "Browse the repository",
+      "oss.license": "MIT licensed",
+      "help.eyebrow": "Need help?",
+      "help.h2": "Get in touch.",
+      "help.whatsapp_title": "WhatsApp",
+      "help.facebook_title": "Facebook",
+      "help.facebook_unavailable": "Group link temporarily unavailable",
+      "help.email_title": "Email",
+      "help.github_title": "GitHub",
+      "footer.tagline": "Content filtering that stays on your device.",
+      "footer.github": "GitHub",
+      "footer.privacy": "Privacy",
+      "footer.license": "License"
+    },
+    bn: {
+      "a11y.skip": "মূল বিষয়বস্তুতে যান",
+      "nav.brand": "Safe World",
+      "nav.how": "যেভাবে কাজ করে",
+      "nav.compare": "তুলনা",
+      "nav.platforms": "প্ল্যাটফর্ম",
+      "nav.oss": "ওপেন সোর্স",
+      "nav.help": "সহায়তা",
+      "nav.download": "ডাউনলোড",
+      "hero.eyebrow": "পুরো পরিবারের জন্য বিনামূল্যে সুরক্ষা",
+      "hero.h1": "আপনার সন্তান ও পরিবারকে — ক্ষতিকর ওয়েবসাইট ও কনটেন্ট থেকে রক্ষা করুন।",
+      "hero.point1": "এটি ডাউনলোড করা ১০০% বিনামূল্যে।",
+      "hero.point2": "আপনার পরিবারের ব্রাউজিং সম্পর্কে কিছুই কখনো ডিভাইস ছেড়ে যায় না।",
+      "hero.sub": "ইন্টারনেট-সংযুক্ত ফোন বা ল্যাপটপ এখন দৈনন্দিন জীবনের অংশ — কিন্তু এর মানে আপনার সন্তান স্ক্যাম ওয়েবসাইট, জুয়ার সাইট, বা প্রাপ্তবয়স্ক কনটেন্টের সম্মুখীন হতে পারে, অথবা কোনো \"সুরক্ষা\" অ্যাপ চুপচাপ আপনার পরিবারের ব্যক্তিগত তথ্য সংগ্রহ ও সংরক্ষণ করতে পারে। Safe World প্রতিটি ওয়েবসাইট সরাসরি আপনার নিজের ডিভাইসে পরীক্ষা করে এবং ক্ষতিকর সাইটগুলো স্বয়ংক্রিয়ভাবে ব্লক করে — বিনামূল্যে, আর আপনার পরিবার সম্পর্কে কিছুই কোথাও পাঠানো হয় না।",
+      "hero.cta_primary": "বিনামূল্যে ডাউনলোড করুন",
+      "hero.cta_secondary": "কীভাবে কাজ করে দেখুন",
+      "hero.note": "বিনামূল্যে · কোনো অ্যাকাউন্ট বা সাইন-আপ লাগে না",
+      "hero.mock_blocked": "সাইট ব্লক করা হয়েছে",
+      "hero.mock_category": "ক্ষতিকর কনটেন্ট",
+      "hero.mock_back": "ফিরে যান",
+      "hero.download_cta": "এখনই ডাউনলোড করুন",
+      "download.eyebrow": "Safe World নামিয়ে নিন",
+      "download.h2": "আপনার ডিভাইসের জন্য Safe World নিন।",
+      "download.body": "নিচে আপনার ডিভাইস বেছে নিন এবং Safe World ডাউনলোড করুন — সম্পূর্ণ বিনামূল্যে, কোনো অ্যাকাউন্ট লাগে না।",
+      "download.btn": "ডাউনলোড",
+      "download.coming_soon": "শীঘ্রই আসছে",
+      "download.macos_name": "macOS",
+      "download.windows_name": "Windows",
+      "problem.eyebrow": "কেন এটা গুরুত্বপূর্ণ",
+      "problem.h2": "আপনার পরিবারের অনলাইন সুরক্ষা দরকার — গোপনীয়তা না হারিয়ে।",
+      "problem.body": "ইন্টারনেট-সংযুক্ত ফোন, ট্যাবলেট বা ল্যাপটপ এখন দৈনন্দিন জীবনের অংশ — স্কুল, হোমওয়ার্ক, গেমস এবং বন্ধুদের সাথে যোগাযোগের জন্য। কিন্তু একই সংযোগ আপনার সন্তানকে টাকা চুরির চেষ্টাকারী স্ক্যাম ওয়েবসাইট, জুয়ার সাইট, এবং তাদের দেখার জন্য বয়স হয়নি এমন প্রাপ্তবয়স্ক কনটেন্টের সামনে ফেলে দিতে পারে। এর সাথে, অনেক তথাকথিত \"সুরক্ষা\" অ্যাপ চুপচাপ আপনার পরিবার যা কিছু ব্রাউজ করে তা সংগ্রহ ও সংরক্ষণ করে, এমনকি সেই তথ্য বিক্রি বা শেয়ারও করতে পারে। আপনার পরিবার ক্ষতিকর ওয়েবসাইট থেকে প্রকৃত সুরক্ষা প্রাপ্য — অন্য কোনো কোম্পানির হাতে আপনার ব্যক্তিগত তথ্য তুলে না দিয়ে।",
+      "diff.eyebrow": "Safe World কীভাবে আলাদা",
+      "diff.h2": "প্রকৃত সুরক্ষা, কোনো আপস ছাড়াই।",
+      "diff.card1_title": "১০০% বিনামূল্যে",
+      "diff.card1_body": "Safe World ডাউনলোড করা এবং ব্যবহার করা সম্পূর্ণ বিনামূল্যে, যতদিন প্রয়োজন — কোনো সাবস্ক্রিপশন নেই, কোনো ট্রায়াল নেই, কোনো লুকানো খরচ নেই।",
+      "diff.card2_title": "আমরা কখনো আপনার পরিবারের তথ্য দেখি না",
+      "diff.card2_body": "কী ব্লক করা হবে তার প্রতিটি সিদ্ধান্ত সরাসরি আপনার নিজের ফোন বা কম্পিউটারে, ব্যক্তিগতভাবে হয়। আমরা আপনার পরিবারের ব্রাউজিং কার্যকলাপ সংগ্রহ করি না, এবং আপনি যেসব সাইটে যান সে সম্পর্কে কিছুই কোথাও পাঠানো হয় না — আমাদের কাছেও না, অন্য কারো কাছেও না।",
+      "diff.card3_title": "যে কেউ যাচাই করতে পারে",
+      "diff.card3_body": "ব্লক করা সাইটের তালিকা এবং কী ব্লক করা হবে তা নির্ধারণকারী কোড — দুটোই যে কেউ দেখার জন্য প্রকাশ্য। আমাদের কথা বিশ্বাস করে নেওয়ার দরকার নেই।",
+      "diff.card4_title": "আপনি ইতিমধ্যে ব্যবহার করেন এমন ডিভাইসে কাজ করে",
+      "diff.card4_body": "Chrome, Android, Mac এবং Windows আজই প্রস্তুত, আর iPhone সাপোর্ট শীঘ্রই আসছে — তাই আপনার পরিবার অনলাইনে যেখানেই যাক, Safe World সেখানেও যেতে পারে।",
+      "arch.eyebrow": "ভেতরের কারিগরি",
+      "arch.h2": "একই নিয়ম, তিনটি অন-ডিভাইস ইঞ্জিন।",
+      "arch.chrome_name": "Chrome",
+      "arch.chrome_body": "প্রতিটি ক্যাটাগরির জন্য স্ট্যাটিক declarativeNetRequest রুলসেট, ব্রাউজার ছাড়ার আগেই অনুরোধ ব্লক বা রিডাইরেক্ট করে। একটি ক্যাটাগরি টগল করলে তার রুলসেট চালু বা বন্ধ হয় — কোনো ট্রাফিক দূরবর্তী সার্ভিস দিয়ে পরীক্ষা করা হয় না।",
+      "arch.android_name": "Android",
+      "arch.android_body": "একটি লোকাল VpnService শুধু ডিভাইসের DNS ট্রাফিক টানেল করে — নিজের মধ্যেই, আর কোথাও না। প্রতিটি কোয়েরি ডিভাইসেই পরীক্ষা করা হয়; ব্লক করা নামের জন্য একটি তৈরি করা NXDOMAIN পাঠানো হয়, বাকি সব অপরিবর্তিত অবস্থায় আপনার ডিভাইস আগে থেকে ব্যবহার করা রিজলভারে পাঠানো হয়।",
+      "arch.ios_name": "iOS",
+      "arch.ios_body": "SafeWorldCore আপনার সেটিংস একটি একক Safari Content Blocker তালিকায় কম্পাইল করে, যা Safari-এর নিজস্ব অন-ডিভাইস ইঞ্জিন চালায় — Apple বিজ্ঞাপন ব্লকারের জন্য যে একই প্রিমিটিভ দেয়, তা এখানে ক্ষতিকর কনটেন্ট ক্যাটাগরিতে প্রয়োগ করা হয়েছে।",
+      "compare.eyebrow": "Safe World বনাম ক্লাউড DNS ফিল্টার",
+      "compare.h2": "একই সুরক্ষা, মাঝখানের কেউ ছাড়াই।",
+      "compare.col_sw": "Safe World",
+      "compare.col_cloud": "ক্লাউড DNS ফিল্টার",
+      "compare.row1_label": "ফিল্টারিং কোথায় হয়",
+      "compare.row1_sw": "আপনার ডিভাইসে",
+      "compare.row1_cloud": "তৃতীয় পক্ষের সার্ভারে",
+      "compare.row2_label": "প্রোভাইডার কি আপনার DNS কোয়েরি দেখতে পারে?",
+      "compare.row2_sw": "না — এটি ডিভাইস থেকে কখনো বের হয় না",
+      "compare.row2_cloud": "হ্যাঁ, ডিজাইন অনুযায়ী প্রতিটি কোয়েরি",
+      "compare.row3_label": "অ্যাকাউন্ট লাগে কি?",
+      "compare.row3_sw": "না",
+      "compare.row3_cloud": "সাধারণত হ্যাঁ",
+      "compare.row4_label": "সম্পূর্ণ অফলাইনে কাজ করে?",
+      "compare.row4_sw": "হ্যাঁ, বান্ডিল করা তালিকা দিয়ে",
+      "compare.row4_cloud": "না — তাদের রিজলভার লাগে",
+      "compare.row5_label": "সোর্স কোড",
+      "compare.row5_sw": "প্রকাশ্য, MIT-লাইসেন্সপ্রাপ্ত",
+      "compare.row5_cloud": "বন্ধ",
+      "compare.row6_label": "খরচ",
+      "compare.row6_sw": "বিনামূল্যে ও ওপেন সোর্স",
+      "compare.row6_cloud": "ফ্রি টিয়ার প্লাস পেইড প্ল্যান",
+      "status.eyebrow": "বর্তমান অবস্থা",
+      "status.h2": "পাঁচটি প্ল্যাটফর্ম, একটি শেয়ার করা নিয়মসেট।",
+      "status.chip_shipping": "চালু আছে",
+      "status.chip_progress": "চলমান",
+      "status.chrome_body": "declarativeNetRequest ব্যবহার করা Manifest V3 এক্সটেনশন — আজই আনপ্যাকড লোড করুন।",
+      "status.ios_body": "SwiftUI অ্যাপ এবং Safari Content Blocker, SafeWorldCore প্যাকেজের উপর ভিত্তি করে।",
+      "status.android_body": "ডিভাইস-জোড়া ব্লকিংয়ের জন্য Compose অ্যাপ এবং লোকাল VpnService DNS সিংকহোল।",
+      "status.macos_body": "মেনু-বার অ্যাপ যা সিস্টেম-জোড়া hosts-ফাইল সিংকহোল পরিচালনা করে।",
+      "status.windows_body": "ট্রে অ্যাপ যা সিস্টেম-জোড়া hosts-ফাইল সিংকহোল পরিচালনা করে।",
+      "oss.eyebrow": "বিশ্বাস নয়, যাচাই করুন",
+      "oss.h2": "ব্লকলিস্ট আর কোড একই জিনিস, যা আপনি নিজেই পড়তে পারেন।",
+      "oss.body": "প্রতিটি ক্যাটাগরি — স্ক্যাম, জুয়া, প্রাপ্তবয়স্ক কনটেন্ট — ডোমেইনের একটি সাধারণ তালিকা এবং তাদের মধ্যে সিদ্ধান্ত নেওয়ার ম্যাচিং লজিক, দুটোই GitHub-এ প্রকাশ্য। কোনো সাইট পাওয়া গেছে যা তালিকাভুক্ত হওয়া উচিত বা উচিত নয়? একটি ইস্যু বা পুল রিকোয়েস্ট খুলুন।",
+      "oss.cta": "রিপোজিটরি দেখুন",
+      "oss.license": "MIT লাইসেন্সপ্রাপ্ত",
+      "help.eyebrow": "সাহায্য দরকার?",
+      "help.h2": "আমাদের সাথে যোগাযোগ করুন।",
+      "help.whatsapp_title": "WhatsApp",
+      "help.facebook_title": "Facebook",
+      "help.facebook_unavailable": "গ্রুপ লিংক সাময়িকভাবে অনুপলব্ধ",
+      "help.email_title": "ইমেইল",
+      "help.github_title": "GitHub",
+      "footer.tagline": "কনটেন্ট ফিল্টারিং যা আপনার ডিভাইসেই থেকে যায়।",
+      "footer.github": "GitHub",
+      "footer.privacy": "গোপনীয়তা",
+      "footer.license": "লাইসেন্স"
+    },
+    es: {
+      "a11y.skip": "Saltar al contenido",
+      "nav.brand": "Safe World",
+      "nav.how": "Cómo funciona",
+      "nav.compare": "Comparativa",
+      "nav.platforms": "Plataformas",
+      "nav.oss": "Código abierto",
+      "nav.help": "Ayuda",
+      "nav.download": "Descargar",
+      "hero.eyebrow": "Protección gratuita para toda la familia",
+      "hero.h1": "Protege a tus hijos y a tu familia — de sitios web y contenido dañino.",
+      "hero.point1": "Es 100% gratis de descargar.",
+      "hero.point2": "Nada sobre la navegación de tu familia sale nunca de tu dispositivo.",
+      "hero.sub": "Un teléfono o portátil conectado a internet forma parte de la vida diaria — pero eso también significa que tu hijo podría toparse con sitios de estafas, apuestas o contenido para adultos, o que alguna otra app de \"seguridad\" recopile y guarde en silencio la información personal de tu familia. Safe World revisa cada sitio web directamente en tu propio dispositivo y bloquea los dañinos automáticamente — gratis, sin que nada sobre tu familia se envíe a ningún sitio.",
+      "hero.cta_primary": "Descargar gratis",
+      "hero.cta_secondary": "Ver cómo funciona",
+      "hero.note": "Gratis · No necesitas cuenta ni registro",
+      "hero.mock_blocked": "Sitio bloqueado",
+      "hero.mock_category": "Contenido dañino",
+      "hero.mock_back": "Volver",
+      "hero.download_cta": "Descargar ahora",
+      "download.eyebrow": "Consigue Safe World",
+      "download.h2": "Consigue Safe World para tu dispositivo.",
+      "download.body": "Elige tu dispositivo abajo y descarga Safe World — completamente gratis, sin necesidad de cuenta.",
+      "download.btn": "Descargar",
+      "download.coming_soon": "Próximamente",
+      "download.macos_name": "macOS",
+      "download.windows_name": "Windows",
+      "problem.eyebrow": "Por qué importa",
+      "problem.h2": "Tu familia necesita protección en línea — sin perder tu privacidad.",
+      "problem.body": "Un teléfono, tablet o portátil con acceso a internet forma parte de la vida diaria — para la escuela, las tareas, los juegos y mantenerse en contacto con amigos. Pero esa misma conexión puede exponer a tu hijo a sitios de estafas que buscan robar dinero, sitios de apuestas y contenido para adultos que aún no debería ver. Además, muchas apps de \"seguridad\" recopilan y guardan en silencio todo lo que tu familia navega, e incluso pueden vender o compartir esa información. Tu familia merece protección real frente a sitios dañinos — sin entregar tus datos personales a otra empresa a cambio.",
+      "diff.eyebrow": "En qué se diferencia Safe World",
+      "diff.h2": "Protección real, sin renunciar a nada.",
+      "diff.card1_title": "100% gratis",
+      "diff.card1_body": "Safe World es gratis de descargar y gratis de usar, todo el tiempo que lo necesites — sin suscripción, sin prueba, sin costo oculto.",
+      "diff.card2_title": "Nunca vemos los datos de tu familia",
+      "diff.card2_body": "Cada decisión sobre qué bloquear ocurre en privado, directamente en tu propio teléfono o computadora. No recopilamos la actividad de navegación de tu familia, y nada sobre los sitios que visitan se envía a ningún sitio — ni a nosotros, ni a nadie.",
+      "diff.card3_title": "Abierto para que cualquiera lo revise",
+      "diff.card3_body": "La lista de sitios bloqueados y el código que decide qué bloquear son públicos para que cualquiera los revise. No tienes que confiar solo en nuestra palabra.",
+      "diff.card4_title": "Funciona en los dispositivos que ya usas",
+      "diff.card4_body": "Chrome, Android, Mac y Windows están listos hoy, con soporte para iPhone en camino — así que dondequiera que tu familia esté en línea, Safe World puede estar también.",
+      "arch.eyebrow": "Por dentro",
+      "arch.h2": "Las mismas reglas, tres motores en el dispositivo.",
+      "arch.chrome_name": "Chrome",
+      "arch.chrome_body": "Conjuntos de reglas declarativeNetRequest estáticos, uno por categoría, bloquean o redirigen solicitudes antes de que salgan del navegador. Activar o desactivar una categoría habilita o deshabilita su conjunto de reglas — ningún servicio remoto inspecciona el tráfico.",
+      "arch.android_name": "Android",
+      "arch.android_body": "Un VpnService local túnelía únicamente el tráfico DNS del dispositivo — hacia ningún sitio salvo sí mismo. Cada consulta se verifica en el dispositivo; los nombres bloqueados reciben un NXDOMAIN sintetizado, el resto se reenvía sin modificar al resolutor que tu dispositivo ya usaba.",
+      "arch.ios_name": "iOS",
+      "arch.ios_body": "SafeWorldCore compila tu configuración en una única lista de Content Blocker de Safari, ejecutada por el propio motor en el dispositivo de Safari — el mismo mecanismo que Apple ofrece para bloqueadores de anuncios, aplicado en cambio a categorías de contenido dañino.",
+      "compare.eyebrow": "Safe World frente a los filtros DNS en la nube",
+      "compare.h2": "La misma protección, sin intermediarios.",
+      "compare.col_sw": "Safe World",
+      "compare.col_cloud": "Filtros DNS en la nube",
+      "compare.row1_label": "Dónde ocurre el filtrado",
+      "compare.row1_sw": "En tu dispositivo",
+      "compare.row1_cloud": "En un servidor de terceros",
+      "compare.row2_label": "¿Puede el proveedor ver tus consultas DNS?",
+      "compare.row2_sw": "No — nunca sale del dispositivo",
+      "compare.row2_cloud": "Sí, cada consulta, por diseño",
+      "compare.row3_label": "¿Requiere cuenta?",
+      "compare.row3_sw": "No",
+      "compare.row3_cloud": "Normalmente sí",
+      "compare.row4_label": "¿Funciona completamente sin conexión?",
+      "compare.row4_sw": "Sí, con las listas incluidas",
+      "compare.row4_cloud": "No — necesita su resolutor",
+      "compare.row5_label": "Código fuente",
+      "compare.row5_sw": "Público, con licencia MIT",
+      "compare.row5_cloud": "Cerrado",
+      "compare.row6_label": "Costo",
+      "compare.row6_sw": "Gratis y de código abierto",
+      "compare.row6_cloud": "Plan gratuito más planes de pago",
+      "status.eyebrow": "Estado actual",
+      "status.h2": "Cinco plataformas, un mismo conjunto de reglas.",
+      "status.chip_shipping": "Disponible",
+      "status.chip_progress": "En desarrollo",
+      "status.chrome_body": "Extensión Manifest V3 que usa declarativeNetRequest — cárgala sin empaquetar hoy mismo.",
+      "status.ios_body": "App en SwiftUI y Content Blocker de Safari, respaldados por el paquete SafeWorldCore.",
+      "status.android_body": "App en Compose y sumidero DNS local por VpnService para bloqueo en todo el dispositivo.",
+      "status.macos_body": "App en la barra de menú que gestiona un sumidero de archivo hosts en todo el sistema.",
+      "status.windows_body": "App en la bandeja del sistema que gestiona un sumidero de archivo hosts en todo el sistema.",
+      "oss.eyebrow": "Verifica, no confíes",
+      "oss.h2": "Las listas de bloqueo y el código son lo mismo, y puedes leerlos.",
+      "oss.body": "Cada categoría —estafas, apuestas, contenido para adultos— es una lista simple de dominios más la lógica de coincidencia que decide entre ellos, ambas públicas en GitHub. ¿Encontraste un sitio que debería, o no debería, estar en la lista? Abre un issue o un pull request.",
+      "oss.cta": "Explorar el repositorio",
+      "oss.license": "Con licencia MIT",
+      "help.eyebrow": "¿Necesitas ayuda?",
+      "help.h2": "Ponte en contacto.",
+      "help.whatsapp_title": "WhatsApp",
+      "help.facebook_title": "Facebook",
+      "help.facebook_unavailable": "Enlace del grupo no disponible temporalmente",
+      "help.email_title": "Correo electrónico",
+      "help.github_title": "GitHub",
+      "footer.tagline": "Filtrado de contenido que se queda en tu dispositivo.",
+      "footer.github": "GitHub",
+      "footer.privacy": "Privacidad",
+      "footer.license": "Licencia"
+    },
+    ar: {
+      "a11y.skip": "الانتقال إلى المحتوى",
+      "nav.brand": "Safe World",
+      "nav.how": "كيف يعمل",
+      "nav.compare": "المقارنة",
+      "nav.platforms": "المنصات",
+      "nav.oss": "مفتوح المصدر",
+      "nav.help": "مساعدة",
+      "nav.download": "تنزيل",
+      "hero.eyebrow": "حماية مجانية لجميع أفراد الأسرة",
+      "hero.h1": "احمِ أطفالك وعائلتك — من المواقع والمحتوى الضار.",
+      "hero.point1": "تنزيله مجاني 100%.",
+      "hero.point2": "لا شيء عن تصفح عائلتك يغادر جهازك أبداً.",
+      "hero.sub": "الهاتف أو الحاسوب المحمول المتصل بالإنترنت أصبح جزءاً من الحياة اليومية — لكن هذا يعني أيضاً أن طفلك قد يصل إلى مواقع احتيال، أو مواقع قمار، أو محتوى إباحي، أو أن تطبيق \"حماية\" آخر يجمع ويخزّن معلومات عائلتك الشخصية بصمت. يفحص Safe World كل موقع مباشرة على جهازك ويحظر المواقع الضارة تلقائياً — مجاناً، دون إرسال أي شيء عن عائلتك إلى أي مكان.",
+      "hero.cta_primary": "نزّل مجاناً",
+      "hero.cta_secondary": "شاهد كيف يعمل",
+      "hero.note": "مجاني · لا حاجة لحساب أو تسجيل",
+      "hero.mock_blocked": "الموقع محظور",
+      "hero.mock_category": "محتوى ضار",
+      "hero.mock_back": "رجوع",
+      "hero.download_cta": "نزّل الآن",
+      "download.eyebrow": "احصل على Safe World",
+      "download.h2": "احصل على Safe World لجهازك.",
+      "download.body": "اختر جهازك أدناه ونزّل Safe World — مجاني بالكامل، دون حاجة لحساب.",
+      "download.btn": "تنزيل",
+      "download.coming_soon": "قريباً",
+      "download.macos_name": "macOS",
+      "download.windows_name": "Windows",
+      "problem.eyebrow": "لماذا هذا مهم",
+      "problem.h2": "عائلتك بحاجة للحماية على الإنترنت — دون التخلي عن خصوصيتك.",
+      "problem.body": "الهاتف أو الجهاز اللوحي أو الحاسوب المحمول المتصل بالإنترنت أصبح جزءاً من الحياة اليومية — للمدرسة، والواجبات، والألعاب، والتواصل مع الأصدقاء. لكن نفس هذا الاتصال قد يعرّض طفلك لمواقع احتيال تحاول سرقة المال، ومواقع قمار، ومحتوى إباحي لم يبلغ بعد السن المناسبة لرؤيته. إضافة إلى ذلك، تقوم العديد من تطبيقات \"الحماية\" بجمع وتخزين كل ما تتصفحه عائلتك بصمت، بل وقد تبيع أو تشارك تلك المعلومات. عائلتك تستحق حماية حقيقية من المواقع الضارة — دون تسليم بياناتك الشخصية لشركة أخرى مقابل ذلك.",
+      "diff.eyebrow": "كيف يختلف Safe World",
+      "diff.h2": "حماية حقيقية، دون أي تنازلات.",
+      "diff.card1_title": "مجاني 100%",
+      "diff.card1_body": "تنزيل Safe World واستخدامه مجاني بالكامل، طوال ما تحتاجه — دون اشتراك، دون فترة تجريبية، ودون أي تكلفة خفية.",
+      "diff.card2_title": "لا نرى بيانات عائلتك أبداً",
+      "diff.card2_body": "كل قرار بشأن ما يجب حظره يحدث بخصوصية، مباشرة على هاتفك أو حاسوبك. لا نجمع نشاط تصفح عائلتك، ولا يُرسل أي شيء عن المواقع التي تزورها إلى أي مكان — لا إلينا، ولا إلى أي جهة أخرى.",
+      "diff.card3_title": "مفتوح ليتحقق منه أي شخص",
+      "diff.card3_body": "قائمة المواقع المحظورة والكود الذي يقرر ما يُحظر، كلاهما متاح للعموم لمن أراد الاطلاع عليه. لست مضطراً لتصديق كلامنا فقط.",
+      "diff.card4_title": "يعمل على الأجهزة التي تستخدمها بالفعل",
+      "diff.card4_body": "Chrome وAndroid وMac وWindows جاهزة اليوم، مع دعم iPhone قريباً — فأينما ذهبت عائلتك على الإنترنت، يمكن لـ Safe World الذهاب معها.",
+      "arch.eyebrow": "خلف الكواليس",
+      "arch.h2": "نفس القواعد، ثلاث محركات محلية.",
+      "arch.chrome_name": "Chrome",
+      "arch.chrome_body": "مجموعات قواعد declarativeNetRequest ثابتة، واحدة لكل فئة، تحجب أو تعيد توجيه الطلبات قبل مغادرتها المتصفح. تبديل حالة فئة ما يُفعّل أو يُعطّل مجموعة قواعدها — دون فحص أي حركة مرور من قبل خدمة بعيدة.",
+      "arch.android_name": "Android",
+      "arch.android_body": "يُنشئ VpnService محلي نفقاً لـ DNS فقط — لا يذهب إلى أي مكان سوى نفسه. يُفحص كل استعلام على الجهاز، وتحصل الأسماء المحظورة على رد NXDOMAIN مُصطنع، ويُعاد توجيه الباقي كما هو إلى الخادم الذي كان جهازك يستخدمه أصلاً.",
+      "arch.ios_name": "iOS",
+      "arch.ios_body": "يُجمّع SafeWorldCore إعداداتك في قائمة Content Blocker واحدة لـ Safari، يُنفّذها محرك Safari المحلي ذاته — نفس الآلية التي توفرها Apple لمواقع حجب الإعلانات، لكن مطبّقة هنا على فئات المحتوى الضار.",
+      "compare.eyebrow": "Safe World مقابل مرشحات DNS السحابية",
+      "compare.h2": "نفس الحماية، بلا وسيط.",
+      "compare.col_sw": "Safe World",
+      "compare.col_cloud": "مرشحات DNS السحابية",
+      "compare.row1_label": "أين تتم التصفية",
+      "compare.row1_sw": "على جهازك",
+      "compare.row1_cloud": "على خادم طرف ثالث",
+      "compare.row2_label": "هل يستطيع المزوّد رؤية استعلامات DNS خاصتك؟",
+      "compare.row2_sw": "لا — لا تغادر الجهاز أبداً",
+      "compare.row2_cloud": "نعم، كل استعلام بالتصميم",
+      "compare.row3_label": "هل يتطلب حساباً؟",
+      "compare.row3_sw": "لا",
+      "compare.row3_cloud": "غالباً نعم",
+      "compare.row4_label": "هل يعمل دون اتصال تماماً؟",
+      "compare.row4_sw": "نعم، مع القوائم المدمجة",
+      "compare.row4_cloud": "لا — يحتاج مزوّدهم",
+      "compare.row5_label": "الكود المصدري",
+      "compare.row5_sw": "متاح، برخصة MIT",
+      "compare.row5_cloud": "مغلق",
+      "compare.row6_label": "التكلفة",
+      "compare.row6_sw": "مجاني ومفتوح المصدر",
+      "compare.row6_cloud": "فئة مجانية إضافة لخطط مدفوعة",
+      "status.eyebrow": "الوضع الحالي",
+      "status.h2": "خمس منصات، مجموعة قواعد واحدة.",
+      "status.chip_shipping": "متاح",
+      "status.chip_progress": "قيد التطوير",
+      "status.chrome_body": "إضافة Manifest V3 تستخدم declarativeNetRequest — حمّلها بشكل غير مُجمّع اليوم.",
+      "status.ios_body": "تطبيق SwiftUI وContent Blocker لـ Safari، مدعوماً بحزمة SafeWorldCore.",
+      "status.android_body": "تطبيق Compose وبالوعة DNS محلية عبر VpnService للحظر على مستوى الجهاز بالكامل.",
+      "status.macos_body": "تطبيق في شريط القوائم يدير بالوعة على مستوى النظام لملف hosts.",
+      "status.windows_body": "تطبيق في علبة النظام يدير بالوعة على مستوى النظام لملف hosts.",
+      "oss.eyebrow": "تحقق، لا تثق",
+      "oss.h2": "قوائم الحظر والكود شيء واحد يُمكنك قراءته.",
+      "oss.body": "كل فئة — احتيال، قمار، محتوى إباحي — هي قائمة بسيطة من النطاقات مع منطق المطابقة الذي يفصل بينها، وكلاهما متاح على GitHub. هل وجدت موقعاً ينبغيأو لا ينبغي إدراجه في القائمة؟ افتح issue أو pull request.",
+      "oss.cta": "تصفّح المستودع",
+      "oss.license": "برخصة MIT",
+      "help.eyebrow": "هل تحتاج مساعدة؟",
+      "help.h2": "تواصل معنا.",
+      "help.whatsapp_title": "واتساب",
+      "help.facebook_title": "فيسبوك",
+      "help.facebook_unavailable": "رابط المجموعة غير متاح مؤقتاً",
+      "help.email_title": "البريد الإلكتروني",
+      "help.github_title": "GitHub",
+      "footer.tagline": "تصفية محتوى تبقى على جهازك.",
+      "footer.github": "GitHub",
+      "footer.privacy": "الخصوصية",
+      "footer.license": "الرخصة"
+    }
+  };
+
+  var rtlLangs = ["ar"];
+
+  function applyLang(lang) {
+    var dict = translations[lang] || translations.en;
+    document.querySelectorAll("[data-i18n]").forEach(function (el) {
+      var key = el.getAttribute("data-i18n");
+      if (dict[key] !== undefined) el.textContent = dict[key];
+    });
+    document.documentElement.lang = lang;
+    document.documentElement.dir = rtlLangs.indexOf(lang) !== -1 ? "rtl" : "ltr";
+    try { localStorage.setItem("sw-lang", lang); } catch (e) {}
+    var select = document.getElementById("lang");
+    if (select) select.value = lang;
+  }
+
+  var select = document.getElementById("lang");
+  select.addEventListener("change", function () { applyLang(select.value); });
+
+  var saved = null;
+  try { saved = localStorage.getItem("sw-lang"); } catch (e) {}
+  var browserLang = (navigator.language || "en").slice(0, 2);
+  applyLang(saved || (translations[browserLang] ? browserLang : "en"));
+
+  var themeMedia = window.matchMedia("(prefers-color-scheme: dark)");
+
+  if (window.matchMedia("(prefers-reduced-motion: no-preference)").matches && "IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in");
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll(".reveal").forEach(function (el) { io.observe(el); });
+  } else {
+    document.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("in"); });
+  }
+})();
+</script>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_channel_name">حالة الحماية</string>
+    <string name="notification_channel_description">يظهر أثناء قيام Safe World بتصفية طلبات DNS.</string>
+    <string name="notification_title">‏Safe World يحمي هذا الجهاز</string>
+    <string name="notification_text">تتم تصفية طلبات DNS على الجهاز نفسه.</string>
+    <string name="notification_stop">إيقاف</string>
+
+    <string name="alert_channel_name">تنبيهات الحماية</string>
+    <string name="alert_channel_description">ينبّهك عند توقّف التصفية بشكل غير متوقّع.</string>
+    <string name="alert_interrupted_title">توقّف Safe World عن التصفية</string>
+    <string name="alert_interrupted_text">تم إيقاف الحماية دون إيقافها من داخل التطبيق — قد يكون تطبيق VPN آخر قد استحوذ على الاتصال، أو تم سحب إذن VPN. افتح Safe World لإعادة تشغيلها.</string>
+
+    <string name="device_admin_explanation">يتيح لـ Safe World منع إلغاء تثبيت نفسه. لا يطلب أي أذونات أخرى — لا يمكنه قفل جهازك أو محوه أو مراقبته.</string>
+    <string name="device_admin_disable_warning">إيقاف هذا الخيار سيسمح بإلغاء تثبيت Safe World.</string>
+
+    <string name="tab_home">الرئيسية</string>
+    <string name="tab_settings">الإعدادات</string>
+
+    <string name="protection_title">الحماية</string>
+    <string name="protection_on">تتم تصفية طلبات DNS على هذا الجهاز.</string>
+    <string name="protection_off">متوقّفة — لا يتم حظر أي شيء.</string>
+    <string name="protection_off_pin_title">إيقاف الحماية؟</string>
+    <string name="protection_off_pin_message">أدخل رمز PIN لإيقاف الحظر على هذا الجهاز.</string>
+
+    <string name="interrupted_title">انقطعت الحماية</string>
+    <string name="interrupted_body">توقّف Safe World عن التصفية دون إيقافه من هنا — قد يكون تطبيق VPN آخر قد استحوذ على الاتصال، أو تم سحب إذن VPN من إعدادات Android.</string>
+    <string name="interrupted_dismiss">تجاهل (يتطلب رمز PIN)</string>
+    <string name="interrupted_pin_message">أدخل رمز PIN لتجاهل هذا التحذير.</string>
+
+    <string name="blocked_headline">حظرنا %1$s موقع إلكتروني</string>
+    <string name="blocked_headline_detail">%1$s موقع معروف، يتم تحديثها تلقائيًا.</string>
+
+    <string name="block_more_title">تريد حظر المزيد؟</string>
+    <string name="category_list4_label">وسائل التواصل الاجتماعي</string>
+    <string name="category_list4_description">فيسبوك وإنستغرام وX وتيك توك وريديت والمواقع المشابهة.</string>
+    <string name="category_list5_label">الترفيه</string>
+    <string name="category_list5_description">يوتيوب ونتفليكس وتويتش ومواقع البث الأخرى.</string>
+    <string name="category_off_pin_title">إيقاف حظر %1$s؟</string>
+    <string name="category_off_pin_message">أدخل رمز PIN لإلغاء حظر هذه المواقع.</string>
+
+    <string name="add_websites_label">إضافة مواقع</string>
+    <string name="add_websites_description">احظر أي موقع آخر بكتابة اسمه.</string>
+    <string name="add_websites_hint">example.com, another.com</string>
+    <string name="add_websites_help">افصل بينها بفواصل. النطاقات الفرعية مشمولة أيضًا.</string>
+    <string name="add_websites_save">حفظ</string>
+    <plurals name="add_websites_count">
+        <item quantity="zero">لم تتم إضافة أي موقع</item>
+        <item quantity="one">تمت إضافة موقع واحد</item>
+        <item quantity="two">تمت إضافة موقعين</item>
+        <item quantity="few">تمت إضافة %d مواقع</item>
+        <item quantity="many">تمت إضافة %d موقعًا</item>
+        <item quantity="other">تمت إضافة %d موقع</item>
+    </plurals>
+    <string name="add_websites_remove_pin_title">إزالة المواقع المحظورة؟</string>
+    <string name="add_websites_remove_pin_message">أدخل رمز PIN لإيقاف حظر المواقع التي أضفتها.</string>
+
+    <string name="uninstall_title">الحماية من إلغاء التثبيت</string>
+    <string name="uninstall_label">اجعل الإزالة أصعب</string>
+    <string name="uninstall_body">يسجّل Safe World كمشرف جهاز، فيرفض Android إلغاء تثبيته حتى توقف هذا الخيار. إنه عائق وليس قفلًا — لا يزال بالإمكان إزالته من إعدادات Android.</string>
+    <string name="uninstall_off_pin_title">السماح بإلغاء التثبيت؟</string>
+    <string name="uninstall_off_pin_message">أدخل رمز PIN للسماح بإلغاء تثبيت Safe World مجددًا.</string>
+
+    <string name="blocked_today">تم حظرها اليوم</string>
+
+    <string name="settings_title">الإعدادات</string>
+
+    <string name="settings_language">اللغة</string>
+    <string name="language_system">لغة النظام</string>
+
+    <string name="settings_security">رمز PIN</string>
+    <string name="pin_change">تغيير رمز PIN</string>
+    <string name="pin_change_description">سيطلب رمزك الحالي أولًا.</string>
+    <string name="pin_change_title">غيّر رمز PIN</string>
+    <string name="pin_change_pin_message">أدخل رمزك الحالي لاختيار رمز جديد.</string>
+    <string name="recovery_settings_label">رمز الاسترداد</string>
+    <string name="recovery_settings_description">وسيلتك للعودة إذا نسيت رمز PIN. يُخزَّن مشفّرًا، لذا لا يمكن عرضه مرة أخرى — يمكن استبداله برمز جديد فقط.</string>
+    <string name="recovery_settings_action">احصل على رمز جديد</string>
+    <string name="recovery_settings_pin_message">أدخل رمز PIN لاستبدال رمز الاسترداد.</string>
+
+    <string name="settings_allow_title">السماح دائمًا</string>
+    <string name="settings_allow_help">نطاق واحد في كل سطر. له الأولوية على كل الفئات وعلى المواقع التي أضفتها.</string>
+    <string name="settings_save">حفظ</string>
+    <string name="settings_save_pin_title">حفظ التغييرات؟</string>
+    <string name="settings_save_pin_message">أدخل رمز PIN لتغيير ما هو مسموح به.</string>
+
+    <string name="settings_rate_title">قيّم Safe World</string>
+    <string name="settings_rate_description">إذا كان يساعدك، فتقييمك يساعد شخصًا آخر على العثور عليه.</string>
+    <string name="settings_rate_action">فتح المتجر</string>
+    <string name="settings_rate_unavailable">لم يتم العثور على متجر تطبيقات على هذا الجهاز.</string>
+
+    <string name="pin_field">رمز PIN</string>
+    <string name="pin_confirm_field">تأكيد رمز PIN</string>
+    <string name="pin_choose_title">اختر رمز PIN</string>
+    <string name="pin_choose_body">ستحتاج إلى هذا الرمز لإيقاف الحماية أو تغيير قوائمك. اختر شيئًا لن تخمّنه في لحظة ضعف.</string>
+    <string name="pin_field_min">رمز PIN (%1$d أرقام على الأقل)</string>
+    <string name="pin_mismatch">الرمزان غير متطابقين.</string>
+    <string name="pin_set">تعيين الرمز</string>
+    <string name="pin_save">حفظ الرمز</string>
+    <string name="pin_locked_title">محاولات كثيرة جدًا</string>
+    <string name="pin_locked_body">انتظر %1$s قبل المحاولة مرة أخرى.</string>
+    <plurals name="pin_incorrect">
+        <item quantity="zero">رمز PIN غير صحيح. لم تتبقَّ أي محاولة.</item>
+        <item quantity="one">رمز PIN غير صحيح. تبقّت محاولة واحدة.</item>
+        <item quantity="two">رمز PIN غير صحيح. تبقّت محاولتان.</item>
+        <item quantity="few">رمز PIN غير صحيح. تبقّت %d محاولات.</item>
+        <item quantity="many">رمز PIN غير صحيح. تبقّت %d محاولة.</item>
+        <item quantity="other">رمز PIN غير صحيح. تبقّت %d محاولة.</item>
+    </plurals>
+    <string name="action_confirm">تأكيد</string>
+    <string name="action_cancel">إلغاء</string>
+    <string name="action_close">إغلاق</string>
+    <string name="action_continue">متابعة</string>
+
+    <string name="pin_forgot">نسيت رمز PIN؟</string>
+    <string name="recovery_show_title">احفظ رمز الاسترداد</string>
+    <string name="recovery_show_body">هذه هي الطريقة الوحيدة للعودة إذا نسيت رمز PIN. اكتبه واحتفظ به في مكان ستجده فيه بعد عام — لن يُعرض مرة أخرى.</string>
+    <string name="recovery_copy">نسخ</string>
+    <string name="recovery_copied">تم النسخ.</string>
+    <string name="recovery_acknowledge">لقد كتبته</string>
+    <string name="recovery_enter_title">أدخل رمز الاسترداد</string>
+    <string name="recovery_enter_body">الرمز المكوّن من 20 حرفًا الذي حفظته عند إعداد رمز PIN. الشرطات وحالة الأحرف غير مهمة.</string>
+    <string name="recovery_field">رمز الاسترداد</string>
+    <string name="recovery_wrong">هذا الرمز غير مطابق.</string>
+    <string name="recovery_none">لم يُحفظ أي رمز استرداد على هذا الجهاز، لذا لا يمكن إعادة تعيين رمز PIN هنا.</string>
+    <string name="recovery_new_pin_title">اختر رمز PIN جديدًا</string>
+    <string name="recovery_replaced">تم استخدام رمز الاسترداد الخاص بك. إليك رمزًا جديدًا — احفظه أيضًا.</string>
+
+    <string name="settings_help">المساعدة والتواصل</string>
+    <string name="help_intro">هل واجهتك مشكلة، أو حُظر موقع لا ينبغي حظره؟ تواصل معنا.</string>
+    <string name="help_whatsapp">واتساب</string>
+    <string name="help_facebook">مجموعة فيسبوك</string>
+    <string name="help_facebook_unavailable">غير متاحة بعد</string>
+    <string name="help_email">البريد الإلكتروني</string>
+    <string name="help_github">الكود المصدري على GitHub</string>
+    <string name="help_no_app">لا يوجد تطبيق على هذا الجهاز يمكنه فتح ذلك.</string>
+</resources>

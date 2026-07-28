@@ -1,0 +1,133 @@
+# Refreshes the blocklists from upstream feeds and republishes them.
+#
+# Weekly rather than daily: the feeds don't churn fast enough to justify more,
+# and every run costs a commit here plus a Pages deploy in the lists repo.
+#
+# Needs a secret named LISTS_REPO_TOKEN — a fine-grained PAT with Contents:
+# write on jobayersajal1/safe-world-block-list-update only. The default GITHUB_TOKEN can't
+# push to another repository. Without the secret the job still refreshes the
+# lists here and simply skips publishing, rather than failing the run.
+name: Update blocklists
+
+on:
+  schedule:
+    # Mondays 04:00 UTC — off-peak, and a weekday so a bad list is noticed.
+    - cron: "0 4 * * 1"
+  workflow_dispatch:
+    inputs:
+      max_per_category:
+        description: "Domains to keep per category"
+        required: false
+        default: "20000"
+
+permissions:
+  # Read-only: this workflow must never write to this repo. Refreshed lists go
+  # to the private source repo, published deltas to the lists repo, both via
+  # their own tokens.
+  contents: read
+
+concurrency:
+  group: update-blocklists
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - name: Pull the lists from the private source repo
+        # The lists are not in this repo, in any form. Without this step there
+        # is nothing to refresh and every later step would operate on nothing.
+        env:
+          LISTS_SOURCE_TOKEN: ${{ secrets.LISTS_SOURCE_TOKEN }}
+        run: |
+          if [ -z "$LISTS_SOURCE_TOKEN" ]; then
+            echo "::error::LISTS_SOURCE_TOKEN is not set — cannot reach the private list repo"
+            exit 1
+          fi
+          git config --global url."https://x-access-token:${LISTS_SOURCE_TOKEN}@github.com/".insteadOf "https://github.com/"
+          npm run lists:pull
+
+      - name: Fetch upstream feeds
+        env:
+          MAX_PER_CATEGORY: ${{ inputs.max_per_category || '20000' }}
+        run: npm run fetch:lists
+
+      - name: Regenerate every platform's generated lists
+        run: |
+          npm run build:lists      # scrambled lists for the Chrome extension
+          npm run build:android    # hashed JVM resources
+          npm run build:ios        # scrambled SafeWorldCore resources
+          npm run build:windows    # scrambled embedded resources
+          npm run build:remote     # the two published payloads
+
+      - name: Sanity-check the result
+        # A feed going empty or returning an error page would otherwise sail
+        # through and ship a list that blocks nothing.
+        run: |
+          for c in list1 list2 list3; do
+            n=$(jq '.domains | length' "packages/core/src/blocklists/$c.json")
+            echo "$c: $n domains"
+            if [ "$n" -lt 100 ]; then echo "::error::$c collapsed to $n domains"; exit 1; fi
+          done
+          # The delta is legitimately empty right after a release, so only
+          # check the files exist and parse — an empty delta is not a failure.
+          for f in dist/remote/delta-*.json; do jq -e '.baseline' "$f" > /dev/null; done
+          echo "delta files: $(ls dist/remote/delta-*.json | wc -l)"
+
+      - run: npm test
+
+      - name: Refuse to commit list data to this repo
+        # This repo must never contain domains in any form. The refreshed lists
+        # and every generated artifact are gitignored; if a change to the build
+        # ever starts writing to a tracked path, fail here rather than publish
+        # the list by accident.
+        run: |
+          if ! git diff --quiet || ! git diff --cached --quiet; then
+            echo "::error::the build modified tracked files — list data may be leaking into this repo"
+            git status --porcelain
+            exit 1
+          fi
+          echo "working tree clean: no list data tracked here"
+
+      - name: Push refreshed lists to the private source repo
+        if: ${{ env.LISTS_SOURCE_TOKEN != '' }}
+        env:
+          LISTS_SOURCE_TOKEN: ${{ secrets.LISTS_SOURCE_TOKEN }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global url."https://x-access-token:${LISTS_SOURCE_TOKEN}@github.com/".insteadOf "https://github.com/"
+          npm run lists:push
+
+      - name: Publish to the lists repo
+        if: ${{ env.LISTS_REPO_TOKEN != '' }}
+        env:
+          LISTS_REPO_TOKEN: ${{ secrets.LISTS_REPO_TOKEN }}
+        run: |
+          git clone --depth 1 \
+            "https://x-access-token:${LISTS_REPO_TOKEN}@github.com/jobayersajal1/safe-world-block-list-update.git" \
+            /tmp/lists
+          # Publish only deltas. Never `npm run baseline:snapshot` here: that
+          # would move the baseline to the current lists, making the delta
+          # empty and silently cutting off every already-installed app.
+          rm -f /tmp/lists/blocklist.json /tmp/lists/blocklist-android.json
+          cp dist/remote/delta-*.json /tmp/lists/
+          cd /tmp/lists
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet; then
+            echo "Published lists already up to date."
+          else
+            git add -A
+            git commit -m "Update blocklists $(date -u +%Y-%m-%d)"
+            git push
+          fi

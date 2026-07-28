@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": true,
+    "types": ["chrome", "node"],
+    "paths": {
+      "@safe-world/core": ["../../packages/core/src/index.ts"]
+    }
+  },
+  "references": [{ "path": "../../packages/core" }],
+  "include": ["src/**/*.ts", "vite.config.ts", "manifest.json"]
+}

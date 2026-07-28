@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Intentionally empty: Safe World needs no device-admin *policies*. It never
+    locks the screen, wipes data, or reads anything. Being an active admin at
+    all is what makes Android refuse to uninstall the app, which is the only
+    thing we want from this. Requesting nothing keeps the permission the user
+    grants as small as it can be.
+-->
+<device-admin xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-policies />
+</device-admin>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_channel_name">Estado de la protección</string>
+    <string name="notification_channel_description">Se muestra mientras Safe World filtra las consultas DNS.</string>
+    <string name="notification_title">Safe World está protegiendo este dispositivo</string>
+    <string name="notification_text">Filtrando consultas DNS en el dispositivo.</string>
+    <string name="notification_stop">Desactivar</string>
+
+    <string name="alert_channel_name">Alertas de protección</string>
+    <string name="alert_channel_description">Avisa cuando el filtrado se detiene de forma inesperada.</string>
+    <string name="alert_interrupted_title">Safe World dejó de filtrar</string>
+    <string name="alert_interrupted_text">La protección se desactivó sin apagarla desde la app: puede que otra app de VPN haya tomado el control o que se revocara el permiso de VPN. Abre Safe World para volver a activarla.</string>
+
+    <string name="device_admin_explanation">Permite que Safe World impida su propia desinstalación. No solicita ningún otro permiso: no puede bloquear, borrar ni supervisar tu dispositivo.</string>
+    <string name="device_admin_disable_warning">Si lo desactivas, Safe World podrá desinstalarse.</string>
+
+    <string name="tab_home">Inicio</string>
+    <string name="tab_settings">Ajustes</string>
+
+    <string name="protection_title">Protección</string>
+    <string name="protection_on">Filtrando consultas DNS en este dispositivo.</string>
+    <string name="protection_off">Desactivada: no se está bloqueando nada.</string>
+    <string name="protection_off_pin_title">¿Desactivar la protección?</string>
+    <string name="protection_off_pin_message">Introduce tu PIN para dejar de bloquear en este dispositivo.</string>
+
+    <string name="interrupted_title">La protección se interrumpió</string>
+    <string name="interrupted_body">Safe World dejó de filtrar sin que se desactivara aquí: puede que otra app de VPN haya tomado el control o que se revocara el permiso de VPN en los ajustes de Android.</string>
+    <string name="interrupted_dismiss">Descartar (requiere PIN)</string>
+    <string name="interrupted_pin_message">Introduce tu PIN para descartar este aviso.</string>
+
+    <string name="blocked_headline">Hemos bloqueado %1$s sitios web</string>
+    <string name="blocked_headline_detail">%1$s sitios conocidos, actualizados automáticamente.</string>
+
+    <string name="block_more_title">¿Quieres bloquear más?</string>
+    <string name="category_list4_label">Redes sociales</string>
+    <string name="category_list4_description">Facebook, Instagram, X, TikTok, Reddit y otros feeds similares.</string>
+    <string name="category_list5_label">Entretenimiento</string>
+    <string name="category_list5_description">YouTube, Netflix, Twitch y otros sitios de streaming.</string>
+    <string name="category_off_pin_title">¿Dejar de bloquear %1$s?</string>
+    <string name="category_off_pin_message">Introduce tu PIN para desbloquear estos sitios.</string>
+
+    <string name="add_websites_label">Añadir sitios web</string>
+    <string name="add_websites_description">Bloquea cualquier otro sitio por su nombre.</string>
+    <string name="add_websites_hint">ejemplo.com, otro.com</string>
+    <string name="add_websites_help">Sepáralos con comas. Se incluyen los subdominios.</string>
+    <string name="add_websites_save">Guardar</string>
+    <plurals name="add_websites_count">
+        <item quantity="one">%d sitio añadido</item>
+        <item quantity="other">%d sitios añadidos</item>
+    </plurals>
+    <string name="add_websites_remove_pin_title">¿Quitar sitios bloqueados?</string>
+    <string name="add_websites_remove_pin_message">Introduce tu PIN para dejar de bloquear sitios que añadiste.</string>
+
+    <string name="uninstall_title">Protección contra desinstalación</string>
+    <string name="uninstall_label">Dificultar la eliminación</string>
+    <string name="uninstall_body">Registra Safe World como administrador del dispositivo, de modo que Android se niega a desinstalarlo hasta que desactives esta opción. Es un obstáculo, no un candado: todavía se puede quitar desde los ajustes de Android.</string>
+    <string name="uninstall_off_pin_title">¿Permitir la desinstalación?</string>
+    <string name="uninstall_off_pin_message">Introduce tu PIN para volver a permitir que Safe World se desinstale.</string>
+
+    <string name="blocked_today">Bloqueados hoy</string>
+
+    <string name="settings_title">Ajustes</string>
+
+    <string name="settings_language">Idioma</string>
+    <string name="language_system">Idioma del sistema</string>
+
+    <string name="settings_security">PIN</string>
+    <string name="pin_change">Cambiar el PIN</string>
+    <string name="pin_change_description">Primero te pedirá tu PIN actual.</string>
+    <string name="pin_change_title">Cambia tu PIN</string>
+    <string name="pin_change_pin_message">Introduce tu PIN actual para elegir uno nuevo.</string>
+    <string name="recovery_settings_label">Código de recuperación</string>
+    <string name="recovery_settings_description">Tu forma de volver a entrar si olvidas el PIN. Se guarda cifrado con hash, así que no puede volver a mostrarse: solo se puede sustituir por uno nuevo.</string>
+    <string name="recovery_settings_action">Obtener un código nuevo</string>
+    <string name="recovery_settings_pin_message">Introduce tu PIN para sustituir tu código de recuperación.</string>
+
+    <string name="settings_allow_title">Permitir siempre</string>
+    <string name="settings_allow_help">Un dominio por línea. Tiene prioridad sobre todas las categorías y sobre los sitios que añadiste.</string>
+    <string name="settings_save">Guardar</string>
+    <string name="settings_save_pin_title">¿Guardar los cambios?</string>
+    <string name="settings_save_pin_message">Introduce tu PIN para cambiar lo que está permitido.</string>
+
+    <string name="settings_rate_title">Valorar Safe World</string>
+    <string name="settings_rate_description">Si te está ayudando, una reseña ayuda a que otra persona lo encuentre.</string>
+    <string name="settings_rate_action">Abrir la tienda</string>
+    <string name="settings_rate_unavailable">No se encontró ninguna tienda de apps en este dispositivo.</string>
+
+    <string name="pin_field">PIN</string>
+    <string name="pin_confirm_field">Confirmar el PIN</string>
+    <string name="pin_choose_title">Elige un PIN</string>
+    <string name="pin_choose_body">Necesitarás este PIN para desactivar la protección o cambiar tus listas. Elige algo que no vayas a adivinar en un momento de debilidad.</string>
+    <string name="pin_field_min">PIN (al menos %1$d dígitos)</string>
+    <string name="pin_mismatch">No coinciden.</string>
+    <string name="pin_set">Establecer el PIN</string>
+    <string name="pin_save">Guardar el PIN</string>
+    <string name="pin_locked_title">Demasiados intentos</string>
+    <string name="pin_locked_body">Espera %1$s antes de volver a intentarlo.</string>
+    <plurals name="pin_incorrect">
+        <item quantity="one">PIN incorrecto. Queda %d intento.</item>
+        <item quantity="other">PIN incorrecto. Quedan %d intentos.</item>
+    </plurals>
+    <string name="action_confirm">Confirmar</string>
+    <string name="action_cancel">Cancelar</string>
+    <string name="action_close">Cerrar</string>
+    <string name="action_continue">Continuar</string>
+
+    <string name="pin_forgot">¿Olvidaste tu PIN?</string>
+    <string name="recovery_show_title">Guarda tu código de recuperación</string>
+    <string name="recovery_show_body">Esta es la única forma de volver a entrar si olvidas tu PIN. Anótalo y guárdalo en un sitio donde lo sigas teniendo dentro de un año: no se volverá a mostrar.</string>
+    <string name="recovery_copy">Copiar</string>
+    <string name="recovery_copied">Copiado.</string>
+    <string name="recovery_acknowledge">Ya lo he anotado</string>
+    <string name="recovery_enter_title">Introduce tu código de recuperación</string>
+    <string name="recovery_enter_body">El código de 20 caracteres que guardaste al configurar tu PIN. Los guiones y las mayúsculas no importan.</string>
+    <string name="recovery_field">Código de recuperación</string>
+    <string name="recovery_wrong">Ese código no coincide.</string>
+    <string name="recovery_none">Nunca se guardó un código de recuperación en este dispositivo, así que el PIN no se puede restablecer aquí.</string>
+    <string name="recovery_new_pin_title">Elige un PIN nuevo</string>
+    <string name="recovery_replaced">Tu código de recuperación ya se ha usado. Aquí tienes uno nuevo: guárdalo también.</string>
+
+    <string name="settings_help">Ayuda y contacto</string>
+    <string name="help_intro">¿Te has quedado atascado o se ha bloqueado algo que no debería? Escríbenos.</string>
+    <string name="help_whatsapp">WhatsApp</string>
+    <string name="help_facebook">Grupo de Facebook</string>
+    <string name="help_facebook_unavailable">Aún no disponible</string>
+    <string name="help_email">Correo electrónico</string>
+    <string name="help_github">Código fuente en GitHub</string>
+    <string name="help_no_app">Ninguna app de este dispositivo puede abrir eso.</string>
+</resources>

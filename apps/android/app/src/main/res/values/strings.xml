@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Safe World</string>
+
+    <string name="notification_channel_name">Protection status</string>
+    <string name="notification_channel_description">Shows while Safe World is filtering DNS lookups.</string>
+    <string name="notification_title">Safe World is protecting this device</string>
+    <string name="notification_text">Filtering DNS lookups on-device.</string>
+    <string name="notification_stop">Turn off</string>
+
+    <string name="alert_channel_name">Protection alerts</string>
+    <string name="alert_channel_description">Warns when filtering stops unexpectedly.</string>
+    <string name="alert_interrupted_title">Safe World stopped filtering</string>
+    <string name="alert_interrupted_text">Protection was turned off without being switched off in the app — another VPN app may have taken over, or VPN permission was revoked. Open Safe World to turn it back on.</string>
+
+    <string name="device_admin_explanation">Lets Safe World stop itself from being uninstalled. It requests no other permissions — it cannot lock, wipe, or monitor your device.</string>
+    <string name="device_admin_disable_warning">Turning this off will let Safe World be uninstalled.</string>
+
+    <!-- Navigation -->
+    <string name="tab_home">Home</string>
+    <string name="tab_settings">Settings</string>
+
+    <!-- Home: protection -->
+    <string name="protection_title">Protection</string>
+    <string name="protection_on">Filtering DNS lookups on this device.</string>
+    <string name="protection_off">Off — nothing is being blocked.</string>
+    <string name="protection_off_pin_title">Turn off protection?</string>
+    <string name="protection_off_pin_message">Enter your PIN to stop blocking on this device.</string>
+
+    <string name="interrupted_title">Protection was interrupted</string>
+    <string name="interrupted_body">Safe World stopped filtering without being turned off here — another VPN app may have taken over, or VPN permission was revoked in Android\'s settings.</string>
+    <string name="interrupted_dismiss">Dismiss (PIN required)</string>
+    <string name="interrupted_pin_message">Enter your PIN to dismiss this warning.</string>
+
+    <!-- Home: how much is blocked. %1$s is a rounded count like "85 thousand". -->
+    <string name="blocked_headline">We\'ve blocked %1$s websites</string>
+    <!-- %1$s is the exact count, grouped: "64,238". -->
+    <string name="blocked_headline_detail">%1$s known sites, kept up to date automatically.</string>
+
+    <!-- Home: opt-in categories -->
+    <string name="block_more_title">Want to block more?</string>
+    <string name="category_list4_label">Social media</string>
+    <string name="category_list4_description">Facebook, Instagram, X, TikTok, Reddit and similar feeds.</string>
+    <string name="category_list5_label">Entertainment</string>
+    <string name="category_list5_description">YouTube, Netflix, Twitch and other streaming sites.</string>
+    <!-- %1$s is a category name, e.g. "Social media". -->
+    <string name="category_off_pin_title">Stop blocking %1$s?</string>
+    <string name="category_off_pin_message">Enter your PIN to unblock these sites.</string>
+
+    <!-- Home: the user's own list -->
+    <string name="add_websites_label">Add websites</string>
+    <string name="add_websites_description">Block anything else, by name.</string>
+    <string name="add_websites_hint">example.com, another.com</string>
+    <string name="add_websites_help">Separate them with commas. Subdomains are included.</string>
+    <string name="add_websites_save">Save</string>
+    <plurals name="add_websites_count">
+        <item quantity="one">%d site added</item>
+        <item quantity="other">%d sites added</item>
+    </plurals>
+    <string name="add_websites_remove_pin_title">Remove blocked sites?</string>
+    <string name="add_websites_remove_pin_message">Enter your PIN to stop blocking sites you added.</string>
+
+    <!-- Home: uninstall friction -->
+    <string name="uninstall_title">Uninstall protection</string>
+    <string name="uninstall_label">Make removal harder</string>
+    <string name="uninstall_body">Registers Safe World as a device admin, so Android refuses to uninstall it until this is turned off. It\'s friction, not a lock — it can still be removed from Android\'s settings.</string>
+    <string name="uninstall_off_pin_title">Allow uninstalling?</string>
+    <string name="uninstall_off_pin_message">Enter your PIN to let Safe World be uninstalled again.</string>
+
+    <string name="blocked_today">Blocked today</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+
+    <string name="settings_language">Language</string>
+    <string name="language_system">System default</string>
+
+    <string name="settings_security">PIN</string>
+    <string name="pin_change">Change PIN</string>
+    <string name="pin_change_description">Asks for your current PIN first.</string>
+    <string name="pin_change_title">Change your PIN</string>
+    <string name="pin_change_pin_message">Enter your current PIN to choose a new one.</string>
+    <string name="recovery_settings_label">Recovery code</string>
+    <string name="recovery_settings_description">Your way back in if you forget your PIN. It is stored hashed, so it can\'t be shown again — only replaced with a new one.</string>
+    <string name="recovery_settings_action">Get a new code</string>
+    <string name="recovery_settings_pin_message">Enter your PIN to replace your recovery code.</string>
+
+    <string name="settings_allow_title">Always allow</string>
+    <string name="settings_allow_help">One domain per line. Wins over every category and over the sites you added.</string>
+    <string name="settings_save">Save</string>
+    <string name="settings_save_pin_title">Save changes?</string>
+    <string name="settings_save_pin_message">Enter your PIN to change what\'s allowed.</string>
+
+    <string name="settings_rate_title">Rate Safe World</string>
+    <string name="settings_rate_description">If it\'s helping, a review helps someone else find it.</string>
+    <string name="settings_rate_action">Open the store</string>
+    <string name="settings_rate_unavailable">No app store found on this device.</string>
+
+    <!-- PIN -->
+    <string name="pin_field">PIN</string>
+    <string name="pin_confirm_field">Confirm PIN</string>
+    <string name="pin_choose_title">Choose a PIN</string>
+    <string name="pin_choose_body">You\'ll need this PIN to turn protection off or change your lists. Pick something you won\'t guess at in a weak moment.</string>
+    <!-- %1$d is the minimum length. -->
+    <string name="pin_field_min">PIN (at least %1$d digits)</string>
+    <string name="pin_mismatch">Those don\'t match.</string>
+    <string name="pin_set">Set PIN</string>
+    <string name="pin_save">Save PIN</string>
+    <string name="pin_locked_title">Too many attempts</string>
+    <!-- %1$s is a countdown like "12:45". -->
+    <string name="pin_locked_body">Wait %1$s before trying again.</string>
+    <plurals name="pin_incorrect">
+        <item quantity="one">Incorrect PIN. %d attempt left.</item>
+        <item quantity="other">Incorrect PIN. %d attempts left.</item>
+    </plurals>
+    <string name="action_confirm">Confirm</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_close">Close</string>
+    <string name="action_continue">Continue</string>
+
+    <!-- Recovery code -->
+    <string name="pin_forgot">Forgot your PIN?</string>
+    <string name="recovery_show_title">Save your recovery code</string>
+    <string name="recovery_show_body">This is the only way back in if you forget your PIN. Write it down and keep it somewhere you\'ll still have it in a year — it will not be shown again.</string>
+    <string name="recovery_copy">Copy</string>
+    <string name="recovery_copied">Copied.</string>
+    <string name="recovery_acknowledge">I\'ve written it down</string>
+    <string name="recovery_enter_title">Enter your recovery code</string>
+    <string name="recovery_enter_body">The 20-character code you saved when you set up your PIN. Dashes and capitals don\'t matter.</string>
+    <string name="recovery_field">Recovery code</string>
+    <string name="recovery_wrong">That code doesn\'t match.</string>
+    <string name="recovery_none">No recovery code was ever saved on this device, so the PIN can\'t be reset here.</string>
+    <string name="recovery_new_pin_title">Choose a new PIN</string>
+    <string name="recovery_replaced">Your recovery code has been used. Here is a new one — save it as well.</string>
+
+    <!-- Help -->
+    <string name="settings_help">Help &amp; contact</string>
+    <string name="help_intro">Stuck, or something blocked that shouldn\'t be? Get in touch.</string>
+    <string name="help_whatsapp">WhatsApp</string>
+    <string name="help_facebook">Facebook group</string>
+    <string name="help_facebook_unavailable">Not available yet</string>
+    <string name="help_email">Email</string>
+    <string name="help_github">Source code on GitHub</string>
+    <string name="help_no_app">No app on this device can open that.</string>
+</resources>

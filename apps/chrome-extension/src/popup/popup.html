@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Safe World</title>
+  <link rel="stylesheet" href="../ui.css" />
+  <style>
+    body { width: 300px; padding: 16px; }
+    header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    header .logo { font-size: 22px; }
+    .stat { text-align: center; margin: 14px 0; }
+    .stat .n { font-size: 28px; font-weight: 700; }
+    footer { margin-top: 12px; text-align: center; }
+    a { color: var(--accent); cursor: pointer; }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="logo">🛡️</span>
+    <strong>Safe World</strong>
+  </header>
+
+  <div class="row">
+    <strong>Protection</strong>
+    <label class="switch">
+      <input type="checkbox" id="master" />
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div id="categories"></div>
+
+  <div class="stat">
+    <div class="n" id="blockedToday">0</div>
+    <div class="muted">blocked today</div>
+  </div>
+
+  <footer><a id="openOptions">Settings &amp; custom lists →</a></footer>
+
+  <script type="module" src="./popup.ts"></script>
+</body>
+</html>

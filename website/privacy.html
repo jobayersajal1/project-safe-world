@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Privacy Policy — Safe World</title>
+<meta name="description" content="Safe World filters entirely on your device. No account, no analytics, and no record of what you browse — here is exactly what the apps do and don't do with your data." />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Privacy Policy — Safe World" />
+<meta property="og:description" content="Safe World filters entirely on your device. No account, no analytics, no record of what you browse." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 4 54 13v16c0 16-9.5 26.5-22 31C19.5 55.5 10 45 10 29V13Z' fill='%2312161c' stroke='%23e3a542' stroke-width='3'/%3E%3Ccircle cx='32' cy='30' r='7' fill='%23e3a542'/%3E%3C/svg%3E" />
+
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #12161c;
+    --bg-raised: #1a2029;
+    --bg-sunken: #0d1015;
+    --ink: #edebe4;
+    --ink-dim: #9ba3ae;
+    --accent: #e3a542;
+    --accent-ink: #241704;
+    --line: #262d38;
+    --ok: #5fae94;
+    --danger: #c9584a;
+
+    --font-display: "Iowan Old Style", "Palatino Linotype", Georgia, "Noto Serif", serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Noto Sans Mono", monospace;
+
+    --measure: 42rem;
+    --radius: 14px;
+  }
+
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --bg: #eef1f4;
+    --bg-raised: #ffffff;
+    --bg-sunken: #e3e8ed;
+    --ink: #1b222c;
+    --ink-dim: #566072;
+    --accent: #b5731a;
+    --accent-ink: #ffffff;
+    --line: #d7dee6;
+    --ok: #2f7a5e;
+    --danger: #b23f30;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      color-scheme: light;
+      --bg: #eef1f4;
+      --bg-raised: #ffffff;
+      --bg-sunken: #e3e8ed;
+      --ink: #1b222c;
+      --ink-dim: #566072;
+      --accent: #b5731a;
+      --accent-ink: #ffffff;
+      --line: #d7dee6;
+      --ok: #2f7a5e;
+      --danger: #b23f30;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 600; text-wrap: balance; margin: 0; }
+  p, ul { margin: 0; }
+  a { color: var(--accent); }
+
+  .wrap {
+    max-width: var(--measure);
+    margin: 0 auto;
+    padding: 0 1.25rem;
+  }
+
+  header.site {
+    border-bottom: 1px solid var(--line);
+    padding: 1rem 0;
+  }
+  header.site .wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .brand svg { display: block; }
+  .back { color: var(--ink-dim); text-decoration: none; font-size: 0.92rem; }
+  .back:hover { color: var(--accent); }
+
+  main { padding: 3rem 0 4rem; }
+
+  .title { font-size: clamp(1.9rem, 5vw, 2.6rem); }
+  .updated {
+    color: var(--ink-dim);
+    font-size: 0.9rem;
+    margin-top: 0.6rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .summary {
+    margin-top: 2rem;
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-inline-start: 3px solid var(--ok);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.4rem;
+  }
+  .summary h2 { font-size: 1.05rem; margin-bottom: 0.5rem; }
+  .summary p + p { margin-top: 0.6rem; }
+
+  section { margin-top: 2.5rem; }
+  section h2 {
+    font-size: 1.3rem;
+    padding-bottom: 0.45rem;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 1rem;
+  }
+  section h3 { font-size: 1.02rem; margin: 1.4rem 0 0.4rem; }
+  section p + p { margin-top: 0.9rem; }
+
+  ul { padding-inline-start: 1.15rem; margin-top: 0.7rem; }
+  li { margin-bottom: 0.5rem; }
+  li:last-child { margin-bottom: 0; }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.87em;
+    background: var(--bg-sunken);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 0.1em 0.4em;
+    overflow-wrap: anywhere;
+  }
+
+  .dim { color: var(--ink-dim); }
+  strong { color: var(--ink); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.9rem;
+    font-size: 0.94rem;
+  }
+  .table-scroll { overflow-x: auto; }
+  th, td {
+    text-align: start;
+    padding: 0.6rem 0.7rem;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  th { color: var(--ink-dim); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.03em; }
+
+  footer.site {
+    border-top: 1px solid var(--line);
+    padding: 1.5rem 0 2.5rem;
+    color: var(--ink-dim);
+    font-size: 0.9rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    justify-content: space-between;
+  }
+  footer.site a { color: var(--ink-dim); text-decoration: none; }
+  footer.site a:hover { color: var(--accent); }
+  .foot-links { display: flex; gap: 1.1rem; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./">
+      <svg width="22" height="22" viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M32 4 54 13v16c0 16-9.5 26.5-22 31C19.5 55.5 10 45 10 29V13Z" fill="none" stroke="currentColor" stroke-width="4"/>
+        <circle cx="32" cy="30" r="7" fill="currentColor"/>
+      </svg>
+      <span>Safe World</span>
+    </a>
+    <a class="back" href="./">← Back to site</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <h1 class="title">Privacy Policy</h1>
+  <p class="updated">Last updated: 28 July 2026</p>
+
+  <div class="summary">
+    <h2>The short version</h2>
+    <p>Safe World decides what to block <strong>on your device</strong>. There is no account to create, no analytics, and no server of ours that your browsing passes through. We do not collect, store, or transmit any record of the websites you visit — because nothing is ever sent to us in the first place.</p>
+    <p>The apps make exactly one kind of network request: downloading an updated blocklist file. That is described in full below, including what the host of that file can see.</p>
+  </div>
+
+  <section>
+    <h2>Who this covers</h2>
+    <p>This policy applies to the Safe World Android app, iOS app, Chrome extension, macOS app, and Windows app, and to this website. Safe World is an open-source project maintained by an individual developer; you can read the entire source code, including everything described here, at <a href="https://github.com/jobayersajal1/project-safe-world">github.com/jobayersajal1/project-safe-world</a>.</p>
+  </section>
+
+  <section>
+    <h2>What happens on your device</h2>
+    <p>To block a website, Safe World has to see the name of the site being requested. On Android this means the app inspects DNS lookups; in the browser extensions it means matching requests against a rule list. This is unavoidable — it is how any content filter works.</p>
+    <p>What matters is what happens next. Each name is compared against a list that is already stored on your device, and the answer is used immediately and then discarded. <strong>Site names are never written to a log, never saved to a history, and never sent anywhere.</strong></p>
+
+    <h3>Data stored locally on your device</h3>
+    <p>The following is kept in the app's private storage. It stays on your device, is not readable by other apps, and is not transmitted to us or to anyone else:</p>
+    <ul>
+      <li>Your settings — which categories are on, and any websites you added or allowed yourself.</li>
+      <li>Your PIN and recovery code, stored only as salted PBKDF2-SHA256 hashes. The originals are never written down anywhere; we could not recover them even if asked.</li>
+      <li>A count of how many requests were blocked today. This is a <em>number only</em> — it records how many, never which ones.</li>
+      <li>The blocklists themselves, and the timestamp of the last update check.</li>
+    </ul>
+    <p class="dim">On Android the bundled blocklists are stored as one-way cryptographic hashes rather than readable domain names, so the app's own files do not contain a browsable list of blocked sites.</p>
+  </section>
+
+  <section>
+    <h2>The one network request we make</h2>
+    <p>About once a day, the app downloads a small file containing any domains added to the blocklists since your version was built. The request is a plain HTTPS download of a static file:</p>
+    <p><code>https://jobayersajal1.github.io/safe-world-block-list-update/…</code></p>
+    <p>The request contains <strong>nothing about you</strong>. It carries no identifier, no settings, no list of sites you have visited, and no information about what has been blocked. It is the same file for every user, and it is downloaded in full — the request does not reveal which sites you are interested in, because it does not ask about any specific site.</p>
+    <p>That file is hosted on <strong>GitHub Pages</strong>. Like any web server, GitHub receives your device's IP address and basic connection details in order to send the file back, and handles that under <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub's privacy statement</a>. We do not operate that server, we receive no reports from it, and we have no access to its logs. If you would rather not make this request at all, the app works entirely offline using the lists it shipped with; blocking continues to function, it simply will not learn about newly discovered sites.</p>
+  </section>
+
+  <section>
+    <h2>What we never do</h2>
+    <ul>
+      <li>We do not collect personal information. There is no sign-up, no email address, no phone number, and no profile.</li>
+      <li>We do not use analytics, crash reporting, advertising SDKs, or tracking of any kind.</li>
+      <li>We do not sell, rent, or share data with third parties — there is no data to sell.</li>
+      <li>We do not route your traffic through any server we control.</li>
+      <li>We do not track your location, read your contacts, files, messages, or photos.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Permissions, and why each one exists</h2>
+    <p>The Android app requests these permissions and no others:</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Permission</th><th>Why it is needed</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>VPN service</td>
+            <td>Creates a local tunnel <strong>on the device itself</strong> so DNS lookups can be filtered for every app, not just one browser. It connects to no remote VPN server; no traffic leaves your device through it. Requests that are allowed go to whichever DNS resolver your device already used.</td>
+          </tr>
+          <tr>
+            <td>Internet, network state</td>
+            <td>Downloading blocklist updates, and noticing when the connection changes.</td>
+          </tr>
+          <tr>
+            <td>Foreground service</td>
+            <td>Android requires a persistent notification while filtering is active, so it is always visible that the app is running.</td>
+          </tr>
+          <tr>
+            <td>Notifications</td>
+            <td>Shows that status notification, and warns you if protection stops unexpectedly.</td>
+          </tr>
+          <tr>
+            <td>Device administrator <span class="dim">(optional)</span></td>
+            <td>Only if you turn on "make removal harder". It requests <strong>zero policies</strong>: it cannot lock your screen, wipe your device, change your password, or monitor anything. Its only effect is that Android refuses to uninstall Safe World until you switch it off. You can disable it at any time with your PIN.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Children</h2>
+    <p>Safe World is designed to be set up by a parent or guardian on a device that may be used by a child. It collects no personal information from anyone, of any age. Because nothing is collected, there is nothing about a child to store, share, or delete.</p>
+  </section>
+
+  <section>
+    <h2>Deleting your data</h2>
+    <p>All of your data is on your device, so you control it completely. Clearing the app's storage (Android: Settings → Apps → Safe World → Storage → Clear data) or uninstalling the app erases everything: settings, lists, PIN, recovery code, and counters. Nothing is retained anywhere else, and there is no server-side account to close.</p>
+    <p class="dim">If uninstall protection is enabled, you will need your PIN to turn it off first — that is the point of the feature.</p>
+  </section>
+
+  <section>
+    <h2>What this policy cannot promise</h2>
+    <p>Being honest about the limits matters more than sounding reassuring:</p>
+    <ul>
+      <li>Safe World is a filter, not a guarantee. DNS-level blocking cannot see encrypted DNS (DoH/DoT), apps with hardcoded resolvers, or connections made directly to an IP address.</li>
+      <li>The PIN and uninstall protection are <strong>friction, not a lock</strong>. Anyone with physical access to the device can clear the app's data from Android's own settings.</li>
+      <li>Blocklists are compiled from public sources and are never perfect. Some harmful sites will be missed, and some harmless ones may be blocked by mistake.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Changes to this policy</h2>
+    <p>If this policy changes, the date at the top of this page changes with it, and the previous version stays visible in the project's public commit history. A change that affected what data leaves your device would also ship with an app update, so it would be visible in the source code before it ever reached you.</p>
+  </section>
+
+  <section>
+    <h2>Contact</h2>
+    <p>Questions about this policy, or about anything the apps do, are welcome:</p>
+    <ul>
+      <li>Email — <a href="mailto:safeworldwebsiteblock@gmail.com">safeworldwebsiteblock@gmail.com</a></li>
+      <li>Source code and issue tracker — <a href="https://github.com/jobayersajal1/project-safe-world">github.com/jobayersajal1/project-safe-world</a></li>
+    </ul>
+  </section>
+</main>
+
+<footer class="site wrap">
+  <span>Content filtering that stays on your device.</span>
+  <div class="foot-links">
+    <a href="./">Home</a>
+    <a href="https://github.com/jobayersajal1/project-safe-world" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://github.com/jobayersajal1/project-safe-world/blob/main/LICENSE" target="_blank" rel="noopener">License</a>
+  </div>
+</footer>
+
+</body>
+</html>

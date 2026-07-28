@@ -1,0 +1,91 @@
+name: SafeWorld
+options:
+  createIntermediateGroups: true
+  deploymentTarget:
+    iOS: "16.0"
+
+packages:
+  SafeWorldCore:
+    path: SafeWorldCore
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    TARGETED_DEVICE_FAMILY: "1,2"
+    CODE_SIGN_STYLE: Automatic
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+
+targets:
+  SafeWorld:
+    type: application
+    platform: iOS
+    sources:
+      - path: SafeWorld
+        excludes:
+          - "*.entitlements"
+    info:
+      path: SafeWorld/Info.plist
+      properties:
+        CFBundleDisplayName: Safe World
+        UILaunchScreen: {}
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        ITSAppUsesNonExemptEncryption: false
+    entitlements:
+      path: SafeWorld/SafeWorld.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.safeworld.app
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.safeworld.app
+        PRODUCT_NAME: SafeWorld
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+    dependencies:
+      - target: SafeWorldBlocker
+        embed: true
+      - package: SafeWorldCore
+        product: SafeWorldCore
+
+  SafeWorldBlocker:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: SafeWorldBlocker
+        excludes:
+          - "*.entitlements"
+    info:
+      path: SafeWorldBlocker/Info.plist
+      properties:
+        CFBundleDisplayName: Safe World Blocker
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.Safari.content-blocker
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).ContentBlockerRequestHandler
+    entitlements:
+      path: SafeWorldBlocker/SafeWorldBlocker.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.safeworld.app
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.safeworld.app.blocker
+        PRODUCT_NAME: SafeWorldBlocker
+        SKIP_INSTALL: YES
+    dependencies:
+      - package: SafeWorldCore
+        product: SafeWorldCore
+
+schemes:
+  SafeWorld:
+    build:
+      targets:
+        SafeWorld: all
+        SafeWorldBlocker: all
+    test:
+      targets: []
+    run:
+      config: Debug
+    archive:
+      config: Release

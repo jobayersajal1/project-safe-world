@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_channel_name">সুরক্ষার অবস্থা</string>
+    <string name="notification_channel_description">Safe World যখন DNS অনুসন্ধান ফিল্টার করছে তখন দেখায়।</string>
+    <string name="notification_title">Safe World এই ডিভাইসটি সুরক্ষিত রাখছে</string>
+    <string name="notification_text">ডিভাইসেই DNS অনুসন্ধান ফিল্টার করা হচ্ছে।</string>
+    <string name="notification_stop">বন্ধ করুন</string>
+
+    <string name="alert_channel_name">সুরক্ষা সতর্কতা</string>
+    <string name="alert_channel_description">ফিল্টারিং অপ্রত্যাশিতভাবে বন্ধ হলে সতর্ক করে।</string>
+    <string name="alert_interrupted_title">Safe World ফিল্টার করা বন্ধ করেছে</string>
+    <string name="alert_interrupted_text">অ্যাপ থেকে বন্ধ না করেই সুরক্ষা বন্ধ হয়ে গেছে — অন্য কোনো VPN অ্যাপ দায়িত্ব নিয়ে থাকতে পারে, অথবা VPN অনুমতি প্রত্যাহার করা হয়েছে। আবার চালু করতে Safe World খুলুন।</string>
+
+    <string name="device_admin_explanation">Safe World-কে নিজে থেকে আনইনস্টল হওয়া ঠেকাতে দেয়। এটি আর কোনো অনুমতি চায় না — আপনার ডিভাইস লক করতে, মুছে ফেলতে বা পর্যবেক্ষণ করতে পারে না।</string>
+    <string name="device_admin_disable_warning">এটি বন্ধ করলে Safe World আনইনস্টল করা যাবে।</string>
+
+    <string name="tab_home">হোম</string>
+    <string name="tab_settings">সেটিংস</string>
+
+    <string name="protection_title">সুরক্ষা</string>
+    <string name="protection_on">এই ডিভাইসে DNS অনুসন্ধান ফিল্টার করা হচ্ছে।</string>
+    <string name="protection_off">বন্ধ — কিছুই ব্লক করা হচ্ছে না।</string>
+    <string name="protection_off_pin_title">সুরক্ষা বন্ধ করবেন?</string>
+    <string name="protection_off_pin_message">এই ডিভাইসে ব্লক করা বন্ধ করতে আপনার পিন দিন।</string>
+
+    <string name="interrupted_title">সুরক্ষা বিঘ্নিত হয়েছিল</string>
+    <string name="interrupted_body">এখান থেকে বন্ধ না করেই Safe World ফিল্টার করা থামিয়ে দিয়েছে — অন্য কোনো VPN অ্যাপ দায়িত্ব নিয়ে থাকতে পারে, অথবা Android-এর সেটিংসে VPN অনুমতি প্রত্যাহার করা হয়েছে।</string>
+    <string name="interrupted_dismiss">সরিয়ে দিন (পিন লাগবে)</string>
+    <string name="interrupted_pin_message">এই সতর্কবার্তাটি সরাতে আপনার পিন দিন।</string>
+
+    <string name="blocked_headline">আমরা %1$sটি ওয়েবসাইট ব্লক করেছি</string>
+    <!-- "৮৫ হাজারটি" is grammatical; the count arrives as a full word, not an
+         abbreviation, which is why CountFormat uses CLDR's LONG style. -->
+    <string name="blocked_headline_detail">%1$sটি পরিচিত সাইট, স্বয়ংক্রিয়ভাবে হালনাগাদ হয়।</string>
+
+    <string name="block_more_title">আরও ব্লক করতে চান?</string>
+    <string name="category_list4_label">সোশ্যাল মিডিয়া</string>
+    <string name="category_list4_description">Facebook, Instagram, X, TikTok, Reddit ও এ ধরনের ফিড।</string>
+    <string name="category_list5_label">বিনোদন</string>
+    <string name="category_list5_description">YouTube, Netflix, Twitch ও অন্যান্য স্ট্রিমিং সাইট।</string>
+    <string name="category_off_pin_title">%1$s ব্লক করা বন্ধ করবেন?</string>
+    <string name="category_off_pin_message">এই সাইটগুলো আনব্লক করতে আপনার পিন দিন।</string>
+
+    <string name="add_websites_label">ওয়েবসাইট যোগ করুন</string>
+    <string name="add_websites_description">নাম লিখে অন্য যেকোনো সাইট ব্লক করুন।</string>
+    <string name="add_websites_hint">example.com, another.com</string>
+    <string name="add_websites_help">কমা দিয়ে আলাদা করুন। সাবডোমেনও অন্তর্ভুক্ত হবে।</string>
+    <string name="add_websites_save">সংরক্ষণ</string>
+    <plurals name="add_websites_count">
+        <item quantity="one">%dটি সাইট যোগ করা হয়েছে</item>
+        <item quantity="other">%dটি সাইট যোগ করা হয়েছে</item>
+    </plurals>
+    <string name="add_websites_remove_pin_title">ব্লক করা সাইট সরাবেন?</string>
+    <string name="add_websites_remove_pin_message">আপনার যোগ করা সাইট ব্লক করা বন্ধ করতে পিন দিন।</string>
+
+    <string name="uninstall_title">আনইনস্টল সুরক্ষা</string>
+    <string name="uninstall_label">সরানো কঠিন করুন</string>
+    <string name="uninstall_body">Safe World-কে ডিভাইস অ্যাডমিন হিসেবে নিবন্ধন করে, ফলে এটি বন্ধ না করা পর্যন্ত Android অ্যাপটি আনইনস্টল করতে দেবে না। এটি বাধা, তালা নয় — Android-এর সেটিংস থেকে এখনও সরানো যাবে।</string>
+    <string name="uninstall_off_pin_title">আনইনস্টল করার অনুমতি দেবেন?</string>
+    <string name="uninstall_off_pin_message">Safe World আবার আনইনস্টল করতে দিতে আপনার পিন দিন।</string>
+
+    <string name="blocked_today">আজ ব্লক করা হয়েছে</string>
+
+    <string name="settings_title">সেটিংস</string>
+
+    <string name="settings_language">ভাষা</string>
+    <string name="language_system">সিস্টেমের ভাষা</string>
+
+    <string name="settings_security">পিন</string>
+    <string name="pin_change">পিন পরিবর্তন</string>
+    <string name="pin_change_description">প্রথমে আপনার বর্তমান পিন চাওয়া হবে।</string>
+    <string name="pin_change_title">নতুন পিন দিন</string>
+    <string name="pin_change_pin_message">নতুন পিন বাছাই করতে আপনার বর্তমান পিন দিন।</string>
+    <string name="recovery_settings_label">রিকভারি কোড</string>
+    <string name="recovery_settings_description">পিন ভুলে গেলে ফিরে আসার উপায়। এটি হ্যাশ করে রাখা হয়, তাই আবার দেখানো যায় না — শুধু নতুন একটি দিয়ে বদলানো যায়।</string>
+    <string name="recovery_settings_action">নতুন কোড নিন</string>
+    <string name="recovery_settings_pin_message">রিকভারি কোড বদলাতে আপনার পিন দিন।</string>
+
+    <string name="settings_allow_title">সবসময় অনুমতি</string>
+    <string name="settings_allow_help">প্রতি লাইনে একটি ডোমেইন। এটি সব ক্যাটাগরি এবং আপনার যোগ করা সাইটের চেয়ে অগ্রাধিকার পায়।</string>
+    <string name="settings_save">সংরক্ষণ</string>
+    <string name="settings_save_pin_title">পরিবর্তন সংরক্ষণ করবেন?</string>
+    <string name="settings_save_pin_message">কী অনুমোদিত তা বদলাতে আপনার পিন দিন।</string>
+
+    <string name="settings_rate_title">Safe World-কে রেটিং দিন</string>
+    <string name="settings_rate_description">কাজে লাগলে, একটি রিভিউ অন্য কাউকে এটি খুঁজে পেতে সাহায্য করে।</string>
+    <string name="settings_rate_action">স্টোর খুলুন</string>
+    <string name="settings_rate_unavailable">এই ডিভাইসে কোনো অ্যাপ স্টোর পাওয়া যায়নি।</string>
+
+    <string name="pin_field">পিন</string>
+    <string name="pin_confirm_field">পিন নিশ্চিত করুন</string>
+    <string name="pin_choose_title">একটি পিন বাছুন</string>
+    <string name="pin_choose_body">সুরক্ষা বন্ধ করতে বা তালিকা বদলাতে এই পিন লাগবে। দুর্বল মুহূর্তে অনুমান করে ফেলবেন না, এমন কিছু বাছুন।</string>
+    <string name="pin_field_min">পিন (কমপক্ষে %1$d অঙ্ক)</string>
+    <string name="pin_mismatch">দুটি মিলছে না।</string>
+    <string name="pin_set">পিন সেট করুন</string>
+    <string name="pin_save">পিন সংরক্ষণ</string>
+    <string name="pin_locked_title">অনেকবার ভুল হয়েছে</string>
+    <string name="pin_locked_body">আবার চেষ্টা করার আগে %1$s অপেক্ষা করুন।</string>
+    <plurals name="pin_incorrect">
+        <item quantity="one">ভুল পিন। আর %dটি সুযোগ আছে।</item>
+        <item quantity="other">ভুল পিন। আর %dটি সুযোগ আছে।</item>
+    </plurals>
+    <string name="action_confirm">নিশ্চিত করুন</string>
+    <string name="action_cancel">বাতিল</string>
+    <string name="action_close">বন্ধ</string>
+    <string name="action_continue">এগিয়ে যান</string>
+
+    <string name="pin_forgot">পিন ভুলে গেছেন?</string>
+    <string name="recovery_show_title">আপনার রিকভারি কোড সংরক্ষণ করুন</string>
+    <string name="recovery_show_body">পিন ভুলে গেলে এটিই ফিরে আসার একমাত্র উপায়। লিখে রাখুন এবং এমন জায়গায় রাখুন যেখানে এক বছর পরেও পাবেন — এটি আর দেখানো হবে না।</string>
+    <string name="recovery_copy">কপি</string>
+    <string name="recovery_copied">কপি হয়েছে।</string>
+    <string name="recovery_acknowledge">আমি লিখে রেখেছি</string>
+    <string name="recovery_enter_title">আপনার রিকভারি কোড দিন</string>
+    <string name="recovery_enter_body">পিন সেট করার সময় সংরক্ষণ করা ২০ অক্ষরের কোডটি। ড্যাশ ও বড় হাতের অক্ষর গুরুত্বপূর্ণ নয়।</string>
+    <string name="recovery_field">রিকভারি কোড</string>
+    <string name="recovery_wrong">কোডটি মিলছে না।</string>
+    <string name="recovery_none">এই ডিভাইসে কখনও রিকভারি কোড সংরক্ষণ করা হয়নি, তাই এখানে পিন রিসেট করা যাবে না।</string>
+    <string name="recovery_new_pin_title">নতুন পিন বাছুন</string>
+    <string name="recovery_replaced">আপনার রিকভারি কোডটি ব্যবহার করা হয়েছে। এই নতুন কোডটিও সংরক্ষণ করুন।</string>
+
+    <string name="settings_help">সহায়তা ও যোগাযোগ</string>
+    <string name="help_intro">আটকে গেছেন, নাকি এমন কিছু ব্লক হয়েছে যা হওয়ার কথা নয়? যোগাযোগ করুন।</string>
+    <string name="help_whatsapp">হোয়াটসঅ্যাপ</string>
+    <string name="help_facebook">ফেসবুক গ্রুপ</string>
+    <string name="help_facebook_unavailable">এখনও চালু হয়নি</string>
+    <string name="help_email">ইমেইল</string>
+    <string name="help_github">GitHub-এ সোর্স কোড</string>
+    <string name="help_no_app">এই ডিভাইসে এটি খোলার মতো কোনো অ্যাপ নেই।</string>
+</resources>

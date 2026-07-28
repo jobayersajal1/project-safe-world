@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>SafeWorld.App</RootNamespace>
+    <AssemblyName>SafeWorld</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Resources\SafeWorld.ico</ApplicationIcon>
+    <!-- Lets this project restore/build from a non-Windows host (e.g. cross-compiling from
+         macOS with `dotnet publish -r win-x64`); it does not affect the Windows machine it
+         ultimately runs on. -->
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SafeWorld.Core\SafeWorld.Core.csproj" />
+    <EmbeddedResource Include="Resources\SafeWorld.ico" />
+  </ItemGroup>
+
+</Project>

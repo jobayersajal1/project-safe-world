@@ -1,0 +1,379 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		12885848E460804ABAE6EF03 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2430922C36E9B43E3F5235D /* SettingsStore.swift */; };
+		1806B910C8005E974BBF5A40 /* SafeWorldApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888922C535B0B08BFF28D2B0 /* SafeWorldApp.swift */; };
+		24DC96C5A006C89663E141C9 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E79DCA08FBCD48DD1CB681E /* MenuView.swift */; };
+		4168C063283CEABE784E8159 /* SafeWorldCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B3C414C2520283B858BC6 /* SafeWorldCore */; };
+		426A4A8E729AE91FC9B9F110 /* RemoteUpdateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FA580CF498F370803254DE7 /* RemoteUpdateService.swift */; };
+		43B02553F5A82AB640882482 /* RemoteConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAA908788DF4B33765683C9A /* RemoteConfig.swift */; };
+		8D3FEF0D418A140B0986C6A1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 863B9431E0AC3458B7A8034E /* Assets.xcassets */; };
+		CDFAE60B978758DEE2489033 /* HostsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D746F101B64C6202CF48292D /* HostsManager.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1B103485B7EB84B7AA2EF221 /* SafeWorld.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SafeWorld.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1FA580CF498F370803254DE7 /* RemoteUpdateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteUpdateService.swift; sourceTree = "<group>"; };
+		3E79DCA08FBCD48DD1CB681E /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
+		7BE836801A19619F4AE0F4F6 /* SafeWorldCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SafeWorldCore; path = ../ios/SafeWorldCore; sourceTree = SOURCE_ROOT; };
+		863B9431E0AC3458B7A8034E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		888922C535B0B08BFF28D2B0 /* SafeWorldApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeWorldApp.swift; sourceTree = "<group>"; };
+		92613E5F7D7C1F1B45177ED5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		A2430922C36E9B43E3F5235D /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
+		BAA908788DF4B33765683C9A /* RemoteConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfig.swift; sourceTree = "<group>"; };
+		D746F101B64C6202CF48292D /* HostsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostsManager.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AF749AE1CA874690500DD8DF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4168C063283CEABE784E8159 /* SafeWorldCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		7BAC583736CE565DC12550D2 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				7BE836801A19619F4AE0F4F6 /* SafeWorldCore */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		C2F413A19B6D88D82C47EFFF /* SafeWorld */ = {
+			isa = PBXGroup;
+			children = (
+				863B9431E0AC3458B7A8034E /* Assets.xcassets */,
+				D746F101B64C6202CF48292D /* HostsManager.swift */,
+				92613E5F7D7C1F1B45177ED5 /* Info.plist */,
+				BAA908788DF4B33765683C9A /* RemoteConfig.swift */,
+				1FA580CF498F370803254DE7 /* RemoteUpdateService.swift */,
+				888922C535B0B08BFF28D2B0 /* SafeWorldApp.swift */,
+				A2430922C36E9B43E3F5235D /* SettingsStore.swift */,
+				C8C4936C357306FA04A925F7 /* Views */,
+			);
+			path = SafeWorld;
+			sourceTree = "<group>";
+		};
+		C8C4936C357306FA04A925F7 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				3E79DCA08FBCD48DD1CB681E /* MenuView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		D088F9A79C07C9097BF8A505 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1B103485B7EB84B7AA2EF221 /* SafeWorld.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E177FA9F6C3E9A1FB68DB3F8 = {
+			isa = PBXGroup;
+			children = (
+				7BAC583736CE565DC12550D2 /* Packages */,
+				C2F413A19B6D88D82C47EFFF /* SafeWorld */,
+				D088F9A79C07C9097BF8A505 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B42807D9AE433FABCCCAFF49 /* SafeWorld */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 73DB1AC6D472DE5990965226 /* Build configuration list for PBXNativeTarget "SafeWorld" */;
+			buildPhases = (
+				54BAE587B2CE4113BE58F74C /* Sources */,
+				104C06F60AFCEFA9D51B37B5 /* Resources */,
+				AF749AE1CA874690500DD8DF /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SafeWorld;
+			packageProductDependencies = (
+				3F2B3C414C2520283B858BC6 /* SafeWorldCore */,
+			);
+			productName = SafeWorld;
+			productReference = 1B103485B7EB84B7AA2EF221 /* SafeWorld.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D2321FC61E7E7F3753A74DF0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					B42807D9AE433FABCCCAFF49 = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 0E11114141F3D7D146CC7C8B /* Build configuration list for PBXProject "SafeWorld" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = E177FA9F6C3E9A1FB68DB3F8;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				5CD1013546AE2FEFD7E0B8E3 /* XCLocalSwiftPackageReference "../ios/SafeWorldCore" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = D088F9A79C07C9097BF8A505 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B42807D9AE433FABCCCAFF49 /* SafeWorld */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		104C06F60AFCEFA9D51B37B5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D3FEF0D418A140B0986C6A1 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		54BAE587B2CE4113BE58F74C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CDFAE60B978758DEE2489033 /* HostsManager.swift in Sources */,
+				24DC96C5A006C89663E141C9 /* MenuView.swift in Sources */,
+				43B02553F5A82AB640882482 /* RemoteConfig.swift in Sources */,
+				426A4A8E729AE91FC9B9F110 /* RemoteUpdateService.swift in Sources */,
+				1806B910C8005E974BBF5A40 /* SafeWorldApp.swift in Sources */,
+				12885848E460804ABAE6EF03 /* SettingsStore.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		49994B42C645FA6D1A63DB8A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		52B8B39C3F323DDDAE597FD4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		A9DFF32EE452E738534D3AC2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = SafeWorld/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.safeworld.mac;
+				PRODUCT_NAME = SafeWorld;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		B50C5C539C3510406DA770D2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = SafeWorld/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.safeworld.mac;
+				PRODUCT_NAME = SafeWorld;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0E11114141F3D7D146CC7C8B /* Build configuration list for PBXProject "SafeWorld" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				52B8B39C3F323DDDAE597FD4 /* Debug */,
+				49994B42C645FA6D1A63DB8A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		73DB1AC6D472DE5990965226 /* Build configuration list for PBXNativeTarget "SafeWorld" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B50C5C539C3510406DA770D2 /* Debug */,
+				A9DFF32EE452E738534D3AC2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		5CD1013546AE2FEFD7E0B8E3 /* XCLocalSwiftPackageReference "../ios/SafeWorldCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../ios/SafeWorldCore;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3F2B3C414C2520283B858BC6 /* SafeWorldCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SafeWorldCore;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = D2321FC61E7E7F3753A74DF0 /* Project object */;
+}

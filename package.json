@@ -1,0 +1,37 @@
+{
+  "name": "safe-world",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Safe World \u2014 protect users from scam, gambling, and adult/haram content across platforms. Chrome extension first.",
+  "license": "MIT",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @safe-world/chrome-extension",
+    "build": "npm run build --workspace @safe-world/core && npm run build --workspace @safe-world/chrome-extension",
+    "lists:check": "tsx scripts/check-lists-present.ts",
+    "build:lists": "npm run lists:check --silent && tsx scripts/build-blocklists.ts",
+    "build:ios": "npm run lists:check --silent && tsx scripts/build-ios-blocklists.ts",
+    "build:android": "npm run lists:check --silent && tsx scripts/build-android-blocklists.ts",
+    "build:windows": "npm run lists:check --silent && tsx scripts/build-windows-blocklists.ts",
+    "build:remote": "npm run lists:check --silent && tsx scripts/build-remote-payload.ts",
+    "lists:pull": "tsx scripts/lists-sync.ts pull",
+    "lists:push": "tsx scripts/lists-sync.ts push",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -b",
+    "lint": "eslint .",
+    "fetch:lists": "tsx scripts/fetch-upstream-lists.ts",
+    "baseline:snapshot": "tsx scripts/snapshot-baseline.ts"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.270",
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

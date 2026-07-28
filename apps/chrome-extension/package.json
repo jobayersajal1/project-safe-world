@@ -1,0 +1,18 @@
+{
+  "name": "@safe-world/chrome-extension",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite build --watch --mode development",
+    "build": "vite build",
+    "typecheck": "tsc -b"
+  },
+  "dependencies": {
+    "@safe-world/core": "*"
+  },
+  "devDependencies": {
+    "@crxjs/vite-plugin": "^2.0.0-beta.28",
+    "vite": "^5.4.11"
+  }
+}

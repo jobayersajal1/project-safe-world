@@ -1,0 +1,56 @@
+# Copy this into your public lists repo as .github/workflows/deploy.yml
+# (not into project-safe-world — this repo already has its own Pages workflow
+# for the website, and running both here would fight over the same deployment).
+#
+# Then: Settings > Pages > Source > GitHub Actions.
+# Serves blocklist.json at https://<user>.github.io/<repo>/blocklist.json
+name: Deploy blocklist
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let an in-flight deploy finish rather than cancelling it, so a push never
+# leaves the endpoint half-updated.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fail fast if the payload is malformed
+        # A published-but-broken list is worse than a stale one: every client
+        # would fetch it and silently fall back to bundled lists forever.
+        # An *empty* delta is fine and expected right after a release.
+        run: |
+          shopt -s nullglob
+          files=(delta-*.json)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "::error::no delta-*.json files to publish"; exit 1
+          fi
+          for f in "${files[@]}"; do
+            jq -e '.version | type == "number"' "$f" > /dev/null
+            jq -e '.baseline | type == "string"' "$f" > /dev/null
+            jq -e '.domains  | type == "object"' "$f" > /dev/null
+            echo "$f: $(jq '[.domains[] | length] | add' "$f") entries"
+          done
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4
