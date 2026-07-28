@@ -6,5 +6,9 @@
     "outDir": "./dist",
     "types": ["node"]
   },
-  "include": ["src/**/*.ts", "src/**/*.json"]
+  // Only .ts. `src/blocklists/*.json` are pulled from the private repo and are
+  // now millions of entries — including them here makes tsc parse and type
+  // every domain, which exhausts the heap. Nothing imports them: the build
+  // scripts read them with fs, and each app bundles its own encoded form.
+  "include": ["src/**/*.ts"]
 }

@@ -42,3 +42,24 @@ object EmptyDomainSet : DomainSet {
     override fun matches(host: String): Boolean = false
     override val size: Int get() = 0
 }
+
+/**
+ * Two sets treated as one: the bundled filter plus whatever a remote update has
+ * added since.
+ *
+ * They cannot simply be merged. A fuse filter is immutable once built —
+ * construction peels every key exactly once — so fetched domains live beside it
+ * in a plain [HashedDomainSet] rather than being inserted. Deltas are small by
+ * design (only what was added since the release baseline), so the second lookup
+ * costs almost nothing.
+ */
+class UnionDomainSet(private val a: DomainSet, private val b: DomainSet) : DomainSet {
+    override fun matches(host: String): Boolean = a.matches(host) || b.matches(host)
+
+    /**
+     * A sum, not a true union: the two may overlap, so this can over-count
+     * slightly. It drives the home screen's headline, never a blocking
+     * decision.
+     */
+    override val size: Int get() = a.size + b.size
+}

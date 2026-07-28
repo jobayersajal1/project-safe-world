@@ -5,7 +5,7 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
 /**
- * Reader for the binary fuse16 filters produced by `scripts/binary-fuse.ts`.
+ * Reader for the binary fuse32 filters produced by `scripts/binary-fuse.ts`.
  *
  * The blocklist only ever answers "is this host listed?", never "what is on the
  * list", so it can be stored as an approximate membership filter rather than as
@@ -15,9 +15,10 @@ import java.nio.ByteOrder
  *
  * **The error is one-directional.** A domain that went in is *always* found:
  * false negatives are impossible, so a blocked site can never slip through. The
- * cost is a false positive roughly 1 lookup in 65,536 — a site blocked that
- * isn't on the list. That direction is the safe one for this app, and the UI
- * already offers "allow once" and "always allow" to undo it.
+ * cost is a false positive — a site blocked that isn't on the list — at roughly
+ * 1 lookup in 4.3 billion, or 1 browsed domain in ~477 million once the several
+ * lookups per host are counted. Measured against a real corpus, 16-bit
+ * fingerprints gave 1 in ~5,000, which was too many.
  *
  * Must agree exactly with the TypeScript generator; `FuseFilterTest` pins shared
  * vectors because a drift here fails silently, matching nothing while the app
@@ -27,7 +28,7 @@ class FuseFilter private constructor(
     private val seed: Long,
     private val segmentLength: Int,
     private val segmentCountLength: Int,
-    private val fingerprints: ShortArray,
+    private val fingerprints: IntArray,
     /** How many domains went in — the filter itself cannot be counted. */
     val size: Int,
 ) {
@@ -42,18 +43,14 @@ class FuseFilter private constructor(
         val h1 = h0 + segmentLength xor ((hash ushr 18).toInt() and segmentLengthMask)
         val h2 = h0 + 2 * segmentLength xor (hash.toInt() and segmentLengthMask)
 
-        // Mask each: Short.toInt() sign-extends, and while the final mask
-        // would hide that, relying on it makes this read as if it were wrong.
-        fp = fp xor (fingerprints[h0].toInt() and 0xffff) xor
-            (fingerprints[h1].toInt() and 0xffff) xor
-            (fingerprints[h2].toInt() and 0xffff)
+        fp = fp xor fingerprints[h0] xor fingerprints[h1] xor fingerprints[h2]
         return fp == 0
     }
 
     companion object {
         /** "SWF1". A wrong or truncated file must fail loudly, not match nothing. */
         private const val MAGIC = 0x53574631
-        private const val FORMAT_VERSION = 1
+        private const val FORMAT_VERSION = 2
         private const val HEADER_BYTES = 28
 
         /** splitmix64 finalizer — the same mix the generator uses. */
@@ -65,7 +62,7 @@ class FuseFilter private constructor(
         }
 
         private fun fingerprintOf(hash: Long): Int =
-            ((hash xor (hash ushr 32)) and 0xffffL).toInt()
+            (hash xor (hash ushr 32)).toInt()
 
         /**
          * High 64 bits of an *unsigned* 64x64 product. `Math.multiplyHigh` is
@@ -97,15 +94,15 @@ class FuseFilter private constructor(
             val segmentCount = header.int
             val arrayLength = header.int
 
-            val expected = HEADER_BYTES + arrayLength * 2
+            val expected = HEADER_BYTES + arrayLength * 4
             require(bytes.size == expected) {
                 "filter length ${bytes.size} does not match header ($expected)"
             }
 
-            val fingerprints = ShortArray(arrayLength)
-            val body = ByteBuffer.wrap(bytes, HEADER_BYTES, arrayLength * 2)
+            val fingerprints = IntArray(arrayLength)
+            val body = ByteBuffer.wrap(bytes, HEADER_BYTES, arrayLength * 4)
                 .order(ByteOrder.BIG_ENDIAN)
-            body.asShortBuffer().get(fingerprints)
+            body.asIntBuffer().get(fingerprints)
 
             val segmentLength = arrayLength / (segmentCount + 2)
             return FuseFilter(

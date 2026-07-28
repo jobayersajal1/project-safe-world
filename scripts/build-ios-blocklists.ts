@@ -29,6 +29,24 @@ const iosResourcesDir = join(
 );
 const blockerResourceDir = join(repoRoot, "apps/ios/SafeWorldBlocker/Resources");
 
+/**
+ * How many domains this platform can actually take.
+ *
+ * Android is uncapped because its matching is ours: a binary fuse filter holds
+ * millions of domains in ~19 MB. Every other platform delegates matching to an
+ * engine that needs the literal domains, and each has its own ceiling — so they
+ * take the head of the list, which is ordered with the highest-signal feeds
+ * first.
+ */
+/**
+ * Safari's content blocker refuses a rule list beyond roughly 150,000 rules,
+ * and `BlockerListBuilder` puts a whole category into one rule's `if-domain`
+ * array. The array length is where this actually binds, and Apple does not
+ * document a number for it — 50,000 is a deliberately conservative starting
+ * point until it is tested on a device.
+ */
+const MAX_PER_CATEGORY = Number(process.env.IOS_MAX_PER_CATEGORY ?? 50_000);
+
 interface BlocklistFile {
   category: string;
   source: string;
@@ -46,10 +64,11 @@ async function build(): Promise<void> {
 
   for (const c of CATEGORIES) {
     const file = await readCurated(c.id);
+    const kept = file.domains.slice(0, MAX_PER_CATEGORY);
     const out = {
       ...file,
       format: SCRAMBLE_FORMAT,
-      domains: file.domains.map(scrambleDomain).filter(Boolean),
+      domains: kept.map(scrambleDomain).filter(Boolean),
     };
 
     const outPath = join(iosResourcesDir, `${c.id}.json`);

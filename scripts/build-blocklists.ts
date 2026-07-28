@@ -30,13 +30,30 @@ const coreListsDir = join(repoRoot, "packages/core/src/blocklists");
 // baked into JS would bloat the worker and be parsed on every startup.
 const extListsDir = join(repoRoot, "apps/chrome-extension/public/lists");
 
+/**
+ * How many domains this platform can actually take.
+ *
+ * Android is uncapped because its matching is ours: a binary fuse filter holds
+ * millions of domains in ~19 MB. Every other platform delegates matching to an
+ * engine that needs the literal domains, and each has its own ceiling — so they
+ * take the head of the list, which is ordered with the highest-signal feeds
+ * first.
+ */
+/**
+ * Chrome's ceiling is `MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES` (30,000). At
+ * `DOMAINS_PER_RULE` = 1000 that is 30M domains of headroom, so the rule count
+ * is not the constraint — the extension package size and the memory the browser
+ * holds the rules in are. 500k keeps the packaged `.zip` near 5 MB.
+ */
+const MAX_PER_CATEGORY = Number(process.env.CHROME_MAX_PER_CATEGORY ?? 500_000);
+
 async function build(): Promise<void> {
   await mkdir(extListsDir, { recursive: true });
 
   for (const c of CATEGORIES) {
     const raw = await readFile(join(coreListsDir, `${c.id}.json`), "utf8");
     const file = JSON.parse(raw) as { domains: string[] };
-    const domains = [...new Set(file.domains)].sort();
+    const domains = [...new Set(file.domains)].sort().slice(0, MAX_PER_CATEGORY);
 
     const out = {
       category: c.id,
@@ -48,7 +65,8 @@ async function build(): Promise<void> {
     // Not pretty-printed: this is a build artifact nobody reads, and one entry
     // per line would triple the size of the packaged extension.
     await writeFile(outPath, JSON.stringify(out) + "\n");
-    console.log(`${c.id}: ${out.domains.length} domains (scrambled) -> ${outPath}`);
+    const capped = file.domains.length > domains.length ? ` (capped from ${file.domains.length})` : "";
+    console.log(`${c.id}: ${out.domains.length} domains (scrambled)${capped}`);
   }
 }
 

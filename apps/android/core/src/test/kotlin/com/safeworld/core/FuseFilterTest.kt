@@ -19,8 +19,7 @@ class FuseFilterTest {
 
     /** Built by `scripts/binary-fuse.ts` over exactly [IN_SET]. */
     private val vector =
-        "U1dGMQEDAAByayudQ4udTQAAAAUAAAABAAAAGAAAAADgrQAADdwAAAAAAAAAAAAAAAAAAItZ" +
-            "AAAAAAAAAAAAAAAAAAC79wAA/X4AAA=="
+        "U1dGMQIDAAByayudQ4udTQAAAAUAAAABAAAAGAAAAAAAAAAA3DngrQAAAADitA3cAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAQi1kAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXZa79wAAAACjFf1+AAAAAA=="
 
     private val filter = FuseFilter.parse(Base64.getDecoder().decode(vector))
 

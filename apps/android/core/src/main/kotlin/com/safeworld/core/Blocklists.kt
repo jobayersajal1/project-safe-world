@@ -5,20 +5,27 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 @Serializable
-private data class HashedBlocklistFile(
+private data class FilterMeta(
     val category: String,
-    /** Identifies the digest scheme, so a future change is detectable rather than silent. */
+    /** Identifies the filter layout, so a future change is detectable rather than silent. */
     val algorithm: String,
+    /** Identifies the digest the filter's keys were derived from. */
+    val digest: String,
     val salt: String,
-    val hashes: List<String>,
+    /** How many domains went in. The filter itself cannot be counted. */
+    val count: Int,
 )
 
 /**
- * The bundled per-category lists, stored as **salted hashes** rather than
- * plaintext domains (see [DomainHasher]). Generated from
- * `packages/core/src/blocklists` by `npm run build:android`, so Android blocks
- * the same curated domains as the other platforms without shipping a readable
- * directory of them.
+ * The bundled per-category lists, stored as **binary fuse16 filters** over
+ * salted digests of the domains (see [FuseFilter] and [DomainHasher]).
+ * Generated from `packages/core/src/blocklists` by `npm run build:android`.
+ *
+ * Android is the only platform where our own code does the matching — Chrome's
+ * declarativeNetRequest, Safari's content blocker, and the macOS/Windows hosts
+ * files all need literal domains — so it is the only one that can store the
+ * list approximately. That is what makes an uncapped list shippable: ~4.5M
+ * domains in ~10 MB rather than ~82 MB of hex digests.
  *
  * Resources of a plain JVM module are packaged into the APK and are also on the
  * classpath under `:core:test`, so this reads them the same way in both.
@@ -26,33 +33,52 @@ private data class HashedBlocklistFile(
 object Blocklists {
     private val json = Json { ignoreUnknownKeys = true }
 
-    /** The scheme this build understands; a mismatch means stale generated files. */
-    const val EXPECTED_ALGORITHM = "sha256-128-hex"
+    /** The layouts this build understands; a mismatch means stale generated files. */
+    const val EXPECTED_ALGORITHM = "binary-fuse32-sha256-64"
+    const val EXPECTED_DIGEST = "sha256-128-hex"
 
-    private val cache: Map<CategoryId, Set<String>> by lazy {
+    private data class Loaded(val filter: FuseFilter?, val count: Int)
+
+    private val cache: Map<CategoryId, Loaded> by lazy {
         CategoryId.entries.associateWith { load(it) }
     }
 
-    private fun load(category: CategoryId): Set<String> {
-        val stream = Blocklists::class.java.getResourceAsStream("/blocklists/${category.id}.json")
-            ?: return emptySet()
-        return stream.use {
-            val file = runCatching {
-                json.decodeFromString<HashedBlocklistFile>(it.readBytes().decodeToString())
-            }.getOrNull() ?: return@use emptySet()
+    private fun load(category: CategoryId): Loaded {
+        val metaStream = Blocklists::class.java
+            .getResourceAsStream("/blocklists/${category.id}.json")
+            ?: return Loaded(null, 0)
 
-            // Fail closed rather than silently matching nothing against digests
-            // this build can't reproduce.
-            if (file.algorithm != EXPECTED_ALGORITHM || file.salt != DomainHasher.SALT) {
-                return@use emptySet()
-            }
-            file.hashes.toSet()
+        val meta = metaStream.use {
+            runCatching { json.decodeFromString<FilterMeta>(it.readBytes().decodeToString()) }
+                .getOrNull()
+        } ?: return Loaded(null, 0)
+
+        // Fail closed rather than silently matching nothing against a layout
+        // this build can't parse or digests it can't reproduce.
+        if (meta.algorithm != EXPECTED_ALGORITHM ||
+            meta.digest != EXPECTED_DIGEST ||
+            meta.salt != DomainHasher.SALT
+        ) {
+            return Loaded(null, 0)
         }
+
+        val filterStream = Blocklists::class.java
+            .getResourceAsStream("/blocklists/${category.id}.filter")
+            ?: return Loaded(null, 0)
+
+        val filter = runCatching { FuseFilter.parse(filterStream) }.getOrNull()
+        return Loaded(filter, meta.count)
     }
 
-    /** Bundled digests for a category. */
-    fun hashes(category: CategoryId): Set<String> = cache[category].orEmpty()
+    /** How many domains this category bundles — for the UI, not for matching. */
+    fun count(category: CategoryId): Int = cache[category]?.count ?: 0
+
+    /** The bundled filter for a category, or null when it failed to load. */
+    fun filter(category: CategoryId): FuseFilter? = cache[category]?.filter
 
     /** Bundled lists for every category, ready for [Matcher.decide]. */
-    fun all(): Map<CategoryId, DomainSet> = cache.mapValues { HashedDomainSet(it.value) }
+    fun all(): Map<CategoryId, DomainSet> =
+        CategoryId.entries.associateWith { id ->
+            cache[id]?.filter?.let { FuseDomainSet(it) } ?: EmptyDomainSet
+        }
 }

@@ -43,18 +43,34 @@ class DomainHasherTest {
     }
 
     @Test
-    fun `candidates walk up the label boundaries`() {
+    fun `candidates walk up the label boundaries but stop before the bare TLD`() {
         assertEquals(
-            listOf("a.b.example.com", "b.example.com", "example.com", "com"),
+            listOf("a.b.example.com", "b.example.com", "example.com"),
             DomainHasher.candidates("a.b.example.com"),
         )
-        assertEquals(listOf("example.com", "com"), DomainHasher.candidates("example.com"))
+        assertEquals(listOf("example.com"), DomainHasher.candidates("example.com"))
         assertEquals(emptyList<String>(), DomainHasher.candidates(""))
     }
 
     @Test
+    fun `a bare TLD is never a candidate`() {
+        // No blocklist can contain "com" — fetch-upstream-lists drops any entry
+        // without a dot — so looking one up can only ever produce a wrong
+        // answer. Against the exact hash set that was merely pointless; against
+        // the probabilistic filter a single collision on "com" would block
+        // every .com domain at once, which is why this is asserted rather than
+        // left to the implementation.
+        for (host in listOf("example.com", "a.b.c.co.uk", "deep.sub.domain.org")) {
+            assertTrue(
+                "no candidate for $host may be a single label",
+                DomainHasher.candidates(host).all { it.contains('.') },
+            )
+        }
+    }
+
+    @Test
     fun `candidates strip www so a subdomain match is not doubled up`() {
-        assertEquals(listOf("bet365.com", "com"), DomainHasher.candidates("www.bet365.com"))
+        assertEquals(listOf("bet365.com"), DomainHasher.candidates("www.bet365.com"))
     }
 
     // The point of the whole exercise: hashed matching must behave exactly like
