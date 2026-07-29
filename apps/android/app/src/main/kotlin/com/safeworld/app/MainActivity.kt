@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.safeworld.app.security.SafeWorldDeviceAdminReceiver
 import com.safeworld.app.ui.SafeWorldApp
+import com.safeworld.app.update.UpdateManager
 import com.safeworld.app.vpn.SafeWorldVpnService
 import com.safeworld.app.work.RemoteUpdateWorker
 import kotlinx.coroutines.launch
@@ -25,6 +26,17 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
 
     private lateinit var store: SettingsStore
+
+    /**
+     * Owned here rather than by the Settings composable so that leaving the tab
+     * part-way through downloading an update doesn't cancel it.
+     */
+    private lateinit var updateManager: UpdateManager
+
+    /** The running build's `versionName`, shown in Settings and compared against the newest release. */
+    private val installedVersion: String
+        get() = @Suppress("DEPRECATION")
+        packageManager.getPackageInfo(packageName, 0).versionName ?: "0.0.0"
 
     /** Mirrors device-admin state, which only changes via system screens. */
     private var uninstallProtectionActive by mutableStateOf(false)
@@ -62,6 +74,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         store = SettingsStore.get(this)
+        updateManager = UpdateManager(this, lifecycleScope, installedVersion)
 
         lifecycleScope.launch { RemoteUpdateService.refreshIfDue(store) }
         RemoteUpdateWorker.schedule(this)
@@ -81,6 +94,8 @@ class MainActivity : ComponentActivity() {
                         refreshUninstallProtectionState()
                     },
                     uninstallProtectionActive = uninstallProtectionActive,
+                    updateManager = updateManager,
+                    installedVersion = installedVersion,
                 )
             }
         }

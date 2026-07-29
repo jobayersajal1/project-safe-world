@@ -126,4 +126,21 @@
     <string name="help_email">Correo electrónico</string>
     <string name="help_github">Código fuente en GitHub</string>
     <string name="help_no_app">Ninguna app de este dispositivo puede abrir eso.</string>
+
+    <string name="update_title">Versión de la app</string>
+    <string name="update_installed">Versión instalada %1$s</string>
+    <string name="update_check_action">Buscar actualizaciones</string>
+    <string name="update_checking">Comprobando…</string>
+    <string name="update_up_to_date">Esta es la última versión.</string>
+    <string name="update_available">La versión %1$s está disponible.</string>
+    <string name="update_available_sized">La versión %1$s está disponible (%2$s).</string>
+    <string name="update_download_action">Descargar e instalar</string>
+    <string name="update_view_release_action">Ver la publicación</string>
+    <string name="update_downloading">Descargando…</string>
+    <string name="update_installing">Esperando a que Android la instale…</string>
+    <string name="update_permission_needed">Android necesita tu permiso para que Safe World pueda instalar una actualización.</string>
+    <string name="update_permission_action">Abrir ajustes</string>
+    <string name="update_error_check">No se pudo buscar actualizaciones. Comprueba tu conexión e inténtalo de nuevo.</string>
+    <string name="update_error_download">La descarga no se completó. Inténtalo de nuevo.</string>
+    <string name="update_error_permission">No se pudo abrir la pantalla de ajustes para instalar aplicaciones.</string>
 </resources>

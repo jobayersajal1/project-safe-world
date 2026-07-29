@@ -4,10 +4,12 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.text.format.Formatter
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,12 +20,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,6 +43,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.safeworld.app.LocaleHelper
 import com.safeworld.app.R
 import com.safeworld.app.SettingsStore
+import com.safeworld.app.update.UpdateManager
+import com.safeworld.app.update.UpdateState
 
 /**
  * Language, PIN management, the allow list, and a link to the store.
@@ -54,6 +60,8 @@ fun SettingsScreen(
     requestPin: RequestPin,
     onChangePin: () -> Unit,
     onShowNewRecoveryCode: () -> Unit,
+    updateManager: UpdateManager,
+    installedVersion: String,
     modifier: Modifier = Modifier,
 ) {
     val settings by store.settings.collectAsStateWithLifecycle()
@@ -208,7 +216,146 @@ fun SettingsScreen(
             }
         }
 
+        UpdateSection(updateManager, installedVersion)
+
         HelpSection()
+    }
+}
+
+/**
+ * Installed version, and whatever the update check has found.
+ *
+ * Not PIN-gated: updating can only strengthen protection, and the PIN exists to
+ * make weakening deliberate. Gating it would mean a user who forgot their PIN
+ * also stops receiving fixes.
+ */
+@Composable
+private fun UpdateSection(manager: UpdateManager, installedVersion: String) {
+    val state by manager.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    // Throttled inside the manager, so returning to this tab doesn't re-ask.
+    LaunchedEffect(Unit) { manager.check() }
+
+    Text(stringResource(R.string.update_title), style = MaterialTheme.typography.titleSmall)
+    Card {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(
+                stringResource(R.string.update_installed, installedVersion),
+                style = MaterialTheme.typography.bodyLarge,
+            )
+
+            when (val s = state) {
+                is UpdateState.Idle -> UpdateAction(
+                    label = stringResource(R.string.update_check_action),
+                    onClick = { manager.check(force = true) },
+                )
+
+                is UpdateState.Checking -> Text(
+                    stringResource(R.string.update_checking),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+
+                is UpdateState.UpToDate -> {
+                    Text(
+                        stringResource(R.string.update_up_to_date),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    UpdateAction(
+                        label = stringResource(R.string.update_check_action),
+                        onClick = { manager.check(force = true) },
+                    )
+                }
+
+                is UpdateState.Available -> {
+                    val size = s.update.sizeBytes
+                    Text(
+                        if (size > 0) {
+                            stringResource(
+                                R.string.update_available_sized,
+                                s.update.version,
+                                Formatter.formatShortFileSize(context, size),
+                            )
+                        } else {
+                            stringResource(R.string.update_available, s.update.version)
+                        },
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+
+                    // Android won't let us install until this is granted, so
+                    // say so up front rather than after a download.
+                    if (s.update.apkUrl != null && !manager.canInstallPackages()) {
+                        Text(
+                            stringResource(R.string.update_permission_needed),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        UpdateAction(
+                            label = stringResource(R.string.update_permission_action),
+                            onClick = { manager.requestInstallPermission() },
+                        )
+                    } else {
+                        UpdateAction(
+                            label = if (s.update.apkUrl != null) {
+                                stringResource(R.string.update_download_action)
+                            } else {
+                                // Release exists but carries no APK — the web
+                                // page is still somewhere to go.
+                                stringResource(R.string.update_view_release_action)
+                            },
+                            onClick = { manager.download(s.update) },
+                        )
+                    }
+                }
+
+                is UpdateState.Downloading -> {
+                    Text(
+                        stringResource(R.string.update_downloading),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    // Indeterminate until the size is known, rather than a bar
+                    // frozen at zero.
+                    if (s.fraction != null) {
+                        LinearProgressIndicator(
+                            progress = { s.fraction },
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    } else {
+                        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                    }
+                }
+
+                is UpdateState.Installing -> Text(
+                    stringResource(R.string.update_installing),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+
+                is UpdateState.Failed -> {
+                    Text(
+                        stringResource(s.messageRes),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                    UpdateAction(
+                        label = stringResource(R.string.update_check_action),
+                        onClick = { manager.check(force = true) },
+                    )
+                }
+            }
+        }
+    }
+}
+
+/** ColumnScope so it can sit at the end of the card, matching the other actions here. */
+@Composable
+private fun ColumnScope.UpdateAction(label: String, onClick: () -> Unit) {
+    TextButton(onClick = onClick, modifier = Modifier.align(Alignment.End)) {
+        Text(label)
     }
 }
 

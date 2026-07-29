@@ -21,6 +21,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.safeworld.app.R
 import com.safeworld.app.SettingsStore
 import com.safeworld.app.security.PinLockout
+import com.safeworld.app.update.UpdateManager
 
 private enum class Tab(val labelRes: Int) {
     Home(R.string.tab_home),
@@ -65,6 +66,8 @@ fun SafeWorldApp(
     onEnableUninstallProtection: () -> Unit,
     onDisableUninstallProtection: () -> Unit,
     uninstallProtectionActive: Boolean,
+    updateManager: UpdateManager,
+    installedVersion: String,
 ) {
     val hasPin by store.hasPin.collectAsStateWithLifecycle()
     val hasRecoveryCode by store.hasRecoveryCode.collectAsStateWithLifecycle()
@@ -190,6 +193,8 @@ fun SafeWorldApp(
                 onShowNewRecoveryCode = {
                     gate = Gate.ShowRecoveryCode(store.issueRecoveryCode(), replacement = false)
                 },
+                updateManager = updateManager,
+                installedVersion = installedVersion,
                 modifier = Modifier.padding(padding),
             )
         }

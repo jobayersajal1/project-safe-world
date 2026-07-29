@@ -4,6 +4,7 @@ import SafeWorldCore
 
 struct MenuView: View {
     @EnvironmentObject private var store: SettingsStore
+    @StateObject private var updates = UpdateService()
     @State private var allowText = ""
     @State private var blockText = ""
     @State private var listsExpanded = false
@@ -73,12 +74,85 @@ struct MenuView: View {
 
             Divider()
 
+            updateSection
+
+            Divider()
+
             Button("Quit Safe World") {
                 NSApp.terminate(nil)
             }
         }
         .padding(16)
         .frame(width: 300)
+    }
+
+    /// Installed version, and whatever the update check has found.
+    @ViewBuilder
+    private var updateSection: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack {
+                Text("Version \(updates.installedVersion)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Spacer()
+
+                switch updates.state {
+                case .idle, .upToDate, .failed:
+                    Button("Check", action: { updates.check(force: true) })
+                        .buttonStyle(.link)
+                        .font(.caption)
+                case .checking, .downloading, .downloaded, .available:
+                    EmptyView()
+                }
+            }
+
+            switch updates.state {
+            case .idle:
+                EmptyView()
+
+            case .checking:
+                Text("Checking…").font(.caption).foregroundStyle(.secondary)
+
+            case .upToDate:
+                Text("This is the latest version.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+            case .available(let update):
+                Text("Version \(update.version) is available\(sizeSuffix(update)).")
+                    .font(.caption)
+                    .foregroundStyle(.tint)
+                Button(update.assetURL != nil ? "Download and install" : "View the release") {
+                    updates.download(update)
+                }
+
+            case .downloading(_, let fraction):
+                Text("Downloading…").font(.caption).foregroundStyle(.secondary)
+                // Indeterminate until the size is known, rather than a bar
+                // frozen at zero.
+                if let fraction {
+                    ProgressView(value: fraction)
+                } else {
+                    ProgressView().progressViewStyle(.linear)
+                }
+
+            case .downloaded:
+                Text("Downloaded. Drag Safe World to Applications to finish, then reopen it.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+            case .failed(let message):
+                Text(message).font(.caption).foregroundStyle(.red)
+            }
+        }
+        // Throttled inside the service, so reopening the menu doesn't re-ask.
+        .task { updates.check() }
+    }
+
+    private func sizeSuffix(_ update: AvailableUpdate) -> String {
+        guard update.sizeBytes > 0 else { return "" }
+        return " (\(ByteCountFormatter.string(fromByteCount: update.sizeBytes, countStyle: .file)))"
     }
 
     private func loadLists() {

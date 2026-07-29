@@ -13,12 +13,14 @@
 		4168C063283CEABE784E8159 /* SafeWorldCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B3C414C2520283B858BC6 /* SafeWorldCore */; };
 		426A4A8E729AE91FC9B9F110 /* RemoteUpdateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FA580CF498F370803254DE7 /* RemoteUpdateService.swift */; };
 		43B02553F5A82AB640882482 /* RemoteConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAA908788DF4B33765683C9A /* RemoteConfig.swift */; };
+		8356828B1E3D75FBE2847CA7 /* UpdateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8A7F1716ABDD2709EEC542 /* UpdateService.swift */; };
 		8D3FEF0D418A140B0986C6A1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 863B9431E0AC3458B7A8034E /* Assets.xcassets */; };
 		CDFAE60B978758DEE2489033 /* HostsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D746F101B64C6202CF48292D /* HostsManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		1B103485B7EB84B7AA2EF221 /* SafeWorld.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SafeWorld.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1F8A7F1716ABDD2709EEC542 /* UpdateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateService.swift; sourceTree = "<group>"; };
 		1FA580CF498F370803254DE7 /* RemoteUpdateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteUpdateService.swift; sourceTree = "<group>"; };
 		3E79DCA08FBCD48DD1CB681E /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		7BE836801A19619F4AE0F4F6 /* SafeWorldCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SafeWorldCore; path = ../ios/SafeWorldCore; sourceTree = SOURCE_ROOT; };
@@ -60,6 +62,7 @@
 				1FA580CF498F370803254DE7 /* RemoteUpdateService.swift */,
 				888922C535B0B08BFF28D2B0 /* SafeWorldApp.swift */,
 				A2430922C36E9B43E3F5235D /* SettingsStore.swift */,
+				1F8A7F1716ABDD2709EEC542 /* UpdateService.swift */,
 				C8C4936C357306FA04A925F7 /* Views */,
 			);
 			path = SafeWorld;
@@ -171,6 +174,7 @@
 				426A4A8E729AE91FC9B9F110 /* RemoteUpdateService.swift in Sources */,
 				1806B910C8005E974BBF5A40 /* SafeWorldApp.swift in Sources */,
 				12885848E460804ABAE6EF03 /* SettingsStore.swift in Sources */,
+				8356828B1E3D75FBE2847CA7 /* UpdateService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

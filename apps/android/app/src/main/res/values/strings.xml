@@ -142,4 +142,22 @@
     <string name="help_email">Email</string>
     <string name="help_github">Source code on GitHub</string>
     <string name="help_no_app">No app on this device can open that.</string>
+
+    <!-- Updates -->
+    <string name="update_title">App version</string>
+    <string name="update_installed">Installed version %1$s</string>
+    <string name="update_check_action">Check for updates</string>
+    <string name="update_checking">Checking…</string>
+    <string name="update_up_to_date">This is the latest version.</string>
+    <string name="update_available">Version %1$s is available.</string>
+    <string name="update_available_sized">Version %1$s is available (%2$s).</string>
+    <string name="update_download_action">Download and install</string>
+    <string name="update_view_release_action">View the release</string>
+    <string name="update_downloading">Downloading…</string>
+    <string name="update_installing">Waiting for Android to install it…</string>
+    <string name="update_permission_needed">Android needs your permission before Safe World can install an update.</string>
+    <string name="update_permission_action">Open settings</string>
+    <string name="update_error_check">Couldn\'t check for updates. Check your connection and try again.</string>
+    <string name="update_error_download">The download didn\'t finish. Try again.</string>
+    <string name="update_error_permission">Couldn\'t open the system settings screen for installing apps.</string>
 </resources>

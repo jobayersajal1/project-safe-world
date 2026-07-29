@@ -32,6 +32,14 @@ targets:
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
         ITSAppUsesNonExemptEncryption: false
+        # Must be stated here, not just in `settings` above: XcodeGen rewrites
+        # this plist wholesale and fills unlisted keys with its own defaults —
+        # which for CFBundleShortVersionString is "1.0". The update check
+        # compares that string against the newest release tag, so leaving it at
+        # the default made a 0.1.0 build claim to be 1.0 and quietly conclude it
+        # was newer than every release ever published.
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
     entitlements:
       path: SafeWorld/SafeWorld.entitlements
       properties:

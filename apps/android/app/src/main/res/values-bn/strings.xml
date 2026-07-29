@@ -128,4 +128,21 @@
     <string name="help_email">ইমেইল</string>
     <string name="help_github">GitHub-এ সোর্স কোড</string>
     <string name="help_no_app">এই ডিভাইসে এটি খোলার মতো কোনো অ্যাপ নেই।</string>
+
+    <string name="update_title">অ্যাপের সংস্করণ</string>
+    <string name="update_installed">ইনস্টল করা সংস্করণ %1$s</string>
+    <string name="update_check_action">আপডেট দেখুন</string>
+    <string name="update_checking">দেখা হচ্ছে…</string>
+    <string name="update_up_to_date">এটিই সর্বশেষ সংস্করণ।</string>
+    <string name="update_available">সংস্করণ %1$s পাওয়া যাচ্ছে।</string>
+    <string name="update_available_sized">সংস্করণ %1$s পাওয়া যাচ্ছে (%2$s)।</string>
+    <string name="update_download_action">ডাউনলোড করে ইনস্টল করুন</string>
+    <string name="update_view_release_action">রিলিজটি দেখুন</string>
+    <string name="update_downloading">ডাউনলোড হচ্ছে…</string>
+    <string name="update_installing">অ্যান্ড্রয়েড ইনস্টল করার অপেক্ষায়…</string>
+    <string name="update_permission_needed">Safe World আপডেট ইনস্টল করার আগে অ্যান্ড্রয়েডের আপনার অনুমতি প্রয়োজন।</string>
+    <string name="update_permission_action">সেটিংস খুলুন</string>
+    <string name="update_error_check">আপডেট দেখা যায়নি। ইন্টারনেট সংযোগ দেখে আবার চেষ্টা করুন।</string>
+    <string name="update_error_download">ডাউনলোড শেষ হয়নি। আবার চেষ্টা করুন।</string>
+    <string name="update_error_permission">অ্যাপ ইনস্টলের সিস্টেম সেটিংস স্ক্রিনটি খোলা যায়নি।</string>
 </resources>
