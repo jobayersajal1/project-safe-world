@@ -28,15 +28,21 @@ class MainActivity : ComponentActivity() {
     private lateinit var store: SettingsStore
 
     /**
-     * Owned here rather than by the Settings composable so that leaving the tab
-     * part-way through downloading an update doesn't cancel it.
+     * Process-wide, not owned here: an Activity-scoped one lost its state and
+     * cancelled any in-flight download on rotation. See [UpdateManager].
      */
     private lateinit var updateManager: UpdateManager
 
-    /** The running build's `versionName`, shown in Settings and compared against the newest release. */
-    private val installedVersion: String
-        get() = @Suppress("DEPRECATION")
+    /**
+     * The running build's `versionName`, shown in Settings and compared against
+     * the newest release. `by lazy` because this is a binder call, and it is
+     * read from the `setContent` lambda — as a getter it re-queried the package
+     * manager on every root recomposition.
+     */
+    private val installedVersion: String by lazy {
+        @Suppress("DEPRECATION")
         packageManager.getPackageInfo(packageName, 0).versionName ?: "0.0.0"
+    }
 
     /** Mirrors device-admin state, which only changes via system screens. */
     private var uninstallProtectionActive by mutableStateOf(false)
@@ -74,7 +80,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         store = SettingsStore.get(this)
-        updateManager = UpdateManager(this, lifecycleScope, installedVersion)
+        updateManager = UpdateManager.get(this, installedVersion)
 
         lifecycleScope.launch { RemoteUpdateService.refreshIfDue(store) }
         RemoteUpdateWorker.schedule(this)

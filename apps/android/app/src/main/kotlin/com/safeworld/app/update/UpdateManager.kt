@@ -12,6 +12,7 @@ import com.safeworld.app.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -45,8 +46,14 @@ sealed interface UpdateState {
 /**
  * Checks for, downloads, and hands off a newer APK.
  *
- * Owned by the Activity rather than by a composable so that leaving the
- * Settings tab mid-download doesn't cancel it.
+ * A process-wide singleton, like [com.safeworld.app.SettingsStore], rather than
+ * something the Activity owns. Activity-scoped was the obvious first shape and
+ * it was wrong: a rotation destroys the Activity, which cancelled an in-flight
+ * download mid-stream and reset the state to Idle — while `lastCheckedAt`
+ * survived as a static, so the automatic re-check was throttled out for another
+ * 24 hours and a "version 0.2.0 is available" the user had just been shown
+ * silently became a bare "Check for updates" button. Outliving the Activity
+ * fixes both halves, and lets the throttle be an ordinary instance field.
  *
  * **The downloaded APK must be signed with the same key as the installed one**
  * or Android refuses the update outright. That makes this path work only for
@@ -54,12 +61,18 @@ sealed interface UpdateState {
  * check for updates but can never apply one, which is the expected and correct
  * behaviour rather than a bug to work around.
  */
-class UpdateManager(
-    private val context: Context,
-    private val scope: CoroutineScope,
+class UpdateManager private constructor(
+    context: Context,
     /** The running build's version, e.g. "0.1.0". */
     private val currentVersion: String,
 ) {
+    private val context = context.applicationContext
+
+    /**
+     * Survives the Activity, so a download keeps running across a rotation.
+     * SupervisorJob so one failed check can't tear down the scope for good.
+     */
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val _state = MutableStateFlow<UpdateState>(UpdateState.Idle)
     val state: StateFlow<UpdateState> = _state.asStateFlow()
 
@@ -259,15 +272,25 @@ class UpdateManager(
     private fun isDue(): Boolean =
         System.currentTimeMillis() - lastCheckedAt >= UpdateConfig.CHECK_INTERVAL_HOURS * 3_600_000
 
-    private companion object {
-        const val TIMEOUT_MS = 20_000
+    /**
+     * In memory rather than persisted: the throttle only needs to stop a burst
+     * of checks within one run of the app, and a fresh launch checking once is
+     * exactly what we want. An ordinary field rather than a static, now that
+     * the instance outlives the Activity — as a static it kept throttling a
+     * rotated Activity whose state had just been reset to Idle.
+     */
+    private var lastCheckedAt = 0L
 
-        /**
-         * In memory rather than persisted: the throttle only needs to stop a
-         * burst of checks within one run of the app, and a fresh launch
-         * checking once is exactly what we want.
-         */
+    companion object {
+        private const val TIMEOUT_MS = 20_000
+
         @Volatile
-        var lastCheckedAt = 0L
+        private var instance: UpdateManager? = null
+
+        /** The process-wide instance, matching `SettingsStore.get`. */
+        fun get(context: Context, currentVersion: String): UpdateManager =
+            instance ?: synchronized(this) {
+                instance ?: UpdateManager(context, currentVersion).also { instance = it }
+            }
     }
 }

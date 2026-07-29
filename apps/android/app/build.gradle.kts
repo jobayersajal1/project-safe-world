@@ -24,9 +24,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    // The app declares no @Serializable types of its own, but applying the
-    // plugin lets `Json.encodeToString(settings)` resolve :core's serializers
-    // at compile time instead of falling back to reflection under R8.
+    // Lets `Json.encodeToString(settings)` resolve :core's serializers at
+    // compile time instead of falling back to reflection under R8, and covers
+    // the app's own @Serializable types (the GitHub release DTOs in
+    // update/UpdateChecker.kt).
     alias(libs.plugins.kotlin.serialization)
 }
 
@@ -40,8 +41,8 @@ android {
         // rely on; see apps/android/README.md.
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 2
+        versionName = "0.2.0"
     }
 
     signingConfigs {
