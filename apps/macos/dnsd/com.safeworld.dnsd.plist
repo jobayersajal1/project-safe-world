@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Runs the resolver as root so it can bind port 53. A GUI app in /Applications runs as the user
+  and cannot, which is the whole reason this file exists.
+
+  KeepAlive matters more than it looks: if the daemon dies while the system's DNS points at
+  127.0.0.1, name resolution depends on the secondary resolver until launchd restarts it. Letting
+  launchd bring it straight back keeps that window to about a second.
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.safeworld.dnsd</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Library/Application Support/SafeWorld/safeworld-dnsd</string>
+    <string>--filters</string>
+    <string>/Library/Application Support/SafeWorld/filters</string>
+    <string>--settings</string>
+    <string>/Library/Application Support/SafeWorld/settings.json</string>
+    <string>--port</string>
+    <string>53</string>
+  </array>
+
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+
+  <key>StandardErrorPath</key>
+  <string>/var/log/safeworld-dnsd.log</string>
+  <key>StandardOutPath</key>
+  <string>/var/log/safeworld-dnsd.log</string>
+</dict>
+</plist>

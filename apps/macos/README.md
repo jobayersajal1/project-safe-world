@@ -81,6 +81,59 @@ mkdir -p dmg-staging && cp -R build/Build/Products/Release/SafeWorld.app dmg-sta
 hdiutil create -volname "Safe World" -srcfolder dmg-staging -ov -format UDZO dist/SafeWorld.dmg
 ```
 
+## System-wide blocking (uncapped)
+
+The hosts file caps macOS at 50k per category: it needs literal domains and is parsed linearly.
+`safeworld-dnsd` removes that ceiling by putting a resolver on `127.0.0.1:53`, matching against a
+memory-mapped fuse filter, and carrying the full **4.48M domains** — the same filters Android,
+iOS and Windows now ship, byte for byte.
+
+A GUI app in `/Applications` runs as the user and cannot bind a port below 1024, so the resolver
+is a separate binary that `launchd` starts as root. That is the only reason the daemon exists.
+
+```bash
+npm run build:ios                      # generates the filters
+sudo apps/macos/dnsd/safeworld-dnsd.sh install
+dig +short bet365.com                  # expect nothing (NXDOMAIN)
+dig +short wikipedia.org               # expect an address
+sudo apps/macos/dnsd/safeworld-dnsd.sh uninstall
+```
+
+`status` needs no root and reports what is loaded and what DNS is set.
+
+### Fails open, deliberately
+
+The real resolver stays configured as the **secondary**. macOS only falls back on a timeout, and
+NXDOMAIN is a valid answer rather than a failure — so blocking works exactly as intended, but if
+the daemon dies the machine keeps resolving instead of losing DNS entirely.
+
+The cost is honest: killing the daemon disables blocking, which the hosts file could not be
+bypassed that way. It is still the right trade, because the alternative failure leaves someone
+with no working internet and no way to look up how to fix it. `launchd` restarts the daemon
+immediately (`KeepAlive`), keeping that window to about a second.
+
+Two more guards: `install` verifies the daemon actually answers on port 53 **before** touching
+DNS, and backs out if it doesn't; `uninstall` restores DNS **before** removing the daemon, so
+there is never a moment pointing at nothing.
+
+### What is verified
+
+The resolver itself is tested end to end by `swift test` — a real UDP query, through the real
+filter, over a real socket, on a high port needing no root. `DnsProxyRealFilterTests` runs the
+same proxy against the actual 4.48M filters and confirms `bet365.com` and `pornhub.com` return
+NXDOMAIN while `wikipedia.org`, `github.com` and `kernel.org` resolve. Verified separately with
+`dig` against the built daemon on port 15353:
+
+```
+safeworld-dnsd: serving on 127.0.0.1:15353, 4430965 domains
+bet365.com      status: NXDOMAIN
+wikipedia.org   status: NOERROR   103.102.166.224
+```
+
+**Not verified:** the privileged half — `launchctl load` on port 53, and the `networksetup`
+switch. Both need a root password, so they have never run. That is what the `install` script is
+for, and why it checks before it commits and can undo itself.
+
 ## Next steps
 
 - [x] Scaffold the Xcode menu-bar app project.
