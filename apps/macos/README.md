@@ -72,14 +72,41 @@ xcodebuild -project SafeWorld.xcodeproj -scheme SafeWorld -configuration Release
 ```
 
 The build ad-hoc signs (`CODE_SIGN_IDENTITY="-"`) since no Apple Developer ID is configured in this
-repo — the app runs fine locally, but macOS Gatekeeper will warn on a downloaded, unnotarized copy
-until it's signed with a real Developer ID and notarized. Package a `.dmg` with:
+repo. Package a `.dmg` with:
 
 ```bash
 mkdir -p dmg-staging && cp -R build/Build/Products/Release/SafeWorld.app dmg-staging/ \
   && ln -s /Applications dmg-staging/Applications
 hdiutil create -volname "Safe World" -srcfolder dmg-staging -ov -format UDZO dist/SafeWorld.dmg
 ```
+
+### Gatekeeper blocks the result, and "right-click → Open" will not save you
+
+An ad-hoc signature is *valid* but carries no Team ID, so it can't be notarized, and Gatekeeper
+refuses it outright once the file is quarantined. Reproduced on macOS 26.2 against the published
+0.2.0 `.dmg`:
+
+```
+codesign --verify --deep --strict   -> valid on disk, satisfies its Designated Requirement
+spctl --assess --type execute       -> rejected
+```
+
+What the user sees is "Apple could not verify …is free of malware", with **Move to Trash** as the
+prominent button — so the app appears to delete itself on install.
+
+**Do not document "right-click and choose Open".** That bypass was removed in macOS 15; repeating it
+sends people in a circle. The two things that actually work on macOS 15+:
+
+1. Press **Done** (not Move to Trash), then **System Settings → Privacy & Security → Open Anyway**.
+2. Or strip the quarantine flag, which is what Gatekeeper actually keys on:
+   ```bash
+   xattr -dr com.apple.quarantine /Applications/SafeWorld.app
+   ```
+
+Both are workarounds for a missing signature, not fixes. **The fix is a Developer ID certificate
+(paid Apple Developer Program) plus notarization**, after which the app opens with no warning and no
+steps. That also requires turning on `ENABLE_HARDENED_RUNTIME`, which notarization mandates and this
+project currently has off.
 
 ## System-wide blocking (uncapped)
 
