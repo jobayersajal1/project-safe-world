@@ -3,12 +3,25 @@ import SwiftUI
 @main
 struct SafeWorldApp: App {
     @StateObject private var store = SettingsStore()
+    @StateObject private var pins: PinStore
+    @StateObject private var gate: PinGate
     @Environment(\.scenePhase) private var scenePhase
+
+    init() {
+        // `PinGate` needs the store, and `@StateObject` can't reference another
+        // property's value in its initializer, so both are built here and the
+        // wrappers wrapped around the finished objects.
+        let pins = PinStore()
+        _pins = StateObject(wrappedValue: pins)
+        _gate = StateObject(wrappedValue: PinGate(pins: pins))
+    }
 
     var body: some Scene {
         WindowGroup {
             RootView()
                 .environmentObject(store)
+                .environmentObject(pins)
+                .environmentObject(gate)
         }
         .onChange(of: scenePhase) { newPhase in
             if newPhase == .active { store.refreshRemoteIfDue() }

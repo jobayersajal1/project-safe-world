@@ -84,6 +84,29 @@ public final class FuseFilter {
         try self.init(region: UnsafeRawPointer(raw), bytes: length, ownsMapping: true)
     }
 
+    /// How many domains a filter file covers, read from its header alone.
+    ///
+    /// The home screen shows this number and nothing else about the filter, and
+    /// the app runs outside the App Group container the full engine needs. Nine
+    /// bytes of header answer it, so don't map fourteen megabytes to ask.
+    /// Returns nil for anything that isn't a readable filter of this version —
+    /// the caller shows a smaller count, which is better than a wrong one.
+    public static func entryCount(atPath path: String) -> Int? {
+        guard
+            let handle = FileHandle(forReadingAtPath: path),
+            let header = try? handle.read(upToCount: headerBytes),
+            header.count == headerBytes
+        else { return nil }
+        defer { try? handle.close() }
+
+        return header.withUnsafeBytes { raw -> Int? in
+            let magic = UInt32(bigEndian: raw.loadUnaligned(fromByteOffset: 0, as: UInt32.self))
+            guard magic == Self.magic else { return nil }
+            guard raw.load(fromByteOffset: 4, as: UInt8.self) == Self.formatVersion else { return nil }
+            return Int(UInt32(bigEndian: raw.loadUnaligned(fromByteOffset: 16, as: UInt32.self)))
+        }
+    }
+
     /// Parse an in-memory copy. Used by tests; the app maps the file instead.
     public convenience init(data: Data) throws {
         let bytes = data.count

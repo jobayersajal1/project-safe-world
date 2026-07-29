@@ -7,11 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		079D36970C0DCE79D295FCDA /* Language.swift in Sources */ = {isa = PBXBuildFile; fileRef = C039FD0D002F725DA67D306D /* Language.swift */; };
 		0E716AA0D0B008B8FD7C7587 /* SafeWorldCore in Frameworks */ = {isa = PBXBuildFile; productRef = 536DD97AFB4B13C79FEDD36E /* SafeWorldCore */; };
 		12885848E460804ABAE6EF03 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2430922C36E9B43E3F5235D /* SettingsStore.swift */; };
 		1425531E1F858527A99F103F /* blockerList.json in Resources */ = {isa = PBXBuildFile; fileRef = 3EBBC75F37013962EC7F0821 /* blockerList.json */; };
+		178C421895CC48C9EAC21521 /* PinStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7135D56A17CF762FD7EC8CE0 /* PinStore.swift */; };
 		1806B910C8005E974BBF5A40 /* SafeWorldApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888922C535B0B08BFF28D2B0 /* SafeWorldApp.swift */; };
+		1A1136A6B075FC325B413E0E /* CountFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B99E8E78D3EC58CFD0B84B /* CountFormat.swift */; };
 		256682B7D64AFC3942CF6C53 /* TunnelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E96FA0B89076AF669BBE991 /* TunnelManager.swift */; };
+		2E0BE28552C7AC402A4A3EF0 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C069EA14FDF6282494F53E66 /* Localizable.xcstrings */; };
 		3230702E32982640B416A8A5 /* SafeWorldTunnel.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 5802E650C1A5840112BE70F9 /* SafeWorldTunnel.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3B7555576DB3C61D6F3BBC08 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 879C4FB2DB466A93EA395324 /* HomeView.swift */; };
 		4168C063283CEABE784E8159 /* SafeWorldCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B3C414C2520283B858BC6 /* SafeWorldCore */; };
@@ -21,8 +25,10 @@
 		8356828B1E3D75FBE2847CA7 /* UpdateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8A7F1716ABDD2709EEC542 /* UpdateService.swift */; };
 		8D3FEF0D418A140B0986C6A1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 863B9431E0AC3458B7A8034E /* Assets.xcassets */; };
 		A0AA53F1F9E7A481A84221AB /* SafeWorldCore in Frameworks */ = {isa = PBXBuildFile; productRef = 90B717E2426C62E3FCA1F7FA /* SafeWorldCore */; };
+		B029073158019C81FB6C89D6 /* SupportLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15CE8D94A3E663F372F10ED6 /* SupportLinks.swift */; };
 		C3D9684A776967DF24B75BCF /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53EFA2470BC17495A3A21312 /* SettingsView.swift */; };
 		D0C998984D21D36F1AB5804B /* ContentBlockerSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A6533E351B8748B879804F /* ContentBlockerSync.swift */; };
+		E5FE7BE1D5524D0E4032DE07 /* PinUi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F57803E891EBCB8882EA57 /* PinUi.swift */; };
 		EA7EE23C85523E70E5407F5B /* ContentBlockerRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41EA29C7041009A677AF6DFB /* ContentBlockerRequestHandler.swift */; };
 		EB75326CE1C4B2C117B0C59A /* SafeWorldBlocker.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 37E8C2D74D27AF33AC33EDBA /* SafeWorldBlocker.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F6A02D847D14BB0E08DDD330 /* PacketTunnelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF9BEE539F0C3E21C0715CF /* PacketTunnelProvider.swift */; };
@@ -61,15 +67,19 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		15CE8D94A3E663F372F10ED6 /* SupportLinks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportLinks.swift; sourceTree = "<group>"; };
 		1823BC5E585D8B1B6FB792D8 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		1B103485B7EB84B7AA2EF221 /* SafeWorld.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SafeWorld.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F8A7F1716ABDD2709EEC542 /* UpdateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateService.swift; sourceTree = "<group>"; };
 		1FA580CF498F370803254DE7 /* RemoteUpdateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteUpdateService.swift; sourceTree = "<group>"; };
+		20F57803E891EBCB8882EA57 /* PinUi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinUi.swift; sourceTree = "<group>"; };
 		37E8C2D74D27AF33AC33EDBA /* SafeWorldBlocker.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = SafeWorldBlocker.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		3EBBC75F37013962EC7F0821 /* blockerList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = blockerList.json; sourceTree = "<group>"; };
 		41EA29C7041009A677AF6DFB /* ContentBlockerRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentBlockerRequestHandler.swift; sourceTree = "<group>"; };
 		53EFA2470BC17495A3A21312 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		5802E650C1A5840112BE70F9 /* SafeWorldTunnel.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = SafeWorldTunnel.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		62B99E8E78D3EC58CFD0B84B /* CountFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountFormat.swift; sourceTree = "<group>"; };
+		7135D56A17CF762FD7EC8CE0 /* PinStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinStore.swift; sourceTree = "<group>"; };
 		7BE836801A19619F4AE0F4F6 /* SafeWorldCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SafeWorldCore; path = SafeWorldCore; sourceTree = SOURCE_ROOT; };
 		863B9431E0AC3458B7A8034E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		879C4FB2DB466A93EA395324 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -79,6 +89,8 @@
 		A2430922C36E9B43E3F5235D /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
 		B61CDE7DC293BC6EE399A0E4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		BAA908788DF4B33765683C9A /* RemoteConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfig.swift; sourceTree = "<group>"; };
+		C039FD0D002F725DA67D306D /* Language.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Language.swift; sourceTree = "<group>"; };
+		C069EA14FDF6282494F53E66 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		DA49A4CCEB8846A8F11B0AF8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		ECF9BEE539F0C3E21C0715CF /* PacketTunnelProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketTunnelProvider.swift; sourceTree = "<group>"; };
 		F6A6533E351B8748B879804F /* ContentBlockerSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentBlockerSync.swift; sourceTree = "<group>"; };
@@ -133,11 +145,16 @@
 			children = (
 				863B9431E0AC3458B7A8034E /* Assets.xcassets */,
 				F6A6533E351B8748B879804F /* ContentBlockerSync.swift */,
+				62B99E8E78D3EC58CFD0B84B /* CountFormat.swift */,
 				92613E5F7D7C1F1B45177ED5 /* Info.plist */,
+				C039FD0D002F725DA67D306D /* Language.swift */,
+				C069EA14FDF6282494F53E66 /* Localizable.xcstrings */,
+				7135D56A17CF762FD7EC8CE0 /* PinStore.swift */,
 				BAA908788DF4B33765683C9A /* RemoteConfig.swift */,
 				1FA580CF498F370803254DE7 /* RemoteUpdateService.swift */,
 				888922C535B0B08BFF28D2B0 /* SafeWorldApp.swift */,
 				A2430922C36E9B43E3F5235D /* SettingsStore.swift */,
+				15CE8D94A3E663F372F10ED6 /* SupportLinks.swift */,
 				8E96FA0B89076AF669BBE991 /* TunnelManager.swift */,
 				1F8A7F1716ABDD2709EEC542 /* UpdateService.swift */,
 				C8C4936C357306FA04A925F7 /* Views */,
@@ -149,6 +166,7 @@
 			isa = PBXGroup;
 			children = (
 				879C4FB2DB466A93EA395324 /* HomeView.swift */,
+				20F57803E891EBCB8882EA57 /* PinUi.swift */,
 				1823BC5E585D8B1B6FB792D8 /* RootView.swift */,
 				53EFA2470BC17495A3A21312 /* SettingsView.swift */,
 			);
@@ -285,7 +303,10 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				Base,
+				ar,
+				bn,
 				en,
+				es,
 			);
 			mainGroup = E177FA9F6C3E9A1FB68DB3F8;
 			minimizedProjectReferenceProxies = 1;
@@ -310,6 +331,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D3FEF0D418A140B0986C6A1 /* Assets.xcassets in Resources */,
+				2E0BE28552C7AC402A4A3EF0 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -337,13 +359,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				D0C998984D21D36F1AB5804B /* ContentBlockerSync.swift in Sources */,
+				1A1136A6B075FC325B413E0E /* CountFormat.swift in Sources */,
 				3B7555576DB3C61D6F3BBC08 /* HomeView.swift in Sources */,
+				079D36970C0DCE79D295FCDA /* Language.swift in Sources */,
+				178C421895CC48C9EAC21521 /* PinStore.swift in Sources */,
+				E5FE7BE1D5524D0E4032DE07 /* PinUi.swift in Sources */,
 				43B02553F5A82AB640882482 /* RemoteConfig.swift in Sources */,
 				426A4A8E729AE91FC9B9F110 /* RemoteUpdateService.swift in Sources */,
 				5039D49DDF1905CF0D5A899E /* RootView.swift in Sources */,
 				1806B910C8005E974BBF5A40 /* SafeWorldApp.swift in Sources */,
 				12885848E460804ABAE6EF03 /* SettingsStore.swift in Sources */,
 				C3D9684A776967DF24B75BCF /* SettingsView.swift in Sources */,
+				B029073158019C81FB6C89D6 /* SupportLinks.swift in Sources */,
 				256682B7D64AFC3942CF6C53 /* TunnelManager.swift in Sources */,
 				8356828B1E3D75FBE2847CA7 /* UpdateService.swift in Sources */,
 			);

@@ -156,6 +156,44 @@ store listing; the checking half already works unchanged.
 > `"1.0"` — which compares as *newer* than the real 0.1.0 release, so the check silently reported
 > "up to date" forever. It is now `$(MARKETING_VERSION)`.
 
+## Feature parity with Android
+
+The two apps are the same product now. Android's protection model is ported in full, minus one
+thing iOS cannot do:
+
+| | Android | iOS |
+|---|---|---|
+| PIN, lockout, recovery code | `app/.../security/` | `SafeWorldCore` — same parameters, own tests |
+| Languages en/bn/es/ar | `values*/strings.xml` | `Localizable.xcstrings`, converted from those files |
+| Blocked-count home screen | `HomeScreen.kt` | `HomeView.swift` |
+| list1–3 forced on | `enforceMandatoryCategories` | same, in `SettingsStore.swift` |
+| Help, rating | `SettingsScreen.kt` | `SettingsView.swift` |
+| Uninstall protection | device admin | **not possible** — no MDM-free equivalent |
+
+Three things differ on purpose, each because the platform forced it:
+
+**The PIN lives in the Keychain, not in app storage.** With no uninstall protection, a PIN that
+died with app data would be one long-press from meaningless. `kSecAttrAccessibleAfterFirstUnlock`
+survives deletion, so reinstalling to shed the PIN lands back at the same prompt. Someone who has
+lost both PIN and recovery code is still never trapped — deleting the app works, it just also stops
+the protection.
+
+**The language picker resolves strings through a per-language `Bundle`, not `\.environment(\.locale)`.**
+SwiftUI resolves `LocalizedStringKey` against `Bundle.main`, which takes its language from the
+*system* preference; setting the environment locale alone changes number and date formatting and
+nothing else, so a picker built that way appears to do nothing. See `Language.swift`.
+
+**`CountFormat` carries its own scale words.** Android calls ICU's `CompactDecimalFormat` with
+`CompactStyle.LONG`; Foundation has no long compact at all, and its only compact notation is CLDR
+*short* — which abbreviates Bengali লাখ to "লা" and, with the classifier the headline appends,
+rendered "44.3 লাটি". It also gets the tiers wrong for Indian numbering, where 4.4 million is
+"44 লাখ". Both are handled explicitly in `CountFormat.swift`.
+
+**Every PIN gate comes from one function**, `SafeWorldCore.ProtectionChange.weakens(from:to:)`,
+rather than a condition per switch. Strengthening is free, weakening costs the PIN — including the
+non-obvious direction, where *adding* a custom-allow entry weakens because allow outranks every
+category in `decide`.
+
 ## Next steps
 
 - [x] Scaffold the Xcode project (app + Safari Content Blocker extension target).
@@ -169,9 +207,19 @@ store listing; the checking half already works unchanged.
       `com.apple.developer.family-controls` entitlement from Apple.
 - [ ] Network Extension for non-Safari/system-wide coverage — entitlement-dependent, likely a later
       phase.
-- [ ] Device/TestFlight testing — everything above has only been verified to *compile* for the iOS
-      Simulator SDK in this environment (no simulator runtime installed here to actually launch and
-      click through it).
+- [x] Feature parity with Android (PIN, recovery code, four languages, help, rating, blocked-count
+      home screen, mandatory categories) — see the table above.
+- [ ] Device/TestFlight testing. The iOS 26.5 simulator runtime **is** now installed, so the app
+      builds, launches, and has been screenshotted in all four languages including RTL. What is
+      still unverified is anything needing a *tap*: the PIN sheets, the lockout countdown, and the
+      recovery flow have not been driven end to end, because the Simulator cannot be tapped from a
+      script without granting accessibility permission. The rule behind those screens
+      (`ProtectionChange`) and the primitives under them (`PinHasher`, `PinLockout`,
+      `RecoveryCode`) are unit-tested; the SwiftUI wiring between them is not.
+
+      `-startTab settings` is a launch argument that opens the second tab, so both screens can be
+      screenshotted from the command line:
+      `xcrun simctl launch booted com.safeworld.app -startTab settings -AppleLanguages '(bn)'`.
 
 Note: shares a lot with the [macOS](../macos) app — both are Swift/Xcode and both can generate a
 Safari content-blocker rule list from the same source. `SafeWorldCore` is written with no

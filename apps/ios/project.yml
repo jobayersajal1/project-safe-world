@@ -3,6 +3,15 @@ options:
   createIntermediateGroups: true
   deploymentTarget:
     iOS: "16.0"
+  # Matches the four languages Android ships (values, values-bn, values-es,
+  # values-ar). Without this XcodeGen writes only `en` and the other three
+  # localizations in Localizable.xcstrings are compiled but never selectable.
+  knownRegions:
+    - en
+    - bn
+    - es
+    - ar
+  developmentLanguage: en
 
 packages:
   SafeWorldCore:
@@ -40,6 +49,14 @@ targets:
         # was newer than every release ever published.
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        # Same reason as the key above — the plist is rewritten wholesale, so a
+        # language not listed here is one iOS will never offer, however complete
+        # its translations are in Localizable.xcstrings.
+        CFBundleLocalizations:
+          - en
+          - bn
+          - es
+          - ar
     entitlements:
       path: SafeWorld/SafeWorld.entitlements
       properties:

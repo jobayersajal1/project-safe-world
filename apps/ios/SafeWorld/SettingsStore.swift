@@ -11,6 +11,16 @@ final class SettingsStore: ObservableObject {
     @Published private(set) var remoteDomains: [CategoryId: [String]]
     @Published var lastSyncError: String?
 
+    /// The chosen UI language tag, or `""` for "follow the system".
+    /// Published so changing it redraws every view that reads a string.
+    @Published var language: String = Language.stored {
+        didSet {
+            guard language != oldValue else { return }
+            Language.stored = language
+            Language.invalidate()
+        }
+    }
+
     private let defaults: UserDefaults
     private static let settingsKey = "settings"
     private static let statsKey = "stats"
@@ -41,8 +51,26 @@ final class SettingsStore: ObservableObject {
         guard
             let data = defaults.data(forKey: settingsKey),
             let stored = try? JSONDecoder().decode(Settings.self, from: data)
-        else { return .defaults() }
-        return Settings.withDefaults(stored)
+        else { return enforceMandatoryCategories(.defaults()) }
+        return enforceMandatoryCategories(Settings.withDefaults(stored))
+    }
+
+    /// Forces every non-optional category on.
+    ///
+    /// Port of `SettingsStore.enforceMandatoryCategories` on Android. Scam,
+    /// gambling, and adult are the protection promise — installing the app is the
+    /// decision to block them — so they are not a thing the UI offers to turn
+    /// off, and a stored value that says otherwise (an older build, a restored
+    /// backup, an edited container) must not be able to leave one off.
+    ///
+    /// Applied on load *and* on every mutation, so there is no window where a
+    /// write puts settings into a state the loader would have corrected.
+    private static func enforceMandatoryCategories(_ settings: Settings) -> Settings {
+        var result = settings
+        for category in Categories.all where !category.optional {
+            result.categories[category.id] = true
+        }
+        return result
     }
 
     private static func loadStats(from defaults: UserDefaults) -> DailyStats {
@@ -72,11 +100,43 @@ final class SettingsStore: ObservableObject {
     func update(_ mutate: (inout Settings) -> Void) {
         var next = settings
         mutate(&next)
-        settings = next
+        settings = Self.enforceMandatoryCategories(next)
         if let data = try? JSONEncoder().encode(settings) {
             defaults.set(data, forKey: Self.settingsKey)
         }
         syncContentBlocker()
+    }
+
+    // MARK: How much is blocked
+
+    /// Domains covered by the currently enabled categories, plus the user's own.
+    ///
+    /// Read from the bundled filter headers rather than by counting the JSON
+    /// lists: the filters carry the full uncapped corpus (~4.5M) while the JSON
+    /// is the capped subset Safari's rule compiler can take, and the headline is
+    /// meant to state what the app knows about, which is the former. Nine bytes
+    /// of header per category — see `FuseFilter.entryCount(atPath:)`.
+    ///
+    /// Computed once and cached; the file contents cannot change under a running
+    /// app, so only the enabled set has to be re-read.
+    private static let bundledCounts: [CategoryId: Int] = {
+        var counts: [CategoryId: Int] = [:]
+        for id in CategoryId.allCases {
+            guard let url = Blocklists.bundledFilterURL(for: id) else { continue }
+            counts[id] = FuseFilter.entryCount(atPath: url.path) ?? 0
+        }
+        return counts
+    }()
+
+    var blockedDomainCount: Int {
+        guard settings.enabled else { return 0 }
+        let bundled = Self.bundledCounts
+            .filter { settings.categories[$0.key] == true }
+            .reduce(0) { $0 + $1.value }
+        let remote = remoteDomains
+            .filter { settings.categories[$0.key] == true }
+            .reduce(0) { $0 + $1.value.count }
+        return bundled + remote + settings.customBlock.count
     }
 
     func incrementBlockedToday() {
