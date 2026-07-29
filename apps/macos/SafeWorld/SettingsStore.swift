@@ -60,8 +60,28 @@ final class SettingsStore: ObservableObject {
         settings = next
         if let data = try? JSONEncoder().encode(settings) {
             defaults.set(data, forKey: Self.settingsKey)
+            publishForDaemon(data)
         }
         syncHosts()
+    }
+
+    /// Where `safeworld-dnsd` reads settings from.
+    ///
+    /// The daemon runs as root in a separate process and cannot see this app's UserDefaults, so
+    /// the same encoded blob is also written to a file both can reach. The installer leaves that
+    /// file owned by the installing user, which is what lets an unprivileged app update it.
+    private static let daemonSettingsPath =
+        "/Library/Application Support/SafeWorld/settings.json"
+
+    /// Best-effort: the daemon may not be installed, and the app must never fail a settings change
+    /// because of it. When the file cannot be written the daemon keeps its previous settings —
+    /// which errs toward still blocking rather than silently stopping.
+    private func publishForDaemon(_ data: Data) {
+        let url = URL(fileURLWithPath: Self.daemonSettingsPath)
+        guard FileManager.default.fileExists(atPath: url.deletingLastPathComponent().path) else {
+            return
+        }
+        try? data.write(to: url, options: .atomic)
     }
 
     func syncHosts() {

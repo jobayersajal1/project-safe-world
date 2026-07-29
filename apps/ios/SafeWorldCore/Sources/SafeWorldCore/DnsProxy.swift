@@ -69,22 +69,36 @@ public final class DnsProxy: @unchecked Sendable {
         receive(on: connection)
     }
 
+    /// Read one datagram, then immediately arm for the next.
+    ///
+    /// A UDP `NWListener` hands out one connection per *source endpoint*, not per datagram, so a
+    /// client that reuses its socket — which stub resolvers do — sends every query down the same
+    /// connection. Handling one and cancelling drops the rest: measured at 1 answer in 500 under
+    /// load, while `dig` looked fine because each invocation uses a fresh source port.
     private func receive(on connection: NWConnection) {
         connection.receiveMessage { [weak self] data, _, _, error in
-            guard let self, let data, error == nil else {
+            guard let self else { return }
+
+            // `isComplete` is deliberately ignored. On UDP it is true for *every* datagram —
+            // each one is a complete message — so treating it as end-of-stream cancels the
+            // connection before the reply has even flushed, and nothing is ever answered.
+            // Only a real error ends the loop.
+            if error != nil {
                 connection.cancel()
                 return
             }
-            self.handle(query: [UInt8](data), on: connection)
+            if let data, !data.isEmpty {
+                self.handle(query: [UInt8](data), on: connection)
+            }
+            self.receive(on: connection)
         }
     }
 
     private func handle(query: [UInt8], on connection: NWConnection) {
         if let name = DnsMessage.questionName(query), engine.isBlocked(name) {
             if let nx = DnsMessage.nxDomainResponse(query) {
-                connection.send(content: Data(nx), completion: .contentProcessed { _ in
-                    connection.cancel()
-                })
+                // Not cancelled: the same connection carries this client's next query.
+                connection.send(content: Data(nx), completion: .contentProcessed { _ in })
                 onBlocked?(name)
                 return
             }
@@ -102,17 +116,14 @@ public final class DnsProxy: @unchecked Sendable {
         // network, and far better than a wrong answer.
         upstreamConnection.send(content: Data(query), completion: .contentProcessed { error in
             guard error == nil else {
+                // Only the upstream is torn down. Cancelling the client would drop the queries it
+                // has yet to send down the same socket.
                 upstreamConnection.cancel()
-                client.cancel()
                 return
             }
             upstreamConnection.receiveMessage { data, _, _, _ in
                 if let data {
-                    client.send(content: data, completion: .contentProcessed { _ in
-                        client.cancel()
-                    })
-                } else {
-                    client.cancel()
+                    client.send(content: data, completion: .contentProcessed { _ in })
                 }
                 upstreamConnection.cancel()
             }

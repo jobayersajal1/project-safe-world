@@ -75,6 +75,14 @@ install_daemon() {
   }
   echo "    $(ls "$PREFIX/filters" | wc -l | tr -d ' ') filters, $(du -sh "$PREFIX/filters" | cut -f1)"
 
+  # The app runs as the user and must be able to rewrite this when a category is toggled, so the
+  # file is left owned by whoever ran the installer rather than by root.
+  OWNER="${SUDO_USER:-$(whoami)}"
+  if [ ! -f "$PREFIX/settings.json" ]; then
+    echo '{"enabled":true,"lastRemoteUpdate":0,"customAllow":[],"categories":["list1",true,"list2",true,"list3",true,"list4",false,"list5",false],"remoteUpdateUrl":"","customBlock":[],"remoteUpdateIntervalHours":24}' > "$PREFIX/settings.json"
+  fi
+  chown "$OWNER" "$PREFIX" "$PREFIX/settings.json"
+
   # Saved before anything changes, so a failure part-way through is still recoverable.
   UPSTREAM="$(current_resolver)"
   [ -z "$UPSTREAM" ] && UPSTREAM="1.1.1.1"
