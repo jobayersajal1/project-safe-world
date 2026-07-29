@@ -229,6 +229,34 @@ Verified by hand on an Android 15 (API 35, arm64) emulator, with the tunnel esta
 so the forwarding path exercised here isn't quite a physical device's. Behaviour under network
 changes (Wi-Fi ↔ cellular), doze, and reboot is also untested — see next steps.
 
+## In-app updates
+
+The app is distributed as a downloaded APK, so no store updates it — which is why it updates
+itself. Settings shows the installed `versionName`, checks the
+[GitHub Releases API](https://api.github.com/repos/jobayersajal1/project-safe-world/releases/latest)
+for a newer tag (throttled to once a day, `force` on the button), and offers to download and
+install it. See [`update/`](app/src/main/kotlin/com/safeworld/app/update).
+
+- **Ordering** is `:core`'s `Version.kt`, mirrored by `Version.swift` for iOS/macOS with the same
+  pinned test vectors. Tolerant, not strict semver — a malformed tag reads as 0 rather than
+  throwing, so it can only fail to look newer.
+- **Asset selection** picks the `.apk` out of a release that also carries the `.dmg`, `.exe`, and
+  Chrome `.zip`. `UpdateChecker.select` is split from the fetch so both are tested against a
+  captured real payload.
+- **Installing** commits a `PackageInstaller` session; Android then shows its own confirmation
+  dialog, which `UpdateInstallReceiver` launches. `REQUEST_INSTALL_PACKAGES` is checked *before*
+  downloading, so a user who hasn't granted it is sent to the system screen instead of being
+  refused after 20 MB.
+- **The downloaded APK must be signed with the same key as the installed one** or Android refuses
+  the update outright. A locally-built debug install can therefore check for updates but never
+  apply one — expected, not a bug.
+- Drafts and pre-releases are skipped, and the check is not PIN-gated: updating only ever
+  strengthens protection, and gating it would cut a user who forgot their PIN off from fixes.
+
+Verified end-to-end on the emulator against the live API: a build faked to 0.0.9 found 0.1.0,
+reported its real 20 MB size, gated on the install permission, downloaded all 20,243,764 bytes, and
+brought up Android's "Do you want to update this app?" dialog.
+
 ## Next steps
 
 - [x] Scaffold the Gradle project (`:app` + `:core`).

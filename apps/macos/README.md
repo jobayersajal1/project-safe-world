@@ -134,10 +134,31 @@ wikipedia.org   status: NOERROR   103.102.166.224
 switch. Both need a root password, so they have never run. That is what the `install` script is
 for, and why it checks before it commits and can undo itself.
 
+## In-app updates
+
+The menu shows the installed `CFBundleShortVersionString` and checks the
+[GitHub Releases API](https://api.github.com/repos/jobayersajal1/project-safe-world/releases/latest)
+for a newer tag, throttled to once a day. `Version` and `ReleaseChecker` come from `SafeWorldCore`
+and are shared with iOS; the app-side wiring is [`UpdateService.swift`](SafeWorld/UpdateService.swift).
+
+Picking the `.dmg` out of a release that also carries the `.apk`, `.exe`, and Chrome `.zip`, it
+downloads to ~/Downloads with a progress bar and then opens the image — **stopping there on
+purpose**. Replacing a running app bundle in place is what Sparkle exists to do, and doing it
+safely means a signed, notarized build so the replacement can be verified; this app is ad-hoc
+signed, so a self-replacing updater would be swapping the binary with nothing checking what it
+swapped in. Mounting the image and letting the user drag it to Applications keeps Gatekeeper in the
+loop and is one step for them.
+
+> **Gotcha:** `CFBundleShortVersionString` has to be listed in `project.yml`'s `info.properties`,
+> not just as a build setting. XcodeGen rewrites `Info.plist` wholesale and defaults that key to
+> `"1.0"` — which compares as *newer* than the real 0.1.0 release, so the check silently reported
+> "up to date" forever. It is now `$(MARKETING_VERSION)`.
+
 ## Next steps
 
 - [x] Scaffold the Xcode menu-bar app project.
 - [x] Implement `/etc/hosts` sinkhole MVP with a settings UI mirroring the extension.
+- [x] In-app update check, downloading the `.dmg` and opening it.
 - [x] Remote list updates, reusing `SafeWorldCore.RemoteUpdate`/`Scramble` as iOS does.
 - [x] App icon (`Assets.xcassets/AppIcon.appiconset`) — same glyph as the menu-bar icon
       (`shield.checkerboard`), programmatically rendered since no design assets exist yet; swap for

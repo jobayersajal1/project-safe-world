@@ -137,6 +137,25 @@ Two behaviours to check first on that device:
 - **Memory headroom.** The mmap design should keep the extension well inside its
   budget, but that is reasoning, not a measurement.
 
+## In-app updates
+
+Settings shows the installed `CFBundleShortVersionString` and checks the
+[GitHub Releases API](https://api.github.com/repos/jobayersajal1/project-safe-world/releases/latest)
+for a newer tag, throttled to once a day. Shared with macOS via `SafeWorldCore`'s `Version` and
+`ReleaseChecker`; the app-side wiring is [`UpdateService.swift`](SafeWorld/UpdateService.swift).
+
+**iOS cannot install its own update, and the UI doesn't pretend otherwise.** There is no API for an
+app to fetch and install an `.ipa` — distribution is App Store, TestFlight, or MDM, and nothing
+else. So `ReleaseChecker.select` is called with no asset extension (nothing on a release is
+installable here), the button opens the release page in Safari, and the section footer says that's
+what it does. When the app reaches the App Store, the honest change is to point that link at the
+store listing; the checking half already works unchanged.
+
+> **Gotcha:** `CFBundleShortVersionString` has to be listed in `project.yml`'s `info.properties`,
+> not just as a build setting. XcodeGen rewrites `Info.plist` wholesale and defaults that key to
+> `"1.0"` — which compares as *newer* than the real 0.1.0 release, so the check silently reported
+> "up to date" forever. It is now `$(MARKETING_VERSION)`.
+
 ## Next steps
 
 - [x] Scaffold the Xcode project (app + Safari Content Blocker extension target).

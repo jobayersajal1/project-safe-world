@@ -192,6 +192,36 @@ message (which also increments the daily blocked counter). Message types between
 from the user-configured URL on a `chrome.alarms` schedule (and on demand). Bundled lists are the
 offline baseline; remote never replaces them.
 
+**Blocklist updates and *app* updates are different things.** The above ships new domains to an
+installed build. Separately, each app checks whether a newer *build* of itself exists, because the
+apps are distributed as downloaded files rather than through a store that would update them. Both
+halves read the **GitHub Releases API** (`/releases/latest`) rather than a hand-maintained version
+file: publishing a release is already the act that makes a build available, so there is nothing
+extra to bump and nothing that can drift out of step with the actual download. The unauthenticated
+rate limit (60/hr per IP) is generous for a once-a-day check, and hitting it degrades to "no update
+found" rather than to a wrong answer. Version ordering lives in `Version.kt` (Android `:core`) and
+`Version.swift` (`SafeWorldCore`, shared by iOS/macOS), which **pin the same vectors in their
+tests** — the two sides disagreeing would mean one platform nagging about an update that isn't one,
+or staying quiet about one that is. Asset selection is `UpdateChecker.select` / `ReleaseChecker
+.select`, tested against a captured real payload because one release carries the `.apk`, `.dmg`,
+`.exe`, and Chrome `.zip` together and each platform must pick out its own.
+
+**What each platform can actually do with an update differs, and the UI says so rather than
+pretending.** Android downloads the APK and commits a `PackageInstaller` session — a real
+end-to-end install, gated on `REQUEST_INSTALL_PACKAGES` (asked for *before* downloading, not
+after) and on the APK being signed with the same key, so a debug install can check but never
+apply. macOS downloads the `.dmg` to ~/Downloads and opens it, stopping short of replacing the
+running bundle — that is Sparkle's job and needs a signed, notarized build to be verifiable.
+**iOS cannot self-update at all**: there is no API to install an `.ipa` from inside an app, so it
+checks and then opens the release page, and its footer tells the user that's what the button
+does. When the app reaches the App Store the honest change is to point that link at the listing.
+
+**`CFBundleShortVersionString` must be declared in `project.yml`'s `info.properties`, not only in
+`settings`.** XcodeGen rewrites `Info.plist` wholesale and fills unlisted keys with its own
+defaults — for that key, `"1.0"`. The update check compares it against the newest release tag, so
+the default made a 0.1.0 build claim to be 1.0 and quietly conclude it was newer than every
+release ever published. Both Apple `project.yml`s now set it to `$(MARKETING_VERSION)`.
+
 **Only deltas are published — never the full list.** The complete list lives in this repo and ships
 inside each app. `baseline/baseline.json` records what the current release bundles (written by
 `npm run baseline:snapshot`, id pasted into both `RemoteConfig`s); `npm run build:remote` publishes
