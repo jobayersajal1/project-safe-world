@@ -252,10 +252,23 @@ install it. See [`update/`](app/src/main/kotlin/com/safeworld/app/update).
   apply one — expected, not a bug.
 - Drafts and pre-releases are skipped, and the check is not PIN-gated: updating only ever
   strengthens protection, and gating it would cut a user who forgot their PIN off from fixes.
+- `UpdateManager` is a **process-wide singleton**, like `SettingsStore`, not something the Activity
+  owns. Activity-scoped was the obvious first shape and it was wrong: a rotation cancelled an
+  in-flight download mid-stream and reset the state to Idle, while the throttle survived as a
+  static and suppressed the automatic re-check for another 24 hours — so a "0.2.0 is available"
+  the user had just been shown silently became a bare "Check for updates" button.
+
+**0.1.0 cannot be auto-updated.** The feature shipped in 0.2.0, so every 0.1.0 install has no
+updater in it and can never be offered one — those users have to install 0.2.0 by hand, once.
+Every release after that updates in place. This is the unavoidable bootstrap cost of adding an
+updater to an already-distributed app.
 
 Verified end-to-end on the emulator against the live API: a build faked to 0.0.9 found 0.1.0,
 reported its real 20 MB size, gated on the install permission, downloaded all 20,243,764 bytes, and
-brought up Android's "Do you want to update this app?" dialog.
+brought up Android's "Do you want to update this app?" dialog. Separately, the signed 0.2.0 release
+build installed **over** an existing 0.1.0 without an uninstall (same signing key, `versionCode`
+1 → 2), showed "Installed version 0.2.0" from the minified R8 build, and kept its check result
+across a rotation.
 
 ## Next steps
 
