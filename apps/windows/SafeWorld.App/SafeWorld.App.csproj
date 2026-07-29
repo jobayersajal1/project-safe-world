@@ -22,4 +22,14 @@
     <EmbeddedResource Include="Resources\SafeWorld.ico" />
   </ItemGroup>
 
+
+  <!--
+    The fuse filters are embedded so the release stays a single .exe, then extracted to
+    %LOCALAPPDATA% on first run: memory-mapping needs a real file on disk, and a single-file
+    bundle is not one. Same staging pattern the iOS app uses for its App Group container.
+  -->
+  <ItemGroup>
+    <EmbeddedResource Include="filters\*.filter" LogicalName="filters.%(Filename)%(Extension)" />
+  </ItemGroup>
+
 </Project>

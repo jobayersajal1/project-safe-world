@@ -35,6 +35,7 @@ apps/chrome-extension/src/rules/
 apps/ios/SafeWorldCore/Sources/SafeWorldCore/Resources/
 apps/ios/SafeWorldBlocker/Resources/blockerList.json
 apps/windows/SafeWorld.Core/Resources/
+apps/windows/SafeWorld.App/filters/
 apps/android/core/src/main/resources/blocklists/
 
 # Android signing. The keystore IS the app's identity — committing it lets

@@ -23,10 +23,36 @@ public sealed class SettingsStore
         "SafeWorld",
         "settings.json");
 
+    /// <summary>
+    /// The local DNS proxy, which carries the full uncapped list. Null when it could not start —
+    /// see <see cref="ProxyController.Unavailable"/> — in which case the hosts file below is still
+    /// applied and blocking continues with the smaller capped list.
+    /// </summary>
+    public ProxyController Proxy { get; } = new();
+
+    /// <summary>True when the uncapped proxy is doing the blocking rather than the hosts file.</summary>
+    public bool ProxyActive => Proxy.IsRunning;
+
     public SettingsStore()
     {
         Settings = Load();
+        StartProxy();
         SyncHosts();
+    }
+
+    /// <summary>
+    /// Bring the proxy up if protection is on. Deliberately tolerant: a failure here is reported
+    /// but never fatal, because the hosts file still provides blocking.
+    /// </summary>
+    private void StartProxy()
+    {
+        if (!Settings.Enabled)
+        {
+            Proxy.Stop();
+            return;
+        }
+        Proxy.Start(Settings);
+        Proxy.UpdateSettings(Settings);
     }
 
     private static Settings Load()
@@ -63,6 +89,9 @@ public sealed class SettingsStore
 
     public void SyncHosts()
     {
+        // Keep the proxy's view of settings current, and start or stop it with the master switch.
+        StartProxy();
+
         var blocklists = new Dictionary<CategoryId, List<string>>();
         foreach (var id in Enum.GetValues<CategoryId>())
         {
