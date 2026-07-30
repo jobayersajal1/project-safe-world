@@ -1,7 +1,9 @@
 # Safe World — Windows
 
-> **Status:** MVP shipping. A tray app manages a system-wide `hosts` sinkhole. WFP-based filtering
-> described below is not started.
+> **Status:** Shipping. The tray app runs a local DNS proxy blocking **4,482,470** domains in every
+> app; the `hosts` sinkhole (capped at ~150,000) remains the automatic fallback when the proxy cannot
+> start. WFP-based filtering described below is not started, and is now only about tamper resistance
+> rather than coverage.
 
 ## Goal
 
@@ -37,13 +39,24 @@ A hosts file can only sinkhole exact names, not "this domain and every subdomain
 can, so `HostsFileBuilder` emits both the bare domain and a `www.` variant for each blocked entry —
 coarser than the browser extension, and the acknowledged limitation of this MVP path.
 
-Not implemented yet, in order of robustness:
+Also implemented, and now the **default** path: **local DNS filtering**. `ProxyController` extracts
+the embedded fuse filters, checks port 53 is free *before* touching anything, points the adapters at
+`127.0.0.1` via `DnsSettingsManager`, and runs `DnsProxy` against a `FilterEngine`. That carries the
+full **4,482,470** domains rather than the hosts file's ~150,000, and matches subdomains properly
+instead of needing a `www.` variant per entry. `SettingsStore` starts it with the master switch and
+keeps its settings current; the hosts file is still written so that a proxy which cannot start
+degrades to the smaller list rather than to nothing.
 
-1. **WFP (Windows Filtering Platform)** — a background service uses WFP to filter connections/DNS
-   by domain for the whole machine. Robust and app-wide; needs a signed driver (in practice, an EV
-   code-signing certificate and Microsoft attestation signing) and is the long-term direction.
-2. **Local DNS filtering** — a resolver that sinkholes blocklisted domains without touching the
-   hosts file; simpler than WFP, still system-wide.
+`DnsSettingsManager` writes the previous DNS configuration to disk *before* changing it and calls
+`RecoverFromPreviousRun()` at startup, because the failure mode being guarded against is a machine
+left with no name resolution after a crash.
+
+Not implemented yet:
+
+1. **WFP (Windows Filtering Platform)** — a background service filtering connections by domain for
+   the whole machine. Needs a signed driver (in practice an EV code-signing certificate and Microsoft
+   attestation signing). With the DNS proxy shipping, the remaining argument for WFP is that DNS
+   filtering cannot see DoH, hardcoded resolvers, or direct-to-IP connections.
 
 **Remote list updates** are implemented: `SafeWorld.Core/Scramble.cs` and `RemoteUpdate.cs` port
 `packages/core/src/scramble.ts`/`types.ts` (`RemoteUpdatePayload`) to C#, pinning the same shared

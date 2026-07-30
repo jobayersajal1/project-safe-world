@@ -9,15 +9,25 @@ multi-platform product. **Phase 1 is a Manifest V3 Chrome extension** (shipping)
 app (`apps/ios`), is in progress**: SwiftUI app + Safari Content Blocker extension, backed by a
 `SafeWorldCore` Swift package. **Phase 3, an Android app (`apps/android`), is in progress**:
 Kotlin/Compose app + a local `VpnService` DNS sinkhole, backed by a `:core` Kotlin module. **Phase
-4, a macOS app (`apps/macos`), and Phase 5, a Windows app (`apps/windows`), both have a shipping
-MVP**: menu-bar/tray apps that manage a `hosts`-file sinkhole. macOS **shares iOS's
+4, a macOS app (`apps/macos`), and Phase 5, a Windows app (`apps/windows`), both ship**: menu-bar
+and tray apps that run a **local DNS resolver** on `127.0.0.1:53` over memory-mapped fuse filters,
+blocking the full ~4.48M domains in every app. The `hosts`-file sinkhole each started as is now only
+the fallback when the resolver cannot start. macOS **shares iOS's
 `SafeWorldCore` Swift package** rather than reimplementing `decide()` again — it's pure Foundation
 and already declares macOS support in its own `Package.swift`, and both are Swift/Apple platforms.
 Windows has neither a JS runtime nor Swift/Kotlin available, so `apps/windows/SafeWorld.Core` is a
 fourth from-scratch port of categories/`Settings`/`decide()`, in C# — **keep all ports (Swift,
-Kotlin, C#) in sync with `packages/core` by hand**. Both desktop MVPs are hosts-file sinkholes only
-(coarser than DNR/VPN — see each README); Network Extension (macOS) and WFP (Windows) content
-filtering are not started.
+Kotlin, C#) in sync with `packages/core` by hand**. Network Extension (macOS) and WFP (Windows) content
+filtering are not started; with the DNS resolvers shipping, those are now about tamper resistance
+and about seeing DoH/direct-to-IP traffic, not about coverage.
+
+**Per-platform reach, because it differs and the numbers are easy to get wrong:** Android 4,430,965
+(VpnService); macOS 4,430,965 once the daemon is installed from the app, ~150,000 on the hosts
+fallback; Windows 4,482,470 via the proxy, ~150,000 on the hosts fallback; **iOS 150,000** — its
+Safari content blocker is capped by Safari's ~150k rule ceiling, and the `SafeWorldTunnel` packet
+tunnel that would carry the full list needs a paid Apple Developer account and a real device, so it
+cannot run here. Note that Chrome on iOS does **not** use Safari content blockers, so the tunnel is
+the only thing that would cover it.
 
 ## The lists are not in this repo
 
@@ -290,8 +300,21 @@ wire-format handling is unit-testable; keep them that way. The service reads `Se
 query, so settings changes apply without restarting the tunnel. DNS-layer filtering can't see
 DoH/DoT, hardcoded resolvers, or direct-to-IP connections — see `apps/android/README.md`.
 
-**macOS and Windows block via a hosts-file sinkhole, the MVP path both READMEs called out before
-either had code.** Both platforms' `HostsFileBuilder` (Swift: shared with iOS in `SafeWorldCore`;
+**macOS and Windows block via a local DNS resolver; the hosts file is the fallback.** Both run our
+own code in the resolution path — macOS through the root `safeworld-dnsd` LaunchDaemon
+(`apps/macos/SafeWorld/DaemonController.swift` installs it; the binary is embedded at
+`Contents/Helpers/` by a `postBuildScripts` phase), Windows through `ProxyController` +
+`DnsProxy` — matching against memory-mapped fuse filters and carrying the full ~4.48M rather than
+the hosts file's ~150,000. **Neither may reorder its install sequence:** save the current resolver,
+start the resolver, *prove it answers on port 53*, and only then repoint DNS, keeping the real
+resolver as secondary so a dead daemon degrades to unfiltered DNS rather than none. Windows
+additionally persists the previous DNS config to disk before changing it and calls
+`RecoverFromPreviousRun()` at startup, because the failure being guarded against is a machine left
+unable to resolve anything.
+
+The hosts path below remains, and is still written, so that a resolver which cannot start (port 53
+taken, no admin rights) degrades to the smaller list instead of to nothing. Both platforms'
+`HostsFileBuilder` (Swift: shared with iOS in `SafeWorldCore`;
 C#: `apps/windows/SafeWorld.Core/HostsFileBuilder.cs`) computes the set of domains `decide()` would
 block and renders a marker-delimited (`# BEGIN SAFEWORLD` / `# END SAFEWORLD`) block mapping each
 to `0.0.0.0`, spliced into `/etc/hosts` or `C:\Windows\System32\drivers\etc\hosts`. Every candidate
@@ -302,8 +325,8 @@ once per bundled domain the way a naive port of the per-host `decide()` API woul
 `decide()` does an O(n) linear scan per category to support subdomain matching, so calling it ~45k
 times (once per bundled domain, to build the sinkhole list) is O(candidates × total bundled
 domains) — it pegs a CPU core rather than returning. A hosts file can only sinkhole exact names, so
-each blocked domain is emitted both bare and with a `www.` prefix — coarser than DNR/VPN-based
-blocking, and why this stays an MVP rather than the end state (Network Extension / WFP are next).
+each blocked domain is emitted both bare and with a `www.` prefix — coarser than the resolver path,
+which is why the resolver is preferred and this is only the fallback.
 Writing the file needs admin rights: macOS stages the new content in a user-writable temp file and
 asks once via `osascript … with administrator privileges` to copy it into place (never
 interpolating user-supplied domains into the privileged command line); Windows instead runs the

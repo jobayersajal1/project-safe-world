@@ -5,6 +5,7 @@ import SafeWorldCore
 struct MenuView: View {
     @EnvironmentObject private var store: SettingsStore
     @StateObject private var updates = UpdateService()
+    @StateObject private var daemon = DaemonController()
     @State private var allowText = ""
     @State private var blockText = ""
     @State private var listsExpanded = false
@@ -22,6 +23,8 @@ struct MenuView: View {
             Text("Self-control model — you can turn protection off any time. There's no PIN lock.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
+
+            deviceWideSection
 
             Divider()
 
@@ -172,5 +175,49 @@ struct MenuView: View {
             $0.customAllow = parseList(allowText)
             $0.customBlock = parseList(blockText)
         }
+    }
+
+    /// Turning the hosts-file sinkhole into a real device-wide resolver.
+    ///
+    /// The distinction is worth stating in the UI rather than hiding, because the two differ by more
+    /// than a factor of thirty: the hosts file carries the capped 150,000 domains and can only match
+    /// exact names, while the daemon matches memory-mapped fuse filters holding 4,482,470. Windows
+    /// already does this by default via `ProxyController`; macOS could not, because installing the
+    /// daemon needs root and the app had no way to ask.
+    @ViewBuilder
+    private var deviceWideSection: some View {
+        Divider()
+
+        VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                Text("Device-wide blocking").font(.subheadline.weight(.medium))
+                Spacer()
+                if daemon.isBusy { ProgressView().controlSize(.small) }
+            }
+
+            if daemon.isRunning {
+                Text("Blocking \(daemon.blockedDomainCount.formatted()) sites in every app.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Button("Turn off") { Task { await daemon.uninstall() } }
+                    .disabled(daemon.isBusy)
+            } else {
+                // States the trade plainly: what it costs (an admin password) and what it buys.
+                Text("Blocking is limited to a smaller list right now, and only where the hosts file is read. Turning this on filters every app on this Mac.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Button("Turn on (asks for your password)") {
+                    Task { await daemon.install(settings: store.settings) }
+                }
+                .disabled(daemon.isBusy)
+            }
+
+            if let error = daemon.lastError, error != "Cancelled." {
+                Text(error).font(.caption).foregroundStyle(.red)
+            }
+        }
+        // A menu-bar popover is rebuilt each time it opens, so this is enough to keep the state and
+        // the count current without observing settings.
+        .onAppear { daemon.refresh() }
     }
 }

@@ -17,8 +17,8 @@ settings:
   base:
     SWIFT_VERSION: "5.0"
     CODE_SIGN_STYLE: Automatic
-    MARKETING_VERSION: "0.2.0"
-    CURRENT_PROJECT_VERSION: "2"
+    MARKETING_VERSION: "0.3.0"
+    CURRENT_PROJECT_VERSION: "3"
 
 targets:
   SafeWorld:
@@ -50,6 +50,27 @@ targets:
     dependencies:
       - package: SafeWorldCore
         product: SafeWorldCore
+    postBuildScripts:
+      # Embed the root DNS daemon into the app bundle.
+      #
+      # Without this the `.dmg` contains no daemon at all, which is why installing it was only
+      # possible through `apps/macos/dnsd/safeworld-dnsd.sh` — and why the shipping app blocked the
+      # capped 150,000 hosts-file list instead of the 4,482,470 the filters hold.
+      #
+      # A SwiftPM *executable* product cannot be embedded as a helper by declaring a dependency the
+      # way a library can, so it is built and copied here. `Contents/Helpers` is where
+      # `Bundle.main.url(forAuxiliaryExecutable:)` looks.
+      - name: Embed safeworld-dnsd
+        basedOnDependencyAnalysis: false
+        script: |
+          set -e
+          CORE="$SRCROOT/../ios/SafeWorldCore"
+          swift build -c release --package-path "$CORE" --product safeworld-dnsd
+          BIN="$(swift build -c release --package-path "$CORE" --show-bin-path)/safeworld-dnsd"
+          HELPERS="$CODESIGNING_FOLDER_PATH/Contents/Helpers"
+          mkdir -p "$HELPERS"
+          cp "$BIN" "$HELPERS/safeworld-dnsd"
+          chmod 755 "$HELPERS/safeworld-dnsd"
 
 schemes:
   SafeWorld:

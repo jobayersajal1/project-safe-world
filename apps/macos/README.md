@@ -1,7 +1,9 @@
 # Safe World — macOS
 
-> **Status:** MVP shipping. A menu-bar app manages a system-wide `/etc/hosts` sinkhole. The
-> stronger Network Extension content filter described below is not started.
+> **Status:** Shipping. The menu-bar app installs a root DNS daemon that blocks **4,430,965**
+> domains in every app; the `/etc/hosts` sinkhole (capped at ~150,000) remains as the fallback when
+> the daemon isn't installed. The Network Extension content filter described below is not started
+> and is no longer needed for coverage — only for tamper resistance.
 
 ## Goal
 
@@ -118,6 +120,19 @@ iOS and Windows now ship, byte for byte.
 A GUI app in `/Applications` runs as the user and cannot bind a port below 1024, so the resolver
 is a separate binary that `launchd` starts as root. That is the only reason the daemon exists.
 
+**Installed from the app, not from a terminal.** `DaemonController.swift` does what the shell script
+below does, in one `osascript … with administrator privileges` prompt, and the daemon binary is
+embedded at `Contents/Helpers/safeworld-dnsd` by a `postBuildScripts` phase in `project.yml`. Before
+that phase existed the `.dmg` contained no daemon at all, which is why installation was
+terminal-only and the shipping app blocked the capped list.
+
+The ordering in both the app and the script is the whole safety story, and neither may be reordered:
+save the current resolver first, load the daemon, **prove it answers on port 53 before touching
+DNS**, and only then point DNS at `127.0.0.1` with the real resolver kept as secondary. Uninstall
+reverses it — DNS first, daemon second.
+
+The script remains for development and recovery:
+
 ```bash
 npm run build:ios                      # generates the filters
 sudo apps/macos/dnsd/safeworld-dnsd.sh install
@@ -127,6 +142,13 @@ sudo apps/macos/dnsd/safeworld-dnsd.sh uninstall
 ```
 
 `status` needs no root and reports what is loaded and what DNS is set.
+
+> **What is verified.** The embedded daemon has been run from the built `.app` and reported
+> `serving on 127.0.0.1, 4430965 domains`, blocking `bet365.com` while `wikipedia.org` resolved. The
+> shell-script install path was tested end to end under `sudo`, including fail-open and full DNS
+> restoration. **The app's own install button has not been clicked** — the authorization prompt needs
+> a human at the keyboard — so the `osascript` plumbing around that verified script is the one
+> untested link.
 
 ### Fails open, deliberately
 

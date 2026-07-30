@@ -130,6 +130,21 @@ targets:
           NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).PacketTunnelProvider
     entitlements:
       path: SafeWorldTunnel/SafeWorldTunnel.entitlements
+      properties:
+        # Both of these were missing, and the file was an empty <dict/>. The host
+        # app declared them; this target declared neither, which would have failed
+        # in two different ways on a correctly provisioned account:
+        #
+        # - Without the app group, `FilterEngine()` cannot open the App Group
+        #   container the host app stages the filters into, so the tunnel would
+        #   start and match nothing. Silent: a running tunnel that blocks zero
+        #   domains looks exactly like a healthy one.
+        # - Without the networkextension entitlement the extension is not a valid
+        #   packet-tunnel provider at all and the system refuses to launch it.
+        com.apple.security.application-groups:
+          - group.com.safeworld.app
+        com.apple.developer.networking.networkextension:
+          - packet-tunnel-provider
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.safeworld.app.tunnel
