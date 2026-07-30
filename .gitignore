@@ -52,6 +52,10 @@ apps/macos/dist/
 # Xcode / Swift
 .build/
 build/
+# Device (Release-iphoneos) output, kept separate from the simulator's `build/`
+# so both can exist at once. Contains the bundled blocklists, so it must never
+# be tracked — see the note at the top of this file.
+build-device/
 DerivedData/
 *.xcuserstate
 xcuserdata/
