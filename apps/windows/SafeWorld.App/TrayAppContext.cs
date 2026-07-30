@@ -30,6 +30,10 @@ internal sealed class TrayAppContext : ApplicationContext
         _icon.DoubleClick += (_, _) => ShowCustomLists();
         _store.Changed += UpdateIcon;
 
+        // The proxy lives in this process, so "does the app start with Windows" and "is the
+        // machine protected after a reboot" are the same question.
+        StartupManager.EnsureRegistered();
+
         UpdateIcon();
         RebuildMenu();
 
@@ -82,6 +86,21 @@ internal sealed class TrayAppContext : ApplicationContext
             item.Click += (_, _) => _store.Update(s => s.Categories[category.Id] = !isOn);
             menu.Items.Add(item);
         }
+
+        menu.Items.Add(new ToolStripSeparator());
+
+        // Shown rather than assumed: if this is off, protection ends at the next restart, and the
+        // only symptom is blocked sites quietly working again.
+        var startWithWindows = new ToolStripMenuItem("Start with Windows")
+        {
+            Checked = StartupManager.IsRegistered(),
+        };
+        startWithWindows.Click += (_, _) =>
+        {
+            if (startWithWindows.Checked) StartupManager.Unregister();
+            else StartupManager.Register();
+        };
+        menu.Items.Add(startWithWindows);
 
         menu.Items.Add(new ToolStripSeparator());
         var editLists = new ToolStripMenuItem("Edit custom lists...");

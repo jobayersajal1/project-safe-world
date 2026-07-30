@@ -51,6 +51,26 @@ degrades to the smaller list rather than to nothing.
 `RecoverFromPreviousRun()` at startup, because the failure mode being guarded against is a machine
 left with no name resolution after a crash.
 
+### Starting with Windows
+
+The proxy runs **inside this process** — there is no service — so "does the app start with Windows"
+and "is the machine protected after a reboot" are the same question. Until `StartupManager` existed
+the app registered no startup entry at all, and a restart silently ended protection.
+
+It was worse than simply unprotected. A reboot is not a clean exit, so the adapters are still pointed
+at `127.0.0.1` with the real resolver as secondary and nothing listening on the primary — every
+lookup waited for the dead primary to time out before falling back. Unfiltered *and* slow.
+`RecoverFromPreviousRun()` fixes that, but only runs when the app starts.
+
+**A scheduled task, not the `Run` key.** `app.manifest` requests `requireAdministrator`, and Windows
+will not elevate anything launched from `HKCU\...\CurrentVersion\Run` — it silently does nothing.
+`schtasks /Create ... /SC ONLOGON /RL HIGHEST` is the supported way to start an elevated app at logon
+without a UAC prompt every time. The tray menu shows the state and can turn it off.
+
+Registration is re-checked on every launch rather than recorded as a one-time "first run" flag: the
+executable can be moved and the task can be removed by cleanup tools, and a stale task has exactly
+the same effect as no task.
+
 Not implemented yet:
 
 1. **WFP (Windows Filtering Platform)** — a background service filtering connections by domain for
