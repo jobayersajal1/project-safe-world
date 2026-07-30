@@ -85,9 +85,13 @@ class MainActivity : ComponentActivity() {
         subscriptions = SubscriptionStore.get(this)
         updateManager = UpdateManager.get(this, installedVersion)
 
-        // Whatever was already downloaded has to reach the matcher before the
-        // first DNS query, not after the first UI interaction.
-        store.setSubscriptionSets(subscriptions.setsByCategory())
+        // Off the main thread: this is megabytes of read plus sorting close to a
+        // million longs, which ANRs in onCreate. Until it lands the app blocks the
+        // bundled lists as normal, so nothing waits on it.
+        lifecycleScope.launch {
+            subscriptions.load()
+            store.setSubscriptionSets(subscriptions.setsByCategory())
+        }
 
         lifecycleScope.launch { RemoteUpdateService.refreshIfDue(store) }
         RemoteUpdateWorker.schedule(this)

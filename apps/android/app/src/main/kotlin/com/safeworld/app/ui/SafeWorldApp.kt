@@ -75,7 +75,12 @@ fun SafeWorldApp(
 ) {
     val hasPin by store.hasPin.collectAsStateWithLifecycle()
     val hasRecoveryCode by store.hasRecoveryCode.collectAsStateWithLifecycle()
-    val subscriptionsOffered by subscriptions.offered.collectAsStateWithLifecycle()
+    val subscriptionsAccepted by subscriptions.accepted.collectAsStateWithLifecycle()
+    // Skipping hides the offer for this launch only; `remember` does not survive
+    // process death, so the next time the app is opened it asks again. That is
+    // the requested behaviour: one dismissal is not a permanent answer, but it is
+    // never asked twice in the same sitting either.
+    var offerSkippedThisSession by remember { mutableStateOf(false) }
     var tab by remember { mutableStateOf(Tab.Home) }
     var challenge by remember { mutableStateOf<PinChallenge?>(null) }
     var gate by remember { mutableStateOf<Gate>(Gate.None) }
@@ -103,23 +108,16 @@ fun SafeWorldApp(
     // the two categories with no off switch, so once one is on, turning it off
     // costs the PIN — asking before the PIN existed would leave a window where the
     // strongest protection in the app could be undone with one tap.
-    if (hasPin && hasRecoveryCode && gate is Gate.None && !subscriptionsOffered) {
+    if (hasPin && hasRecoveryCode && gate is Gate.None && !subscriptionsAccepted && !offerSkippedThisSession) {
         SubscriptionOfferScreen(
             onAccept = {
-                for (subscription in Subscriptions.ALL) {
-                    subscriptions.setEnabled(subscription.id, true)
-                }
-                subscriptions.markOffered()
+                subscriptions.acceptAll()
                 // Downloading is left to the scheduled worker rather than done
                 // here: several megabytes must not stand between someone and a
                 // working app, and a failed fetch must not strand them in setup.
                 onSubscriptionsChanged()
             },
-            onSkip = {
-                // Recorded either way, so declining is respected instead of
-                // re-asked at every launch.
-                subscriptions.markOffered()
-            },
+            onSkip = { offerSkippedThisSession = true },
         )
         return
     }
@@ -211,7 +209,6 @@ fun SafeWorldApp(
                 store = store,
                 subscriptions = subscriptions,
                 onProtectionChange = onProtectionChange,
-                onSubscriptionsChanged = onSubscriptionsChanged,
                 requestPin = requestPin,
                 onEnableUninstallProtection = onEnableUninstallProtection,
                 onDisableUninstallProtection = onDisableUninstallProtection,

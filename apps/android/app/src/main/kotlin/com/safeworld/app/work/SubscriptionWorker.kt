@@ -57,10 +57,25 @@ class SubscriptionWorker(
         private const val UNIQUE_NOW = "subscription-refresh-now"
         private const val KEY_FORCE = "force"
 
-        private val constraints = Constraints.Builder()
-            // Not CONNECTED: see the class comment. 18 MB is not something to put
-            // on someone's cellular plan without being asked.
+        /**
+         * Recurring refreshes wait for Wi-Fi. Nobody agreed to spend mobile data
+         * on a background re-download they never asked for.
+         */
+        private val periodicConstraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.UNMETERED)
+            .build()
+
+        /**
+         * The first fetch runs on any connection, because the user just read
+         * "about 18 MB" and tapped Download.
+         *
+         * Requiring Wi-Fi here sounds safer and is worse: on a phone that never
+         * sees Wi-Fi the download would simply never happen, and with no per-list
+         * UI there is nothing to explain the silence. Honouring explicit,
+         * size-disclosed consent beats second-guessing it.
+         */
+        private val immediateConstraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
         /**
@@ -71,7 +86,7 @@ class SubscriptionWorker(
             val request = PeriodicWorkRequestBuilder<SubscriptionWorker>(
                 SubscriptionStore.REFRESH_INTERVAL_HOURS,
                 TimeUnit.HOURS,
-            ).setConstraints(constraints).build()
+            ).setConstraints(periodicConstraints).build()
 
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                 UNIQUE_PERIODIC,
@@ -91,7 +106,7 @@ class SubscriptionWorker(
          */
         fun runNow(context: Context) {
             val request = OneTimeWorkRequestBuilder<SubscriptionWorker>()
-                .setConstraints(constraints)
+                .setConstraints(immediateConstraints)
                 .build()
 
             WorkManager.getInstance(context)

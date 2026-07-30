@@ -153,21 +153,11 @@
     <string name="update_error_permission">تعذّر فتح شاشة إعدادات النظام الخاصة بتثبيت التطبيقات.</string>
 
     <!-- Subscriptions: lists we may not redistribute, fetched by the device -->
-    <string name="subscription_hagezi_gambling">قائمة إضافية للمقامرة</string>
-    <string name="subscription_hagezi_nsfw">قائمة إضافية للمحتوى الإباحي</string>
-    <string name="subscription_oisd_nsfw">قائمة oisd للمحتوى الإباحي</string>
-    <string name="subscription_unnamed">قائمة إضافية</string>
-    <string name="subscription_description">%1$s موقع إضافي، من %2$s.</string>
-    <string name="subscription_terms">تنزيل %1$s، بترخيص %2$s. يجلبها جهازك من الناشر مباشرة.</string>
-    <string name="subscription_active">تمت إضافة %1$s موقع.</string>
-    <string name="subscription_downloading">جارٍ التنزيل…</string>
-    <string name="subscription_failed">تعذّر تنزيل هذه القائمة. ستُعاد المحاولة تلقائيًا.</string>
-    <string name="subscription_off_pin_title">إزالة هذه القائمة؟</string>
-    <string name="subscription_off_pin_message">أدخل رمز PIN لإيقاف استخدام قائمة الحظر هذه.</string>
-    <string name="subscription_offer_title">احظر المزيد، بقوائم لا يمكننا تضمينها</string>
-    <string name="subscription_offer_body">بعض أفضل قوائم الحظر لا تسمح لنا بتضمينها. بدلًا من ذلك يمكن لجهازك تنزيلها مباشرة — نحو %1$s موقع إضافي.</string>
-    <string name="subscription_offer_item">%1$s موقع · %2$s · %3$s</string>
-    <string name="subscription_offer_note">نحو %1$s للتنزيل، عبر Wi-Fi عند الإمكان. هذه القوائم من ناشريها، وليست من Safe World، ولكل منها ترخيصها الخاص. يمكنك تغيير ذلك لاحقًا من الرئيسية.</string>
-    <string name="subscription_offer_accept">تشغيلها</string>
+    <string name="subscription_offer_title">احظر مواقع أكثر</string>
+    <string name="subscription_offer_body">يمكننا حظر نحو %1$s موقع إضافي. يقوم جهازك بتنزيل القوائم مباشرة من القائمين عليها — إذ لا يمكن تضمينها داخل التطبيق نفسه.</string>
+    <string name="subscription_offer_note">نحو %1$s للتنزيل، عبر Wi-Fi عند الإمكان. للاستخدام الشخصي فقط.</string>
+    <string name="subscription_offer_accept">التنزيل والحظر</string>
     <string name="subscription_offer_skip">ليس الآن</string>
+    <string name="subscription_pending">يجري تنزيل القوائم الإضافية. سيزداد العدد عند وصولها.</string>
+    <string name="subscription_pending_retry">تعذّر إكمال تنزيل القوائم الإضافية. سيحاول Safe World مرة أخرى.</string>
 </resources>

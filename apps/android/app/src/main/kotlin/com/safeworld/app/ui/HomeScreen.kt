@@ -61,7 +61,6 @@ fun HomeScreen(
     requestPin: RequestPin,
     onEnableUninstallProtection: () -> Unit,
     onDisableUninstallProtection: () -> Unit,
-    onSubscriptionsChanged: () -> Unit,
     uninstallProtectionActive: Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -102,6 +101,11 @@ fun HomeScreen(
 
         BlockedCountCard(count = blockedCount)
 
+        // With no per-list rows, an accepted download that hasn't landed yet would
+        // otherwise be invisible: the count simply wouldn't move, with nothing
+        // saying why. Not a control — just the one sentence that explains a wait.
+        SubscriptionPendingNote(subscriptions)
+
         Text(stringResource(R.string.block_more_title), style = MaterialTheme.typography.titleSmall)
         Card {
             Column(Modifier.padding(vertical = 8.dp)) {
@@ -128,12 +132,6 @@ fun HomeScreen(
                     )
                     HorizontalDivider()
                 }
-
-                SubscriptionRows(
-                    subscriptions = subscriptions,
-                    requestPin = requestPin,
-                    onChanged = onSubscriptionsChanged,
-                )
 
                 AddWebsitesSection(store = store, requestPin = requestPin)
             }

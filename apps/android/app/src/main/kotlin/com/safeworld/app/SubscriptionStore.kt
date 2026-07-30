@@ -71,33 +71,49 @@ class SubscriptionStore private constructor(context: Context) {
     @Volatile
     private var sets: Map<String, LongKeyDomainSet> = emptyMap()
 
-    init {
-        // Loading from disk is a few MB of sequential read; done eagerly so the
-        // first DNS query after a restart is already filtered rather than racing
-        // the load.
-        sets = _enabled.value.mapNotNull { id ->
+    /**
+     * Reads the stored keys from disk. **Must not be called on the main thread.**
+     *
+     * This is several megabytes of sequential read followed by sorting close to a
+     * million longs, which is exactly the shape of work that produces an ANR if it
+     * happens in `onCreate`. It used to be an `init` block, and did.
+     *
+     * Until this completes the app simply blocks nothing extra — the bundled lists
+     * are unaffected — so there is no correctness reason to make anyone wait for
+     * it.
+     */
+    suspend fun load() = withContext(Dispatchers.IO) {
+        val loaded = _enabled.value.mapNotNull { id ->
             readKeys(id)?.let { id to LongKeyDomainSet.ofKeys(it) }
         }.toMap()
+        sets = loaded
+        byCategory = computeSetsByCategory()
     }
 
     /**
      * Enabled subscriptions collapsed into one set per category, in the shape
-     * [SettingsStore.mergeBlocklists] wants. Two adult feeds become one
-     * [LongKeyDomainSet] rather than two lookups on the DNS hot path.
+     * [SettingsStore.mergeBlocklists] wants.
+     *
+     * **Cached, not recomputed.** Building it merges and sorts every key, so doing
+     * it per call would spend a second of CPU each time the caller happened to ask.
      */
-    fun setsByCategory(): Map<CategoryId, DomainSet> {
-        val byCategory = mutableMapOf<CategoryId, MutableList<LongKeyDomainSet>>()
+    @Volatile
+    private var byCategory: Map<CategoryId, DomainSet> = emptyMap()
+
+    fun setsByCategory(): Map<CategoryId, DomainSet> = byCategory
+
+    /** Two adult feeds become one set, rather than two lookups per DNS query. */
+    private fun computeSetsByCategory(): Map<CategoryId, DomainSet> {
+        val grouped = mutableMapOf<CategoryId, MutableList<LongKeyDomainSet>>()
         for (id in _enabled.value) {
             val subscription = Subscriptions.byId(id) ?: continue
             val set = sets[id] ?: continue
-            byCategory.getOrPut(subscription.category) { mutableListOf() }.add(set)
+            grouped.getOrPut(subscription.category) { mutableListOf() }.add(set)
         }
-        return byCategory.mapValues { (_, list) ->
+        return grouped.mapValues { (_, list) ->
             if (list.size == 1) {
                 list[0]
             } else {
-                // Merge-and-sort once here rather than paying an extra binary
-                // search per query forever.
                 val merged = LongArray(list.sumOf { it.size })
                 var at = 0
                 for (set in list) {
@@ -132,37 +148,48 @@ class SubscriptionStore private constructor(context: Context) {
             _status.value = _status.value - id
             persistStatus()
         }
+        byCategory = computeSetsByCategory()
     }
 
     fun isEnabled(id: String): Boolean = id in _enabled.value
 
-    // MARK: Onboarding offer
+    // MARK: The offer
 
-    private val _offered = MutableStateFlow(prefs.getBoolean(KEY_OFFERED, false))
+    private val _accepted = MutableStateFlow(prefs.getBoolean(KEY_ACCEPTED, false))
 
     /**
-     * Whether the one-time setup offer has been answered.
+     * Whether the user has agreed to download the extra lists.
      *
-     * These lists more than double what the app blocks, and a toggle buried under
-     * "want to block more?" is a toggle most people never find — so the choice is
-     * put in front of them once, during setup, and never again.
+     * **Consent is the whole mechanism.** There are no per-list switches: someone
+     * who agreed to download a blocklist wants what it blocks, and a switch per
+     * feed would be a way to turn parts of gambling or adult blocking back off —
+     * exactly the control this app deliberately does not offer for its own
+     * categories. Once accepted, these behave like `list1`–`list3`: folded into the
+     * blocked count, no rows, no toggles.
      *
-     * Deliberately **not** default-on. Enabling it downloads several megabytes
-     * from a third party and accepts that party's terms; doing either without
-     * asking would be both legally weaker and rude on a metered connection. It is
-     * recorded as answered whichever way they answer, so declining is respected
-     * rather than re-asked at every launch.
+     * Not default-on. Enabling downloads megabytes from third parties and accepts
+     * their terms, and doing either unasked would be both legally weaker and rude
+     * on a metered connection.
      *
-     * Offered *after* the PIN and recovery code exist, not before. These feeds
-     * belong to the two categories with no off switch, so as soon as one is on,
-     * turning it off costs the PIN — and there should be no window where the
-     * strongest protection in the app can be undone with one tap.
+     * Only acceptance is persisted. Skipping is deliberately *not* recorded, so
+     * the offer comes back the next time the app is opened — the alternative is one
+     * mistimed tap permanently costing someone half the protection available to
+     * them. Within a single launch it is asked once, never repeatedly.
      */
-    val offered: StateFlow<Boolean> = _offered.asStateFlow()
+    val accepted: StateFlow<Boolean> = _accepted.asStateFlow()
 
-    fun markOffered() {
-        _offered.value = true
-        prefs.edit().putBoolean(KEY_OFFERED, true).apply()
+    /** Accepts every catalogued list. There is no partial answer to give. */
+    fun acceptAll() {
+        val ids = Subscriptions.ALL.map { it.id }.toSet()
+        _enabled.value = ids
+        // Nothing is on disk yet; the worker fills it in. Recomputed anyway so the
+        // cache never lags the enabled set.
+        byCategory = computeSetsByCategory()
+        _accepted.value = true
+        prefs.edit()
+            .putStringSet(KEY_ENABLED, ids)
+            .putBoolean(KEY_ACCEPTED, true)
+            .apply()
     }
 
     // MARK: Fetch
@@ -229,6 +256,7 @@ class SubscriptionStore private constructor(context: Context) {
 
                 writeKeys(id, keys)
                 sets = sets + (id to LongKeyDomainSet.ofKeys(keys))
+                byCategory = computeSetsByCategory()
                 setStatus(
                     id,
                     Status(
@@ -377,7 +405,7 @@ class SubscriptionStore private constructor(context: Context) {
         private const val KEY_FETCHED_SUFFIX = ".fetchedAt"
         private const val KEY_COUNT_SUFFIX = ".domainCount"
         private const val KEY_ETAG_SUFFIX = ".etag"
-        private const val KEY_OFFERED = "offered"
+        private const val KEY_ACCEPTED = "accepted"
 
         private const val MAGIC = 0x53575355 // "SWSU"
         private const val FORMAT_VERSION = 1
