@@ -47,8 +47,19 @@ const PLACEHOLDER_HOSTS = new Set([
  * "block all of it" is the correct reading rather than a stray line. Adding to
  * this list means blocking an entire TLD — do it only for one that has no
  * legitimate use for our users.
+ *
+ * **Two consumers must agree on this set, and one of them is on another
+ * platform.** Plaintext matching (`hostMatchesDomain`) handles a stored `xxx`
+ * for free, because it compares suffixes. Android stores subscriptions *hashed*,
+ * so matching goes through `DomainHasher.candidates`, which deliberately stops
+ * before bare single-label names — a collision on `com` against a probabilistic
+ * filter would block every .com. That guard used to rest on "a blocklist can
+ * never contain a bare name", which this list makes false. `BlockableTlds.kt`
+ * holds the Kotlin copy and `candidates` consults it, so an entry that is stored
+ * is also looked up. Stored-but-never-looked-up is the failure mode to fear: the
+ * app reports the subscription active and blocks nothing from it.
  */
-const BLOCKABLE_TLDS = new Set([
+export const BLOCKABLE_TLDS: ReadonlySet<string> = new Set([
   "xxx",
   "porn",
   "sex",

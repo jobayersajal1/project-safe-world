@@ -56,26 +56,6 @@ object FeedParser {
         "0.0.0.0",
     )
 
-    /**
-     * Top-level domains it is safe — and intended — to block whole.
-     *
-     * A bare domain with no dot is normally rejected, because storing `com`
-     * would make [Matcher.hostMatchesDomain] match every host under it and take
-     * out most of the web. But the live feeds deliberately publish exactly that
-     * for the adult TLDs: `||www.xxx^`, `*.porn`, `*.sex`, `*.adult`. Those were
-     * the only lines any feed lost, and for an adult-content blocker each is
-     * worth more than any single domain in the file.
-     *
-     * So the guard keeps its teeth and gains a whitelist. Every entry is an
-     * ICANN-sponsored TLD whose entire purpose is the content we block. Adding
-     * to this list blocks an entire TLD — do it only for one with no legitimate
-     * use for our users. **Must match `BLOCKABLE_TLDS` in feed.ts.**
-     */
-    private val BLOCKABLE_TLDS = setOf(
-        "xxx", "porn", "sex", "adult", "sexy", "cam", "tube",
-        "casino", "bet", "poker", "bingo",
-    )
-
     /** `||example.com^`, optionally with a trailing `^`, and nothing else. */
     private val ADBLOCK_PLAIN = Regex("^\\|\\|([a-z0-9.-]+)\\^?$", RegexOption.IGNORE_CASE)
 
@@ -135,7 +115,10 @@ object FeedParser {
         if (host.isEmpty()) return null
         if (host in PLACEHOLDER_HOSTS) return null
         if (IPV4.matches(host)) return null
-        if (!host.contains('.') && host !in BLOCKABLE_TLDS) return null
+        // A bare TLD would match every host under it. Only the adult and
+        // gambling ones are allowed through, and `DomainHasher.candidates` knows
+        // to look those up — see [BlockableTlds].
+        if (!host.contains('.') && host !in BlockableTlds) return null
         if (host.contains('*')) return null
 
         return host

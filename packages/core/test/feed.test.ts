@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { parseFeedLine, parseFeed, type FeedFormat } from "../src/feed.js";
+import { parseFeedLine, parseFeed, BLOCKABLE_TLDS, type FeedFormat } from "../src/feed.js";
+import { hostMatchesDomain } from "../src/matcher.js";
 
 /**
  * The cross-platform contract for feed parsing.
@@ -89,6 +90,33 @@ describe("parseFeedLine", () => {
       expect(parseFeedLine(`*.${tld}`, "domainswild")).toBe(tld);
       expect(parseFeedLine(`||${tld}^`, "adblock")).toBe(tld);
     }
+  });
+
+  /**
+   * A stored TLD has to actually match, which on the plaintext path it does for
+   * free — `hostMatchesDomain` compares suffixes. Android is the platform where
+   * this needed real work, because it matches hashed digests via
+   * `DomainHasher.candidates`, which stops before bare names; see
+   * `BlockableTlds.kt` and the pairing test in `FeedParserTest`.
+   */
+  it("a stored TLD matches every host under it", () => {
+    const tld = parseFeedLine("*.xxx", "domainswild")!;
+    expect(hostMatchesDomain("anything.xxx", tld)).toBe(true);
+    expect(hostMatchesDomain("deep.sub.xxx", tld)).toBe(true);
+    expect(hostMatchesDomain("xxx", tld)).toBe(true);
+    expect(hostMatchesDomain("notxxx.com", tld)).toBe(false);
+  });
+
+  /**
+   * Guards the cross-platform copy. `BlockableTlds.kt` must list the same TLDs:
+   * an entry the parser keeps but `DomainHasher.candidates` won't look up is a
+   * domain the app claims to block and doesn't.
+   */
+  it("pins the set, so the Kotlin copy can be diffed against it", () => {
+    expect([...BLOCKABLE_TLDS].sort()).toEqual([
+      "adult", "bet", "bingo", "cam", "casino", "poker",
+      "porn", "sex", "sexy", "tube", "xxx",
+    ]);
   });
 });
 

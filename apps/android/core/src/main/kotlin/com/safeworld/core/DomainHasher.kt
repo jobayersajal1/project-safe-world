@@ -94,16 +94,24 @@ object DomainHasher {
             if (dot == -1) break
             val parent = normalized.substring(dot + 1)
             if (parent.isEmpty()) break
+
             // Stop before bare single-label names like "com".
             //
-            // A blocklist can never contain one — `fetch-upstream-lists.ts`
-            // drops any entry without a dot, precisely because "com" would
-            // block a colossal amount of the web. Looking one up was harmless
-            // against an exact hash set, since it could never be present. It is
-            // not harmless against a probabilistic filter: a 1-in-65,536
-            // collision on "com" would block *every* .com domain. Skipping it
-            // removes that failure mode entirely and costs one lookup less.
-            if (!parent.contains('.')) break
+            // Looking one up is harmless against an exact hash set but not
+            // against a probabilistic filter: a collision on "com" would block
+            // *every* .com domain. Skipping it removes that failure mode and
+            // costs one lookup less.
+            //
+            // The adult TLDs are the deliberate exception. The upstream feeds
+            // publish whole-TLD blocks for them, so those entries really can be
+            // present, and a stored digest that is never looked up is a domain
+            // the app claims to block and doesn't. For these TLDs the collision
+            // trade also inverts: wrongly blocking all of .xxx is what the user
+            // asked for. See [BlockableTlds].
+            if (!parent.contains('.')) {
+                if (parent in BlockableTlds) out.add(parent)
+                break
+            }
             out.add(parent)
             from = dot + 1
         }

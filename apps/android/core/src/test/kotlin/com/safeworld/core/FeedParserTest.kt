@@ -176,4 +176,54 @@ class FeedParserTest {
         assertEquals(true, set.matches("anything.xxx"))
         assertEquals(false, set.matches("notexample.com"))
     }
+
+    /**
+     * The bug this pairing is prone to, and the reason [BlockableTlds] is one
+     * shared set rather than two lists that happen to match.
+     *
+     * Subscriptions are stored **hashed**, so matching goes through
+     * [DomainHasher.candidates] rather than suffix comparison. `candidates` stops
+     * before bare single-label names, because looking up "com" against a
+     * probabilistic filter risks blocking every .com. That guard used to rest on
+     * "a blocklist can never contain a bare name" — which stopped being true the
+     * moment the parser started keeping `*.xxx`.
+     *
+     * Stored but never looked up is the worst kind of wrong: the app reports the
+     * subscription as active and blocks nothing from it.
+     */
+    @Test
+    fun `a bare adult TLD from a feed actually matches once hashed`() {
+        val parsed = FeedParser.parse("*.xxx\n*.porn\n", Format.DOMAINSWILD)
+        assertEquals(listOf("xxx", "porn"), parsed.domains)
+
+        val stored = parsed.domains.map { DomainHasher.hash(it) }.toSet()
+        val set = HashedDomainSet(stored)
+
+        assertEquals("a host under a blocked TLD must match", true, set.matches("anything.xxx"))
+        assertEquals(true, set.matches("deep.sub.porn"))
+        assertEquals(true, set.matches("xxx"))
+        assertEquals(false, set.matches("example.com"))
+    }
+
+    /**
+     * The other half of that guard, which must stay intact: a general-purpose TLD
+     * is never looked up, so even a filter collision on "com" cannot block the
+     * web.
+     */
+    @Test
+    fun `general-purpose TLDs are still never even looked up`() {
+        for (host in listOf("example.com", "a.b.example.net", "thing.co.uk")) {
+            val candidates = DomainHasher.candidates(host)
+            for (candidate in candidates) {
+                if (!candidate.contains('.')) {
+                    assertEquals(
+                        "candidates('$host') offered bare '$candidate' for lookup",
+                        true,
+                        candidate in BlockableTlds,
+                    )
+                }
+            }
+        }
+        assertEquals(false, DomainHasher.candidates("example.com").contains("com"))
+    }
 }
