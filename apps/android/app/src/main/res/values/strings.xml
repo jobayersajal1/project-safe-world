@@ -177,4 +177,7 @@
     <string name="alwayson_action">Open VPN settings</string>
     <string name="alwayson_steps">In VPN settings, tap the gear next to Safe World, then turn on both switches.</string>
     <string name="alwayson_unavailable">Couldn\'t open VPN settings on this device.</string>
+    <string name="private_dns_title">Private DNS is blocking Safe World</string>
+    <string name="private_dns_body">Your phone is sending web lookups encrypted to another provider, where Safe World can\'t check them. Blocking will not work until Private DNS is set to Off or Automatic.</string>
+    <string name="private_dns_action">Open network settings</string>
 </resources>

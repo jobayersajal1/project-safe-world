@@ -108,6 +108,13 @@ fun HomeScreen(
 
         ProtectionCard(running = running, requestPin = requestPin, onChange = onProtectionChange)
 
+        // Private DNS routes every lookup over TLS to port 853, where this app cannot see it. Without
+        // this warning the app would report protection as on while blocking nothing — the failure
+        // mode worth shouting about.
+        if (running && SafeWorldVpnService.isPrivateDnsActive(LocalContext.current)) {
+            PrivateDnsWarning()
+        }
+
         BlockedCountCard(count = blockedCount)
 
         // With no per-list rows, an accepted download that hasn't landed yet would
@@ -440,6 +447,50 @@ private fun AlwaysOnSection() {
                 modifier = Modifier.align(Alignment.End),
             ) {
                 Text(stringResource(R.string.alwayson_action))
+            }
+        }
+    }
+}
+
+/**
+ * Shown when Android's Private DNS is defeating the filter.
+ *
+ * Not dismissible and not PIN-gated: it is a statement of fact, not a setting. It disappears when the
+ * user turns Private DNS off, and there is nothing for them to acknowledge in the meantime.
+ */
+@Composable
+private fun PrivateDnsWarning() {
+    val context = LocalContext.current
+    val unavailable = stringResource(R.string.alwayson_unavailable)
+
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.errorContainer,
+            contentColor = MaterialTheme.colorScheme.onErrorContainer,
+        ),
+    ) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(
+                stringResource(R.string.private_dns_title),
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Text(
+                stringResource(R.string.private_dns_body),
+                style = MaterialTheme.typography.bodySmall,
+            )
+            TextButton(
+                onClick = {
+                    val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    try {
+                        context.startActivity(intent)
+                    } catch (_: ActivityNotFoundException) {
+                        Toast.makeText(context, unavailable, Toast.LENGTH_SHORT).show()
+                    }
+                },
+                modifier = Modifier.align(Alignment.End),
+            ) {
+                Text(stringResource(R.string.private_dns_action))
             }
         }
     }

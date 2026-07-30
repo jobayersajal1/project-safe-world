@@ -131,11 +131,22 @@ class SafeWorldVpnService : VpnService() {
             .setBlocking(true)
             .setConfigureIntent(configureIntent())
 
-        // Routing *only* the resolvers means every other packet on the device
-        // takes its normal path and never enters this process.
+        // Routing *only* resolvers means every other packet on the device takes its normal path
+        // and never enters this process.
         for (server in dnsServers) {
             builder.addDnsServer(server)
             server.hostAddress?.let { builder.addRoute(it, IPV4_HOST_PREFIX_LENGTH) }
+        }
+
+        // The system's resolvers are not the only ones apps use. Routing just those left an obvious
+        // hole: an app that hardcodes 8.8.8.8 — which plenty do, including several that are the whole
+        // point of the social and entertainment categories — never entered the tunnel at all, so its
+        // lookups were neither seen nor filtered. Their queries are routed here too and forwarded to
+        // the resolver the app actually asked for, so nothing about the answer changes except that it
+        // is now filtered.
+        for (resolver in PUBLIC_RESOLVERS) {
+            if (dnsServers.any { it.hostAddress == resolver }) continue
+            runCatching { builder.addRoute(resolver, IPV4_HOST_PREFIX_LENGTH) }
         }
 
         // Keep our own remote-list fetches out of the tunnel we just created.
@@ -425,6 +436,25 @@ class SafeWorldVpnService : VpnService() {
 
         private val FALLBACK_DNS = listOf("1.1.1.1", "8.8.8.8")
 
+        /**
+         * Well-known public resolvers, routed into the tunnel so an app that hardcodes one is still
+         * filtered.
+         *
+         * This closes the most common DNS bypass, not all of them: an app using DNS-over-HTTPS is
+         * indistinguishable from ordinary HTTPS at this layer, and DNS-over-TLS (Android's "Private
+         * DNS") leaves on port 853 to a resolver of the system's choosing. Neither is visible here —
+         * see `isPrivateDnsActive`, which at least makes the second one say so out loud.
+         */
+        private val PUBLIC_RESOLVERS = listOf(
+            "8.8.8.8", "8.8.4.4",             // Google
+            "1.1.1.1", "1.0.0.1",             // Cloudflare
+            "9.9.9.9", "149.112.112.112",     // Quad9
+            "208.67.222.222", "208.67.220.220", // OpenDNS
+            "94.140.14.14", "94.140.15.15",   // AdGuard
+            "76.76.2.0", "76.76.10.0",        // Control D
+            "4.2.2.1", "4.2.2.2",             // Level3
+        )
+
         private val _running = MutableStateFlow(false)
 
         /** Whether the tunnel is currently established. */
@@ -441,6 +471,23 @@ class SafeWorldVpnService : VpnService() {
             val manager = context.getSystemService(ConnectivityManager::class.java) ?: return false
             val capabilities = manager.getNetworkCapabilities(manager.activeNetwork) ?: return false
             return capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN)
+        }
+
+        /**
+         * True when Android's "Private DNS" (DNS-over-TLS) is on.
+         *
+         * That sends every lookup encrypted to a resolver on port 853, so nothing reaches the port-53
+         * path this tunnel filters — blocking silently stops working while the app still reports
+         * itself as protecting the device. There is no way for an app to intercept or disable it, so
+         * the only honest response is to say so and let the user turn it off.
+         */
+        fun isPrivateDnsActive(context: Context): Boolean {
+            val manager = context.getSystemService(ConnectivityManager::class.java) ?: return false
+            val active = manager.activeNetwork ?: return false
+            val properties = manager.getLinkProperties(active) ?: return false
+            // Strict mode (a named server) always defeats us. Opportunistic mode also uses port 853
+            // when the resolver supports it, and `isPrivateDnsActive` covers both.
+            return properties.isPrivateDnsActive
         }
 
         fun start(context: Context) {

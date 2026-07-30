@@ -168,4 +168,7 @@
     <string name="alwayson_action">افتح إعدادات VPN</string>
     <string name="alwayson_steps">في إعدادات VPN، اضغط على رمز الإعدادات بجانب Safe World وشغّل المفتاحين.</string>
     <string name="alwayson_unavailable">تعذّر فتح إعدادات VPN على هذا الجهاز.</string>
+    <string name="private_dns_title">خاصية DNS الخاص تمنع عمل Safe World</string>
+    <string name="private_dns_body">يرسل هاتفك طلبات المواقع مشفّرة إلى مزوّد آخر، حيث لا يستطيع Safe World فحصها. لن يعمل الحظر حتى تضبط DNS الخاص على إيقاف أو تلقائي.</string>
+    <string name="private_dns_action">افتح إعدادات الشبكة</string>
 </resources>

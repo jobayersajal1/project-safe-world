@@ -160,4 +160,7 @@
     <string name="alwayson_action">Abrir ajustes de VPN</string>
     <string name="alwayson_steps">En los ajustes de VPN, toca el engranaje junto a Safe World y activa los dos interruptores.</string>
     <string name="alwayson_unavailable">No se pudieron abrir los ajustes de VPN en este dispositivo.</string>
+    <string name="private_dns_title">El DNS privado está bloqueando Safe World</string>
+    <string name="private_dns_body">Tu teléfono envía las consultas web cifradas a otro proveedor, donde Safe World no puede revisarlas. El bloqueo no funcionará hasta que pongas el DNS privado en Desactivado o Automático.</string>
+    <string name="private_dns_action">Abrir ajustes de red</string>
 </resources>

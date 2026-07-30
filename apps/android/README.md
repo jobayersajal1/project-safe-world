@@ -104,6 +104,35 @@ so plainly rather than implying a lock that doesn't exist.
   Android 12's exemption list for starting a foreground service from the background, which is why only
   they are registered.
 
+### App traffic, not just browsers
+
+A common report is "it blocks the website but not the app". The tunnel is device-wide, so app traffic
+was always in scope — the lists already carry the backends (`graph.facebook.com`, `edge-mqtt.facebook.com`,
+`googlevideo.com`, `youtubei.googleapis.com`, `tiktokv.com`). What was missing was that only the
+*system's* resolvers were routed into the tunnel, so an app that hardcodes `8.8.8.8` — and many do —
+never entered it and was neither seen nor filtered.
+
+`PUBLIC_RESOLVERS` now routes the well-known public resolvers in as well, and queries are still
+forwarded to whichever resolver the app asked for, so nothing changes except that the answer is
+filtered. Verified with raw DNS queries from the device: `bet365.com` sent directly to `8.8.8.8`
+returns NXDOMAIN while `wikipedia.org` resolves, and with the two opt-in categories on, every app
+backend above is blocked through both the system resolver and `8.8.8.8`.
+
+Three DNS bypasses remain, and only one is addressable:
+
+- **Private DNS (DNS-over-TLS)** leaves on port 853 to a resolver of the system's choosing, so nothing
+  reaches the port-53 path. No app can intercept or disable it. `isPrivateDnsActive()` detects it and
+  the home screen shows a non-dismissible warning, because the alternative is reporting protection as
+  on while blocking nothing.
+- **DNS-over-HTTPS inside an app** is indistinguishable from ordinary HTTPS at this layer.
+- **Direct-to-IP** connections never ask a resolver at all.
+
+Blocking an app's traffic *regardless* of DNS would mean routing `0.0.0.0/0` and filtering by owning
+UID, which requires a userspace TCP/UDP forwarder for all other traffic — a large piece of work with
+a large blast radius. Android offers no per-app firewall to third-party apps, and `addAllowedApplication`
+is whole-tunnel: restricting the tunnel to the blocked apps would drop DNS filtering for everything
+else.
+
 ### What cannot be fixed in the app, and what to do instead
 
 Two limits are architectural, not oversights:

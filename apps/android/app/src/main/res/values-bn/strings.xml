@@ -162,4 +162,7 @@
     <string name="alwayson_action">VPN সেটিংস খুলুন</string>
     <string name="alwayson_steps">VPN সেটিংসে Safe World-এর পাশের গিয়ার আইকনে চাপ দিয়ে দুটি সুইচই চালু করুন।</string>
     <string name="alwayson_unavailable">এই ডিভাইসে VPN সেটিংস খোলা যায়নি।</string>
+    <string name="private_dns_title">Private DNS Safe World-কে আটকে দিচ্ছে</string>
+    <string name="private_dns_body">আপনার ফোন ওয়েব অনুসন্ধানগুলো এনক্রিপ্ট করে অন্য একটি সেবায় পাঠাচ্ছে, যেখানে Safe World সেগুলো দেখতে পারে না। Private DNS বন্ধ (Off) বা Automatic না করা পর্যন্ত ব্লকিং কাজ করবে না।</string>
+    <string name="private_dns_action">নেটওয়ার্ক সেটিংস খুলুন</string>
 </resources>
