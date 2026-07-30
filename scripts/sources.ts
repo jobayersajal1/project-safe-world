@@ -1,4 +1,5 @@
 import type { CategoryId } from "../packages/core/src/categories.js";
+import type { FeedFormat } from "../packages/core/src/feed.js";
 
 /**
  * Upstream blocklist sources.
@@ -20,12 +21,8 @@ export interface Source {
   id: string;
   category: CategoryId;
   url: string;
-  /**
-   * hosts   `0.0.0.0 example.com`
-   * domains `example.com`
-   * adblock `||example.com^`
-   */
-  format: "hosts" | "domains" | "adblock";
+  /** See `FeedFormat` in packages/core/src/feed.ts for what each one looks like. */
+  format: FeedFormat;
   license: string;
   redistributable: boolean;
   homepage: string;
@@ -216,7 +213,11 @@ export const SOURCES: readonly Source[] = [
     id: "oisd-nsfw",
     category: "list3",
     url: "https://nsfw.oisd.nl/domainswild",
-    format: "domains",
+    // Wildcards, not plain domains: every line is `*.example.com`. Recorded as
+    // "domains" until 2026-07-30, which would have stored the literal
+    // "*.example.com" as a blocked domain and matched nothing — harmless only
+    // because the source was never enabled. See packages/core/src/feed.ts.
+    format: "domainswild",
     license: "Free for personal use; redistribution restricted",
     redistributable: false,
     homepage: "https://oisd.nl/",

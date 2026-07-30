@@ -13,6 +13,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { CATEGORIES, type CategoryId } from "../packages/core/src/categories.js";
+import { parseFeed } from "../packages/core/src/feed.js";
 import { normalizeHost } from "../packages/core/src/matcher.js";
 import { INCLUDED_SOURCES, type Source } from "./sources.js";
 
@@ -29,60 +30,17 @@ const listsDir = join(repoRoot, "packages/core/src/blocklists");
  */
 const MAX_PER_CATEGORY = Number(process.env.MAX_PER_CATEGORY ?? 20_000);
 
-/** Hosts-file placeholders that aren't real blocklist entries. */
-const HOSTS_NOISE = new Set([
-  "localhost",
-  "localhost.localdomain",
-  "local",
-  "broadcasthost",
-  "ip6-localhost",
-  "ip6-loopback",
-  "ip6-localnet",
-  "ip6-mcastprefix",
-  "ip6-allnodes",
-  "ip6-allrouters",
-  "ip6-allhosts",
-  "0.0.0.0",
-]);
-
-function parseLine(line: string, format: Source["format"]): string | null {
-  const trimmed = line.trim();
-  if (trimmed === "" || trimmed.startsWith("#") || trimmed.startsWith("!")) return null;
-
-  switch (format) {
-    case "hosts": {
-      // "0.0.0.0 example.com" / "127.0.0.1 example.com # comment"
-      const parts = trimmed.split(/\s+/);
-      if (parts.length < 2) return null;
-      return parts[1] ?? null;
-    }
-    case "domains":
-      return trimmed.split(/\s+/)[0] ?? null;
-    case "adblock": {
-      // "||example.com^" — anything with wildcards or paths can't be expressed
-      // as a DNS-level domain block, so it's skipped rather than mangled.
-      const match = /^\|\|([a-z0-9.-]+)\^?$/i.exec(trimmed);
-      return match?.[1] ?? null;
-    }
-  }
-}
-
 async function fetchSource(source: Source): Promise<string[]> {
   const res = await fetch(source.url, { redirect: "follow" });
   if (!res.ok) throw new Error(`${source.id}: HTTP ${res.status}`);
   const text = await res.text();
 
-  const out: string[] = [];
-  for (const line of text.split("\n")) {
-    const raw = parseLine(line, source.format);
-    if (raw === null) continue;
-    const host = normalizeHost(raw);
-    // Skip bare TLDs and anything that isn't a plausible hostname; a stray
-    // entry like "com" would block a colossal amount of the web.
-    if (host === "" || !host.includes(".") || HOSTS_NOISE.has(host)) continue;
-    out.push(host);
-  }
-  return out;
+  // Parsing, normalization, and the rejections that matter (bare TLDs, hosts-file
+  // placeholders, IP literals, unexpressible URL rules) all live in
+  // `packages/core/src/feed.ts`. It used to be duplicated here; the on-device
+  // subscription parsers need the same behaviour, and two copies of a parser
+  // that must agree byte-for-byte is how they stop agreeing.
+  return parseFeed(text, source.format).domains;
 }
 
 interface BlocklistFile {
