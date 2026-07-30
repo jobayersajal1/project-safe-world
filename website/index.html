@@ -312,6 +312,9 @@
   .download-icon { color: var(--accent); }
   .download-card h3 { margin: 0; }
   .download-card .btn { margin-block-start: 0.3rem; }
+  /* Only iOS carries one, and it has to be readable rather than fine print —
+     a download that needs sideloading should say so before the click. */
+  .card-note { margin: 0.15rem 0 0; font-size: 0.82rem; line-height: 1.45; color: var(--ink-dim); }
 
   /* ---------- Section scaffolding ---------- */
   section { padding-block: clamp(3rem, 7vw, 5.5rem); border-block-end: 1px solid var(--line); }
@@ -515,7 +518,8 @@
             <path fill="currentColor" d="M16.365 1.43c0 1.14-.468 2.213-1.235 3.02-.832.86-2.115 1.53-3.19 1.44-.14-1.1.42-2.24 1.185-3.02.83-.86 2.24-1.5 3.24-1.44zM20.5 17.02c-.51 1.18-.76 1.71-1.42 2.75-.92 1.46-2.22 3.28-3.83 3.3-1.43.02-1.8-.93-3.75-.92-1.95.01-2.35.94-3.79.92-1.61-.02-2.84-1.65-3.76-3.11-2.58-4.08-2.85-8.86-1.26-11.4.99-1.6 2.83-2.6 4.6-2.6 1.64 0 2.67 1.02 4.03 1.02 1.32 0 2.13-1.02 4.03-1.02 1.31 0 2.69.71 3.68 1.94-3.23 1.77-2.71 6.4.51 9.12z"/>
           </svg>
           <h3 data-i18n="arch.ios_name">iOS</h3>
-          <span class="btn btn-soon" data-i18n="download.coming_soon">Coming soon</span>
+          <a class="btn btn-accent" href="https://github.com/jobayersajal1/project-safe-world/releases/download/v0.2.0/SafeWorld-0.2.0-ios.ipa" data-i18n="download.btn">Download</a>
+          <p class="card-note" data-i18n="download.ios_note">Not on the App Store yet, so this needs sideloading with AltStore or Sideloadly and your own Apple ID.</p>
         </div>
         <div class="card download-card">
           <svg class="download-icon" viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
@@ -523,6 +527,7 @@
           </svg>
           <h3 data-i18n="download.macos_name">macOS</h3>
           <a class="btn btn-accent" href="https://github.com/jobayersajal1/project-safe-world/releases/download/v0.2.0/SafeWorld-0.2.0-macOS.dmg" data-i18n="download.btn">Download</a>
+          <p class="card-note" data-i18n="download.macos_note">Not notarized by Apple yet, so macOS blocks the first open. Press Done, then allow it in System Settings → Privacy &amp; Security.</p>
         </div>
         <div class="card download-card">
           <svg class="download-icon" viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
@@ -566,7 +571,7 @@
         </div>
         <div class="card">
           <h3 data-i18n="diff.card4_title">Works on the devices you already use</h3>
-          <p data-i18n="diff.card4_body">Chrome, Android, Mac, and Windows are ready today, with iPhone support on the way — so wherever your family goes online, Safe World can go too.</p>
+          <p data-i18n="diff.card4_body">Chrome, Android, iPhone, Mac, and Windows are all ready today — so wherever your family goes online, Safe World can go too.</p>
         </div>
       </div>
     </div>
@@ -741,6 +746,8 @@
       "download.body": "Pick your device below and download Safe World — completely free, no account needed.",
       "download.btn": "Download",
       "download.coming_soon": "Coming soon",
+      "download.ios_note": "Not on the App Store yet, so this needs sideloading with AltStore or Sideloadly and your own Apple ID.",
+      "download.macos_note": "Not notarized by Apple yet, so macOS blocks the first open. Press Done, then allow it in System Settings → Privacy & Security.",
       "download.macos_name": "macOS",
       "download.windows_name": "Windows",
       "problem.eyebrow": "Why this matters",
@@ -755,7 +762,7 @@
       "diff.card3_title": "Open for anyone to check",
       "diff.card3_body": "The list of blocked sites and the code that decides what to block are both public for anyone to look at. You don't have to just take our word for it.",
       "diff.card4_title": "Works on the devices you already use",
-      "diff.card4_body": "Chrome, Android, Mac, and Windows are ready today, with iPhone support on the way — so wherever your family goes online, Safe World can go too.",
+      "diff.card4_body": "Chrome, Android, iPhone, Mac, and Windows are all ready today — so wherever your family goes online, Safe World can go too.",
       "arch.eyebrow": "Under the hood",
       "arch.h2": "Same rules, three on-device engines.",
       "arch.chrome_name": "Chrome",
@@ -838,6 +845,8 @@
       "download.body": "নিচে আপনার ডিভাইস বেছে নিন এবং Safe World ডাউনলোড করুন — সম্পূর্ণ বিনামূল্যে, কোনো অ্যাকাউন্ট লাগে না।",
       "download.btn": "ডাউনলোড",
       "download.coming_soon": "শীঘ্রই আসছে",
+      "download.ios_note": "এখনও App Store-এ নেই, তাই AltStore বা Sideloadly ও নিজের Apple ID দিয়ে সাইডলোড করতে হবে।",
+      "download.macos_note": "Apple এখনও নোটারাইজ করেনি, তাই macOS প্রথমবার খুলতে বাধা দেবে। Done চাপুন, তারপর System Settings → Privacy & Security থেকে অনুমতি দিন।",
       "download.macos_name": "macOS",
       "download.windows_name": "Windows",
       "problem.eyebrow": "কেন এটা গুরুত্বপূর্ণ",
@@ -852,7 +861,7 @@
       "diff.card3_title": "যে কেউ যাচাই করতে পারে",
       "diff.card3_body": "ব্লক করা সাইটের তালিকা এবং কী ব্লক করা হবে তা নির্ধারণকারী কোড — দুটোই যে কেউ দেখার জন্য প্রকাশ্য। আমাদের কথা বিশ্বাস করে নেওয়ার দরকার নেই।",
       "diff.card4_title": "আপনি ইতিমধ্যে ব্যবহার করেন এমন ডিভাইসে কাজ করে",
-      "diff.card4_body": "Chrome, Android, Mac এবং Windows আজই প্রস্তুত, আর iPhone সাপোর্ট শীঘ্রই আসছে — তাই আপনার পরিবার অনলাইনে যেখানেই যাক, Safe World সেখানেও যেতে পারে।",
+      "diff.card4_body": "Chrome, Android, iPhone, Mac এবং Windows — সবই আজ প্রস্তুত, তাই আপনার পরিবার অনলাইনে যেখানেই যাক, Safe World সেখানেও যেতে পারে।",
       "arch.eyebrow": "ভেতরের কারিগরি",
       "arch.h2": "একই নিয়ম, তিনটি অন-ডিভাইস ইঞ্জিন।",
       "arch.chrome_name": "Chrome",
@@ -935,6 +944,8 @@
       "download.body": "Elige tu dispositivo abajo y descarga Safe World — completamente gratis, sin necesidad de cuenta.",
       "download.btn": "Descargar",
       "download.coming_soon": "Próximamente",
+      "download.ios_note": "Aún no está en la App Store, así que hay que instalarlo con AltStore o Sideloadly y tu propio Apple ID.",
+      "download.macos_note": "Apple todavía no la ha notarizado, así que macOS bloquea la primera apertura. Pulsa Done y permítela en Ajustes del Sistema → Privacidad y seguridad.",
       "download.macos_name": "macOS",
       "download.windows_name": "Windows",
       "problem.eyebrow": "Por qué importa",
@@ -949,7 +960,7 @@
       "diff.card3_title": "Abierto para que cualquiera lo revise",
       "diff.card3_body": "La lista de sitios bloqueados y el código que decide qué bloquear son públicos para que cualquiera los revise. No tienes que confiar solo en nuestra palabra.",
       "diff.card4_title": "Funciona en los dispositivos que ya usas",
-      "diff.card4_body": "Chrome, Android, Mac y Windows están listos hoy, con soporte para iPhone en camino — así que dondequiera que tu familia esté en línea, Safe World puede estar también.",
+      "diff.card4_body": "Chrome, Android, iPhone, Mac y Windows están todos listos hoy — así que dondequiera que tu familia esté en línea, Safe World puede estar también.",
       "arch.eyebrow": "Por dentro",
       "arch.h2": "Las mismas reglas, tres motores en el dispositivo.",
       "arch.chrome_name": "Chrome",
@@ -1032,6 +1043,8 @@
       "download.body": "اختر جهازك أدناه ونزّل Safe World — مجاني بالكامل، دون حاجة لحساب.",
       "download.btn": "تنزيل",
       "download.coming_soon": "قريباً",
+      "download.ios_note": "غير متوفر على App Store بعد، لذا يجب تثبيته عبر AltStore أو Sideloadly باستخدام Apple ID الخاص بك.",
+      "download.macos_note": "لم توثِّقه Apple بعد، لذا يمنع macOS فتحه في المرة الأولى. اضغط Done ثم اسمح به من إعدادات النظام → الخصوصية والأمان.",
       "download.macos_name": "macOS",
       "download.windows_name": "Windows",
       "problem.eyebrow": "لماذا هذا مهم",
@@ -1046,7 +1059,7 @@
       "diff.card3_title": "مفتوح ليتحقق منه أي شخص",
       "diff.card3_body": "قائمة المواقع المحظورة والكود الذي يقرر ما يُحظر، كلاهما متاح للعموم لمن أراد الاطلاع عليه. لست مضطراً لتصديق كلامنا فقط.",
       "diff.card4_title": "يعمل على الأجهزة التي تستخدمها بالفعل",
-      "diff.card4_body": "Chrome وAndroid وMac وWindows جاهزة اليوم، مع دعم iPhone قريباً — فأينما ذهبت عائلتك على الإنترنت، يمكن لـ Safe World الذهاب معها.",
+      "diff.card4_body": "Chrome وAndroid وiPhone وMac وWindows جاهزة كلها اليوم — فأينما ذهبت عائلتك على الإنترنت، يمكن لـ Safe World الذهاب معها.",
       "arch.eyebrow": "خلف الكواليس",
       "arch.h2": "نفس القواعد، ثلاث محركات محلية.",
       "arch.chrome_name": "Chrome",
