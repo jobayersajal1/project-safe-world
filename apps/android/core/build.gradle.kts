@@ -17,4 +17,12 @@ dependencies {
 
 tasks.test {
     useJUnit()
+
+    // Forwarded to the forked test JVM. Gradle's own `-D` only reaches the
+    // daemon, so without this `FeedParserCorpusTest` silently skips itself and
+    // reports success — which is how a cross-platform check quietly stops
+    // checking. Absent by default, keeping the normal run offline.
+    System.getProperty("safeworld.feedCache")?.let {
+        systemProperty("safeworld.feedCache", it)
+    }
 }

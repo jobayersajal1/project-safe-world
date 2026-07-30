@@ -15,10 +15,23 @@
  * `SUBSCRIPTIONS` in packages/core/src/subscriptions.ts for why.
  */
 import { mkdtempSync, readFileSync, writeFileSync, existsSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { parseFeed, parseFeedLine } from "../packages/core/src/feed.js";
 import { SUBSCRIPTIONS } from "../packages/core/src/subscriptions.js";
+
+/**
+ * SHA-256 of the sorted domains, so the Kotlin port can be checked against this
+ * over the real feeds rather than only against the shared vectors.
+ *
+ * Sorted, so a difference in iteration order is not reported as a behavioural
+ * difference. `FeedParserCorpusTest` prints the same digest — see its comment for
+ * how to run the comparison.
+ */
+function corpusDigest(domains: readonly string[]): string {
+  return createHash("sha256").update([...domains].sort().join("\n")).digest("hex");
+}
 
 /** Where each publisher states its own entry count, so we can check ours. */
 const DECLARED_COUNT: Record<string, RegExp> = {
@@ -68,6 +81,7 @@ async function main(): Promise<void> {
         ` (${(ratio * 100).toFixed(2)}%)` +
         ` skipped=${String(skipped).padStart(5)} ${String(ms).padStart(5)}ms${verdict}`
     );
+    console.log(`${" ".repeat(18)}sha256(sorted) ${corpusDigest(domains)}`);
 
     if (skipped > 0) {
       // "skipped" as a bare number invites a shrug. Show what was dropped so
