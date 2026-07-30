@@ -145,4 +145,23 @@
     <string name="update_error_check">আপডেট দেখা যায়নি। ইন্টারনেট সংযোগ দেখে আবার চেষ্টা করুন।</string>
     <string name="update_error_download">ডাউনলোড শেষ হয়নি। আবার চেষ্টা করুন।</string>
     <string name="update_error_permission">অ্যাপ ইনস্টলের সিস্টেম সেটিংস স্ক্রিনটি খোলা যায়নি।</string>
+
+    <!-- Subscriptions: lists we may not redistribute, fetched by the device -->
+    <string name="subscription_hagezi_gambling">অতিরিক্ত জুয়ার তালিকা</string>
+    <string name="subscription_hagezi_nsfw">অতিরিক্ত অ্যাডাল্ট তালিকা</string>
+    <string name="subscription_oisd_nsfw">oisd অ্যাডাল্ট তালিকা</string>
+    <string name="subscription_unnamed">অতিরিক্ত তালিকা</string>
+    <string name="subscription_description">আরও %1$sটি সাইট, %2$s থেকে।</string>
+    <string name="subscription_terms">%1$s ডাউনলোড, লাইসেন্স %2$s। আপনার ডিভাইস সরাসরি প্রকাশকের কাছ থেকে নেয়।</string>
+    <string name="subscription_active">%1$sটি সাইট যোগ হয়েছে।</string>
+    <string name="subscription_downloading">ডাউনলোড হচ্ছে…</string>
+    <string name="subscription_failed">এই তালিকাটি ডাউনলোড করা যায়নি। স্বয়ংক্রিয়ভাবে আবার চেষ্টা করা হবে।</string>
+    <string name="subscription_off_pin_title">এই তালিকা সরাবেন?</string>
+    <string name="subscription_off_pin_message">এই ব্লকলিস্ট ব্যবহার বন্ধ করতে আপনার পিন দিন।</string>
+    <string name="subscription_offer_title">আরও ব্লক করুন, যে তালিকা আমরা দিতে পারি না</string>
+    <string name="subscription_offer_body">সেরা কিছু ব্লকলিস্ট আমাদের অ্যাপে যুক্ত করার অনুমতি দেয় না। বদলে আপনার ডিভাইস সেগুলো সরাসরি ডাউনলোড করতে পারে — প্রায় %1$sটি অতিরিক্ত সাইট।</string>
+    <string name="subscription_offer_item">%1$sটি সাইট · %2$s · %3$s</string>
+    <string name="subscription_offer_note">প্রায় %1$s ডাউনলোড, সম্ভব হলে Wi-Fi দিয়ে। এই তালিকাগুলো Safe World-এর নয়, প্রকাশকদের নিজের, এবং প্রত্যেকটির নিজস্ব লাইসেন্স আছে। পরে হোম থেকে বদলাতে পারবেন।</string>
+    <string name="subscription_offer_accept">এগুলো চালু করুন</string>
+    <string name="subscription_offer_skip">এখন নয়</string>
 </resources>

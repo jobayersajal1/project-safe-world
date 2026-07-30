@@ -160,4 +160,23 @@
     <string name="update_error_check">Couldn\'t check for updates. Check your connection and try again.</string>
     <string name="update_error_download">The download didn\'t finish. Try again.</string>
     <string name="update_error_permission">Couldn\'t open the system settings screen for installing apps.</string>
+
+    <!-- Subscriptions: lists we may not redistribute, fetched by the device -->
+    <string name="subscription_hagezi_gambling">Extra gambling list</string>
+    <string name="subscription_hagezi_nsfw">Extra adult list</string>
+    <string name="subscription_oisd_nsfw">oisd adult list</string>
+    <string name="subscription_unnamed">Extra list</string>
+    <string name="subscription_description">%1$s more sites, from %2$s.</string>
+    <string name="subscription_terms">%1$s download, licensed %2$s. Fetched by your device from the publisher.</string>
+    <string name="subscription_active">%1$s sites added.</string>
+    <string name="subscription_downloading">Downloading…</string>
+    <string name="subscription_failed">Couldn\'t download this list. It will be retried automatically.</string>
+    <string name="subscription_off_pin_title">Remove this list?</string>
+    <string name="subscription_off_pin_message">Enter your PIN to stop using this blocklist.</string>
+    <string name="subscription_offer_title">Block more, with lists we can\'t include</string>
+    <string name="subscription_offer_body">Some of the best blocklists don\'t allow us to bundle them. Your device can download them directly instead — about %1$s extra sites.</string>
+    <string name="subscription_offer_item">%1$s sites · %2$s · %3$s</string>
+    <string name="subscription_offer_note">About %1$s to download, over Wi-Fi when possible. These lists come from their publishers, not from Safe World, and each keeps its own licence. You can change this later in Home.</string>
+    <string name="subscription_offer_accept">Turn these on</string>
+    <string name="subscription_offer_skip">Not now</string>
 </resources>

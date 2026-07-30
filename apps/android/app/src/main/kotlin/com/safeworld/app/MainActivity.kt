@@ -21,11 +21,13 @@ import com.safeworld.app.ui.SafeWorldApp
 import com.safeworld.app.update.UpdateManager
 import com.safeworld.app.vpn.SafeWorldVpnService
 import com.safeworld.app.work.RemoteUpdateWorker
+import com.safeworld.app.work.SubscriptionWorker
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
     private lateinit var store: SettingsStore
+    private lateinit var subscriptions: SubscriptionStore
 
     /**
      * Process-wide, not owned here: an Activity-scoped one lost its state and
@@ -80,10 +82,16 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         store = SettingsStore.get(this)
+        subscriptions = SubscriptionStore.get(this)
         updateManager = UpdateManager.get(this, installedVersion)
+
+        // Whatever was already downloaded has to reach the matcher before the
+        // first DNS query, not after the first UI interaction.
+        store.setSubscriptionSets(subscriptions.setsByCategory())
 
         lifecycleScope.launch { RemoteUpdateService.refreshIfDue(store) }
         RemoteUpdateWorker.schedule(this)
+        SubscriptionWorker.schedule(this)
         restoreProtectionIfLeftOn()
         observeLanguageChanges()
 
@@ -91,7 +99,16 @@ class MainActivity : ComponentActivity() {
             MaterialTheme {
                 SafeWorldApp(
                     store = store,
+                    subscriptions = subscriptions,
                     onProtectionChange = ::setProtectionEnabled,
+                    onSubscriptionsChanged = {
+                        // Apply what is already on disk right away, then ask the
+                        // worker to fetch anything missing. Turning a subscription
+                        // *off* must take effect immediately rather than waiting
+                        // for a download that isn't needed.
+                        store.setSubscriptionSets(subscriptions.setsByCategory())
+                        SubscriptionWorker.runNow(this)
+                    },
                     onEnableUninstallProtection = {
                         deviceAdmin.launch(SafeWorldDeviceAdminReceiver.enableIntent(this))
                     },

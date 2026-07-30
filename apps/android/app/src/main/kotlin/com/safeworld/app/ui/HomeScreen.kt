@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.safeworld.app.R
 import com.safeworld.app.SettingsStore
+import com.safeworld.app.SubscriptionStore
 import com.safeworld.app.vpn.SafeWorldVpnService
 import com.safeworld.core.Categories
 import com.safeworld.core.Matcher
@@ -55,10 +56,12 @@ import com.safeworld.core.Matcher
 @Composable
 fun HomeScreen(
     store: SettingsStore,
+    subscriptions: SubscriptionStore,
     onProtectionChange: (Boolean) -> Unit,
     requestPin: RequestPin,
     onEnableUninstallProtection: () -> Unit,
     onDisableUninstallProtection: () -> Unit,
+    onSubscriptionsChanged: () -> Unit,
     uninstallProtectionActive: Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -68,9 +71,15 @@ fun HomeScreen(
     val running by SafeWorldVpnService.running.collectAsStateWithLifecycle()
     val interrupted by store.protectionInterrupted.collectAsStateWithLifecycle()
 
-    // Recomputed when a category is toggled or an update lands, which is
-    // exactly when the headline should move.
-    val blockedCount = remember(settings, remoteDomains) { store.blockedDomainCount(settings) }
+    // `blocklists` is a plain field read once per DNS query, so Compose has
+    // nothing to observe when a subscription lands. This revision is that signal.
+    val revision by store.blocklistRevision.collectAsStateWithLifecycle()
+
+    // Recomputed when a category is toggled, an update lands, or a subscription
+    // finishes downloading — exactly when the headline should move.
+    val blockedCount = remember(settings, remoteDomains, revision) {
+        store.blockedDomainCount(settings)
+    }
 
     Column(
         modifier = modifier
@@ -119,6 +128,12 @@ fun HomeScreen(
                     )
                     HorizontalDivider()
                 }
+
+                SubscriptionRows(
+                    subscriptions = subscriptions,
+                    requestPin = requestPin,
+                    onChanged = onSubscriptionsChanged,
+                )
 
                 AddWebsitesSection(store = store, requestPin = requestPin)
             }

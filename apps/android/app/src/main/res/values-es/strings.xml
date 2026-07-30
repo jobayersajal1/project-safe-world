@@ -143,4 +143,23 @@
     <string name="update_error_check">No se pudo buscar actualizaciones. Comprueba tu conexión e inténtalo de nuevo.</string>
     <string name="update_error_download">La descarga no se completó. Inténtalo de nuevo.</string>
     <string name="update_error_permission">No se pudo abrir la pantalla de ajustes para instalar aplicaciones.</string>
+
+    <!-- Subscriptions: lists we may not redistribute, fetched by the device -->
+    <string name="subscription_hagezi_gambling">Lista extra de apuestas</string>
+    <string name="subscription_hagezi_nsfw">Lista extra de contenido adulto</string>
+    <string name="subscription_oisd_nsfw">Lista adulta de oisd</string>
+    <string name="subscription_unnamed">Lista extra</string>
+    <string name="subscription_description">%1$s sitios más, de %2$s.</string>
+    <string name="subscription_terms">%1$s de descarga, con licencia %2$s. Tu dispositivo la obtiene del editor.</string>
+    <string name="subscription_active">%1$s sitios añadidos.</string>
+    <string name="subscription_downloading">Descargando…</string>
+    <string name="subscription_failed">No se pudo descargar esta lista. Se reintentará automáticamente.</string>
+    <string name="subscription_off_pin_title">¿Quitar esta lista?</string>
+    <string name="subscription_off_pin_message">Introduce tu PIN para dejar de usar esta lista de bloqueo.</string>
+    <string name="subscription_offer_title">Bloquea más, con listas que no podemos incluir</string>
+    <string name="subscription_offer_body">Algunas de las mejores listas de bloqueo no permiten que las incluyamos. En su lugar, tu dispositivo puede descargarlas directamente: unos %1$s sitios más.</string>
+    <string name="subscription_offer_item">%1$s sitios · %2$s · %3$s</string>
+    <string name="subscription_offer_note">Unos %1$s de descarga, por Wi-Fi cuando sea posible. Estas listas provienen de sus editores, no de Safe World, y cada una conserva su licencia. Puedes cambiarlo después en Inicio.</string>
+    <string name="subscription_offer_accept">Activarlas</string>
+    <string name="subscription_offer_skip">Ahora no</string>
 </resources>

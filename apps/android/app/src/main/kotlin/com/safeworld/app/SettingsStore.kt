@@ -53,6 +53,24 @@ class SettingsStore private constructor(context: Context) {
     val remoteDomains: StateFlow<Map<CategoryId, List<String>>> = _remoteDomains.asStateFlow()
 
     /**
+     * Key sets for the user's enabled subscriptions, supplied by
+     * [SubscriptionStore].
+     *
+     * Held here rather than read from that store on demand because [blocklists] is
+     * consulted once per DNS query, and the merge must not be redone on the hot
+     * path. Pushed in via [setSubscriptionSets], mirroring how [setRemoteDomains]
+     * already works.
+     *
+     * **Declared above [blocklists] on purpose.** Kotlin runs property
+     * initializers in declaration order, and `blocklists` calls
+     * [mergeBlocklists], which reads this. Declared after, it is still null at
+     * that point and the app dies in `SettingsStore.<init>` before the first
+     * frame — which is exactly what happened.
+     */
+    @Volatile
+    private var subscriptionSets: Map<CategoryId, DomainSet> = emptyMap()
+
+    /**
      * Bundled hashes unioned with any fetched remote ones, in the shape
      * [Matcher.decide] wants. Recomputed only when remote domains change, since
      * it is read once per DNS query on the tunnel's hot path.
@@ -126,8 +144,39 @@ class SettingsStore private constructor(context: Context) {
         CategoryId.entries.associateWith { id ->
             val bundled = Blocklists.filter(id)?.let { FuseDomainSet(it) } ?: EmptyDomainSet
             val fetched = remote[id].orEmpty()
-            if (fetched.isEmpty()) bundled else UnionDomainSet(bundled, HashedDomainSet(fetched.toSet()))
+            val withRemote =
+                if (fetched.isEmpty()) bundled
+                else UnionDomainSet(bundled, HashedDomainSet(fetched.toSet()))
+
+            // Subscriptions the user turned on are a third layer, for the same
+            // reason remote deltas are a second one: the bundled filter is
+            // immutable. Nothing else changes — `Matcher.decide` still sees one
+            // `DomainSet` per category and does not know or care how many sources
+            // are behind it.
+            val subscribed = subscriptionSets[id]
+            if (subscribed == null) withRemote else UnionDomainSet(withRemote, subscribed)
         }
+
+    private val _blocklistRevision = MutableStateFlow(0)
+
+    /**
+     * Bumped whenever [blocklists] is rebuilt.
+     *
+     * The home screen's headline comes from [blockedDomainCount], which sums
+     * `blocklists` — a plain field, not a flow, because the DNS hot path reads it
+     * per query. So Compose has nothing to observe when it changes. Re-emitting
+     * `_settings` would not work either: `MutableStateFlow` drops a value equal to
+     * the current one, and the settings are unchanged. This is the signal to key
+     * the count on.
+     */
+    val blocklistRevision: StateFlow<Int> = _blocklistRevision.asStateFlow()
+
+    /** Rebuilds [blocklists] so a subscription change applies to the next query. */
+    fun setSubscriptionSets(sets: Map<CategoryId, DomainSet>) {
+        subscriptionSets = sets
+        blocklists = mergeBlocklists(_remoteDomains.value)
+        _blocklistRevision.value += 1
+    }
 
     // MARK: Mutating
 
@@ -362,6 +411,7 @@ class SettingsStore private constructor(context: Context) {
             .toMap()
         _remoteDomains.value = byCategory
         blocklists = mergeBlocklists(byCategory)
+        _blocklistRevision.value += 1
     }
 
     companion object {

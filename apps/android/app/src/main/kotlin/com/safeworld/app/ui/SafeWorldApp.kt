@@ -20,6 +20,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.safeworld.app.R
 import com.safeworld.app.SettingsStore
+import com.safeworld.app.SubscriptionStore
+import com.safeworld.core.Subscriptions
 import com.safeworld.app.security.PinLockout
 import com.safeworld.app.update.UpdateManager
 
@@ -62,7 +64,9 @@ private sealed interface Gate {
 @Composable
 fun SafeWorldApp(
     store: SettingsStore,
+    subscriptions: SubscriptionStore,
     onProtectionChange: (Boolean) -> Unit,
+    onSubscriptionsChanged: () -> Unit,
     onEnableUninstallProtection: () -> Unit,
     onDisableUninstallProtection: () -> Unit,
     uninstallProtectionActive: Boolean,
@@ -71,6 +75,7 @@ fun SafeWorldApp(
 ) {
     val hasPin by store.hasPin.collectAsStateWithLifecycle()
     val hasRecoveryCode by store.hasRecoveryCode.collectAsStateWithLifecycle()
+    val subscriptionsOffered by subscriptions.offered.collectAsStateWithLifecycle()
     var tab by remember { mutableStateOf(Tab.Home) }
     var challenge by remember { mutableStateOf<PinChallenge?>(null) }
     var gate by remember { mutableStateOf<Gate>(Gate.None) }
@@ -91,6 +96,31 @@ fun SafeWorldApp(
     // protection is never established with nothing guarding it.
     if (!hasPin) {
         SetPinScreen(onPinChosen = store::setPin)
+        return
+    }
+
+    // After the PIN and the recovery code, and only once. These feeds belong to
+    // the two categories with no off switch, so once one is on, turning it off
+    // costs the PIN — asking before the PIN existed would leave a window where the
+    // strongest protection in the app could be undone with one tap.
+    if (hasPin && hasRecoveryCode && gate is Gate.None && !subscriptionsOffered) {
+        SubscriptionOfferScreen(
+            onAccept = {
+                for (subscription in Subscriptions.ALL) {
+                    subscriptions.setEnabled(subscription.id, true)
+                }
+                subscriptions.markOffered()
+                // Downloading is left to the scheduled worker rather than done
+                // here: several megabytes must not stand between someone and a
+                // working app, and a failed fetch must not strand them in setup.
+                onSubscriptionsChanged()
+            },
+            onSkip = {
+                // Recorded either way, so declining is respected instead of
+                // re-asked at every launch.
+                subscriptions.markOffered()
+            },
+        )
         return
     }
 
@@ -179,7 +209,9 @@ fun SafeWorldApp(
         when (tab) {
             Tab.Home -> HomeScreen(
                 store = store,
+                subscriptions = subscriptions,
                 onProtectionChange = onProtectionChange,
+                onSubscriptionsChanged = onSubscriptionsChanged,
                 requestPin = requestPin,
                 onEnableUninstallProtection = onEnableUninstallProtection,
                 onDisableUninstallProtection = onDisableUninstallProtection,
