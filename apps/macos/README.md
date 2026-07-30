@@ -150,6 +150,21 @@ sudo apps/macos/dnsd/safeworld-dnsd.sh uninstall
 > a human at the keyboard — so the `osascript` plumbing around that verified script is the one
 > untested link.
 
+### Deleting the app does not stop the blocking
+
+The daemon is a root LaunchDaemon with `KeepAlive` and does not depend on the app existing, so
+dragging Safe World to the Trash leaves it running. That is deliberate — a one-step bypass would
+defeat the point of the whole thing — but it must not be a trap. So the install writes its own
+uninstaller next to the daemon, which works whether or not the app is still there:
+
+```bash
+sudo '/Library/Application Support/SafeWorld/uninstall.sh'
+```
+
+It restores DNS *before* removing the daemon, refuses to run without root, and is safe to run twice.
+The menu shows that command next to the "Turn off" button rather than leaving someone to discover the
+situation after deleting the app.
+
 ### Fails open, deliberately
 
 The real resolver stays configured as the **secondary**. macOS only falls back on a timeout, and

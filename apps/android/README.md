@@ -85,11 +85,45 @@ so plainly rather than implying a lock that doesn't exist.
   monitor anything. It is *not* a real block: admin can still be revoked from Android's settings, and
   the app's data can be cleared. A true block needs Device Owner, which requires provisioning from a
   factory-reset device.
+- **Uninstall protection being removed is now reported.** `onDisabled()` raises the same interruption
+  flag the VPN uses, so revoking admin from Android's settings produces a notification and a
+  PIN-gated banner rather than happening silently. Removal through the app's own PIN-gated path sets
+  an in-memory `expectedRemoval` flag first, so an authorized removal does not fire a false alarm —
+  false alarms are how a warning that matters gets learned as noise.
 - **Takeover detection.** Android allows one active VPN, so another VPN app silently displaces this
   one. `onRevoke()` catches that while the process is alive; `MainActivity.onResume` catches the case
   where the process was already gone ("enabled, but not running, and consent is gone"). Either way the
   user gets a high-priority notification and an error-coloured banner that costs the PIN to dismiss,
-  so a silent takeover can't leave them believing they're covered.
+  so a silent takeover can't leave them believing they're covered. The banner now names the cause when
+  `anotherVpnActive()` says a foreign VPN is up, which turns "protection stopped" into something
+  actionable.
+- **Surviving reboots.** `vpn/BootReceiver.kt` restarts the tunnel on `BOOT_COMPLETED` and
+  `MY_PACKAGE_REPLACED`. Before it existed the only thing that restarted protection was opening the
+  app, so on a phone that is installed and then deliberately never opened again — the normal end state
+  for a self-control tool — protection quietly ended at the first restart. Those two broadcasts are on
+  Android 12's exemption list for starting a foreground service from the background, which is why only
+  they are registered.
+
+### What cannot be fixed in the app, and what to do instead
+
+Two limits are architectural, not oversights:
+
+**A displaced VPN cannot be re-acquired automatically.** Android exposes no API to preempt another
+VPN, and since Android 12 a background app cannot start a foreground service at all — so no watchdog,
+timer, or `WorkManager` job of ours can bring the tunnel back on its own. What the OS *does* offer is
+**Always-on VPN** plus **Block connections without VPN**: with both on, Android restarts Safe World
+itself and refuses to pass traffic while it is down, so a takeover attempt fails **closed** instead of
+open. The service declares `SUPPORTS_ALWAYS_ON` so the switches are offered, and the home screen links
+straight to `Settings.ACTION_VPN_SETTINGS` with instructions. There is no public API to read whether
+they are enabled for your own app, so the UI explains rather than pretending to know.
+
+**Uninstall cannot truly be blocked without Device Owner.** Device admin is friction; the system's own
+device-admin screen is not ours to gate. A genuine block needs Device Owner provisioning (factory
+reset, then `afw#` or a QR enrolment), which unlocks `setUninstallBlocked`,
+`setAlwaysOnVpnPackage(..., lockdownEnabled = true)`, `DISALLOW_CONFIG_VPN` and `DISALLOW_SAFE_BOOT` —
+i.e. everything above, enforced rather than suggested. That is the right answer for a
+parent-provisioned device and the wrong one for a self-install, which is why it is documented rather
+than required.
 - **Recovery code.** There is no account and no server, so nothing can authorize a PIN reset except a
   secret the user already holds. One 100-bit code (`security/RecoveryCode.kt`) is issued right after
   the PIN is set, shown **once**, and stored hashed with the same PBKDF2 — so "show it to me again"

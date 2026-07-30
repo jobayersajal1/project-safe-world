@@ -154,4 +154,12 @@
     <string name="subscription_offer_skip">এখন নয়</string>
     <string name="subscription_pending">অতিরিক্ত তালিকা ডাউনলোড হচ্ছে। সেগুলো এলে সংখ্যাটি বাড়বে।</string>
     <string name="subscription_pending_retry">অতিরিক্ত তালিকা ডাউনলোড শেষ করা যায়নি। Safe World আবার চেষ্টা করবে।</string>
+    <string name="alert_admin_removed_title">আনইনস্টল সুরক্ষা বন্ধ করা হয়েছে</string>
+    <string name="alert_admin_removed_text">Safe World এখন আনইনস্টল করা যাবে। আপনি যদি এটি না করে থাকেন, Safe World খুলে আনইনস্টল সুরক্ষা আবার চালু করুন।</string>
+    <string name="interrupted_body_other_vpn">আরেকটি VPN অ্যাপ চলছে, আর Android একসাথে একটির বেশি VPN চলতে দেয় না — তাই Safe World বন্ধ হয়ে গেছে। ওই অ্যাপটি বন্ধ করে সুরক্ষা আবার চালু করুন। নিচের \'Always-on VPN\' চালু করলে এটি আর হবে না।</string>
+    <string name="alwayson_title">সুরক্ষা যাতে টিকে থাকে</string>
+    <string name="alwayson_body">Android একসাথে একটির বেশি VPN চলতে দেয় না, তাই অন্য কোনো VPN অ্যাপ Safe World বন্ধ করে দিতে পারে। \'Always-on VPN\' এবং \'Block connections without VPN\' চালু করলে Android নিজেই Safe World চালু রাখবে এবং বন্ধ থাকলে ইন্টারনেট চলতে দেবে না। এটি ঠেকানোর একমাত্র উপায়, আর কেবল আপনিই এটি চালু করতে পারেন।</string>
+    <string name="alwayson_action">VPN সেটিংস খুলুন</string>
+    <string name="alwayson_steps">VPN সেটিংসে Safe World-এর পাশের গিয়ার আইকনে চাপ দিয়ে দুটি সুইচই চালু করুন।</string>
+    <string name="alwayson_unavailable">এই ডিভাইসে VPN সেটিংস খোলা যায়নি।</string>
 </resources>

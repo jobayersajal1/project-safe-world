@@ -26,6 +26,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.provider.Settings
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -93,6 +98,10 @@ fun HomeScreen(
             val title = stringResource(R.string.interrupted_title)
             val message = stringResource(R.string.interrupted_pin_message)
             InterruptionBanner(
+                // Another VPN being up is by far the most common cause, and naming it turns
+                // "protection stopped" into something the user can act on. `anotherVpnActive`
+                // existed for this and had no caller.
+                byAnotherVpn = SafeWorldVpnService.anotherVpnActive(LocalContext.current),
                 onAcknowledge = { requestPin(title, message, store::clearProtectionInterrupted) },
             )
         }
@@ -136,6 +145,8 @@ fun HomeScreen(
                 AddWebsitesSection(store = store, requestPin = requestPin)
             }
         }
+
+        AlwaysOnSection()
 
         Text(stringResource(R.string.uninstall_title), style = MaterialTheme.typography.titleSmall)
         Card {
@@ -360,7 +371,7 @@ private fun AddWebsitesSection(store: SettingsStore, requestPin: RequestPin) {
  * user believing they're still covered.
  */
 @Composable
-private fun InterruptionBanner(onAcknowledge: () -> Unit) {
+private fun InterruptionBanner(byAnotherVpn: Boolean, onAcknowledge: () -> Unit) {
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.errorContainer,
@@ -373,11 +384,62 @@ private fun InterruptionBanner(onAcknowledge: () -> Unit) {
                 style = MaterialTheme.typography.titleMedium,
             )
             Text(
-                stringResource(R.string.interrupted_body),
+                stringResource(
+                    if (byAnotherVpn) R.string.interrupted_body_other_vpn
+                    else R.string.interrupted_body
+                ),
                 style = MaterialTheme.typography.bodySmall,
             )
             TextButton(onClick = onAcknowledge) {
                 Text(stringResource(R.string.interrupted_dismiss))
+            }
+        }
+    }
+}
+
+/**
+ * Points the user at Android's own "Always-on VPN" and "Block connections without VPN" switches.
+ *
+ * **This is the only real answer to another VPN displacing us, and it cannot be automated.** Android
+ * allows one active VPN at a time and offers no API to preempt another, and since Android 12 a
+ * background app cannot start a foreground service — so no watchdog of ours can re-acquire the
+ * tunnel by itself. What the OS does offer is these two settings: with them on, Android restarts
+ * Safe World itself and, with lockdown, refuses to pass traffic while it is down. A displaced tunnel
+ * then fails closed instead of open.
+ *
+ * There is no public API to read whether they are enabled for your own app (only a Device Owner can
+ * query or set it), so this explains and links rather than pretending to know the state.
+ */
+@Composable
+private fun AlwaysOnSection() {
+    val context = LocalContext.current
+    val unavailable = stringResource(R.string.alwayson_unavailable)
+
+    Text(stringResource(R.string.alwayson_title), style = MaterialTheme.typography.titleSmall)
+    Card {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(
+                stringResource(R.string.alwayson_body),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                stringResource(R.string.alwayson_steps),
+                style = MaterialTheme.typography.bodySmall,
+            )
+            TextButton(
+                onClick = {
+                    val intent = Intent(Settings.ACTION_VPN_SETTINGS)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    try {
+                        context.startActivity(intent)
+                    } catch (_: ActivityNotFoundException) {
+                        Toast.makeText(context, unavailable, Toast.LENGTH_SHORT).show()
+                    }
+                },
+                modifier = Modifier.align(Alignment.End),
+            ) {
+                Text(stringResource(R.string.alwayson_action))
             }
         }
     }

@@ -199,6 +199,17 @@ struct MenuView: View {
                 Text("Blocking \(daemon.blockedDomainCount.formatted()) sites in every app.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                // Deleting the app does not stop the daemon — it is a root LaunchDaemon with
+                // KeepAlive and does not depend on the app existing. That is deliberate, because a
+                // one-step bypass would defeat the point, but it must not be a trap: say so, and say
+                // where the way out lives.
+                Text("Deleting Safe World won't stop this. Turn it off here first, or run:")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text("sudo '/Library/Application Support/SafeWorld/uninstall.sh'")
+                    .font(.system(.caption2, design: .monospaced))
+                    .textSelection(.enabled)
+                    .foregroundStyle(.secondary)
                 Button("Turn off") { Task { await daemon.uninstall() } }
                     .disabled(daemon.isBusy)
             } else {

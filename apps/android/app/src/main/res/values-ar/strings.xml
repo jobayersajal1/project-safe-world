@@ -160,4 +160,12 @@
     <string name="subscription_offer_skip">ليس الآن</string>
     <string name="subscription_pending">يجري تنزيل القوائم الإضافية. سيزداد العدد عند وصولها.</string>
     <string name="subscription_pending_retry">تعذّر إكمال تنزيل القوائم الإضافية. سيحاول Safe World مرة أخرى.</string>
+    <string name="alert_admin_removed_title">تم إيقاف الحماية من إلغاء التثبيت</string>
+    <string name="alert_admin_removed_text">يمكن الآن إلغاء تثبيت Safe World. إن لم تكن أنت من فعل ذلك، افتح Safe World وأعد تشغيل الحماية.</string>
+    <string name="interrupted_body_other_vpn">هناك تطبيق VPN آخر يعمل، وأندرويد يسمح بواحد فقط في الوقت نفسه — لذلك أوقف Safe World. أغلق ذلك التطبيق ثم أعد تشغيل الحماية. تشغيل \'VPN دائم التشغيل\' يمنع تكرار ذلك.</string>
+    <string name="alwayson_title">اجعل الحماية ثابتة</string>
+    <string name="alwayson_body">يسمح أندرويد بشبكة VPN واحدة فقط في الوقت نفسه، لذا يمكن لتطبيق VPN آخر إيقاف Safe World. تشغيل \'VPN دائم التشغيل\' و\'حظر الاتصالات بدون VPN\' يجعل أندرويد يشغّل Safe World بنفسه ويرفض تمرير أي بيانات أثناء توقفه. هذه هي الطريقة الوحيدة لمنع ذلك، وأنت وحدك من يمكنه تشغيلها.</string>
+    <string name="alwayson_action">افتح إعدادات VPN</string>
+    <string name="alwayson_steps">في إعدادات VPN، اضغط على رمز الإعدادات بجانب Safe World وشغّل المفتاحين.</string>
+    <string name="alwayson_unavailable">تعذّر فتح إعدادات VPN على هذا الجهاز.</string>
 </resources>

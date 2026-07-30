@@ -6,6 +6,12 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!--
+        So protection comes back after a reboot. Without it the tunnel stayed down until someone
+        opened the app, which on a device that is deliberately never opened again means protection
+        quietly ended at the first restart.
+    -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <!--
         The app is distributed as a downloaded APK, not through a store, so it
@@ -49,6 +55,18 @@
             <property
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
                 android:value="On-device local VPN that filters DNS lookups to block harmful sites. No traffic leaves the device to any remote server." />
+            <!--
+                Declared explicitly rather than relying on the default. This is what makes Android
+                offer the "Always-on VPN" and "Block connections without VPN" switches for this app,
+                and those two settings are the only sanctioned answer to another VPN displacing us:
+                the OS then restarts our tunnel itself and, with lockdown on, refuses to pass traffic
+                while it is down. An app cannot do either for itself — there is no API to preempt
+                another VPN, and Android 12+ forbids starting a foreground service from the
+                background, so no watchdog can re-acquire the tunnel on its own.
+            -->
+            <meta-data
+                android:name="android.net.VpnService.SUPPORTS_ALWAYS_ON"
+                android:value="true" />
         </service>
 
         <!--
@@ -65,6 +83,25 @@
                 android:resource="@xml/device_admin" />
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
+
+        <!--
+            Restarts the tunnel after a reboot or an app update. Exported, because the sender is
+            the system rather than us; the receiver itself does nothing an attacker could exploit —
+            it starts protection, and only when the user had already enabled it.
+
+            BOOT_COMPLETED and MY_PACKAGE_REPLACED are on Android 12's exemption list for starting
+            a foreground service from the background, which is why only those are listed.
+        -->
+        <receiver
+            android:name=".vpn.BootReceiver"
+            android:exported="true"
+            android:directBootAware="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
 

@@ -169,4 +169,12 @@
     <string name="subscription_offer_skip">Not now</string>
     <string name="subscription_pending">Extra lists are downloading. The count will grow when they arrive.</string>
     <string name="subscription_pending_retry">Couldn\'t finish downloading the extra lists. Safe World will try again.</string>
+    <string name="alert_admin_removed_title">Uninstall protection was turned off</string>
+    <string name="alert_admin_removed_text">Safe World can now be uninstalled. If you didn\'t do this, open Safe World and turn uninstall protection back on.</string>
+    <string name="interrupted_body_other_vpn">Another VPN app is running, and Android only allows one at a time — so it switched Safe World off. Close that app, then turn protection back on. Turning on \'Always-on VPN\' below stops this happening again.</string>
+    <string name="alwayson_title">Make protection stick</string>
+    <string name="alwayson_body">Android lets only one VPN run at a time, so another VPN app can switch Safe World off. Turning on \'Always-on VPN\' — and \'Block connections without VPN\' — makes Android start Safe World itself and refuse to pass traffic while it is off. This is the only way to stop that, and only you can turn it on.</string>
+    <string name="alwayson_action">Open VPN settings</string>
+    <string name="alwayson_steps">In VPN settings, tap the gear next to Safe World, then turn on both switches.</string>
+    <string name="alwayson_unavailable">Couldn\'t open VPN settings on this device.</string>
 </resources>

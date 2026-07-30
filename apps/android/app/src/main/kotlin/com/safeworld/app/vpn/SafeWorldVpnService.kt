@@ -16,8 +16,10 @@ import com.safeworld.app.LocaleHelper
 import com.safeworld.app.MainActivity
 import com.safeworld.app.R
 import com.safeworld.app.SettingsStore
+import com.safeworld.app.SubscriptionStore
 import com.safeworld.core.Matcher
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.io.FileInputStream
@@ -169,6 +171,30 @@ class SafeWorldVpnService : VpnService() {
         // makes a later "it stopped" claim true rather than just noticing that a
         // fresh install isn't running yet.
         store.markProtectionStarted()
+        loadSubscriptions()
+    }
+
+    /**
+     * Loads the user's subscribed blocklists into [store] so this tunnel matches against them too.
+     *
+     * **Done here rather than only in `MainActivity`, because the tunnel can start without the
+     * activity ever running** — `BootReceiver` does exactly that. Testing a reboot caught it: the
+     * bundled 4.4M blocked correctly while a domain that exists only in a subscribed feed resolved
+     * fine. Partial protection, reported as full, which is the worst shape a bug here can take.
+     *
+     * On its own thread: reading the keys is megabytes of I/O plus sorting close to a million longs,
+     * and this runs while the tunnel is already up. Until it finishes the bundled lists block as
+     * normal, so nothing is worse off for the wait.
+     */
+    private fun loadSubscriptions() {
+        Thread({
+            val subscriptions = SubscriptionStore.get(applicationContext)
+            runBlocking { subscriptions.load() }
+            store.setSubscriptionSets(subscriptions.setsByCategory())
+        }, "safe-world-subscriptions").apply {
+            isDaemon = true
+            start()
+        }
     }
 
     private fun stop() {

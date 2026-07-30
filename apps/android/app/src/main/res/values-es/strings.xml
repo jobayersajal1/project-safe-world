@@ -152,4 +152,12 @@
     <string name="subscription_offer_skip">Ahora no</string>
     <string name="subscription_pending">Las listas extra se están descargando. El total crecerá cuando lleguen.</string>
     <string name="subscription_pending_retry">No se pudieron descargar las listas extra. Safe World volverá a intentarlo.</string>
+    <string name="alert_admin_removed_title">Se desactivó la protección de desinstalación</string>
+    <string name="alert_admin_removed_text">Safe World ya se puede desinstalar. Si no fuiste tú, abre Safe World y vuelve a activarla.</string>
+    <string name="interrupted_body_other_vpn">Otra app de VPN está en marcha y Android solo permite una a la vez, así que desactivó Safe World. Cierra esa app y vuelve a activar la protección. Activar \'VPN siempre activada\' evita que ocurra de nuevo.</string>
+    <string name="alwayson_title">Que la protección no se caiga</string>
+    <string name="alwayson_body">Android solo permite una VPN a la vez, así que otra app de VPN puede desactivar Safe World. Al activar \'VPN siempre activada\' y \'Bloquear conexiones sin VPN\', Android inicia Safe World por su cuenta y no deja pasar tráfico mientras esté apagada. Es la única forma de evitarlo, y solo tú puedes activarlo.</string>
+    <string name="alwayson_action">Abrir ajustes de VPN</string>
+    <string name="alwayson_steps">En los ajustes de VPN, toca el engranaje junto a Safe World y activa los dos interruptores.</string>
+    <string name="alwayson_unavailable">No se pudieron abrir los ajustes de VPN en este dispositivo.</string>
 </resources>

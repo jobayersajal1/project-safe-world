@@ -187,6 +187,33 @@ final class DaemonController: ObservableObject {
         chown '\(owner)' '\(prefix)' '\(prefix)/settings.json'
         printf '%s\\n' '\(upstream)' > '\(prefix)/dns-restore.txt'
 
+        # An uninstaller that outlives the app.
+        #
+        # The daemon is a root LaunchDaemon with KeepAlive and does not depend on the app existing —
+        # dragging Safe World to the Trash leaves it running and blocking, with no UI left to turn it
+        # off. That is deliberate (deleting an app must not be a one-step bypass) but it must not be a
+        # trap, so the way out is written next to the daemon itself:
+        #
+        #   sudo '\(prefix)/uninstall.sh'
+        cat > '\(prefix)/uninstall.sh' <<'SAFEWORLD_UNINSTALL'
+        #!/bin/bash
+        # Removes Safe World's system-wide blocking. Run with: sudo "$0"
+        # Safe to run even if the app has been deleted, and safe to run twice.
+        if [ "$(id -u)" -ne 0 ]; then echo "Run with: sudo $0" >&2; exit 1; fi
+        # DNS first, always: removing the daemon while the system still points at it would leave a
+        # window with no resolver at all.
+        networksetup -listallnetworkservices | tail -n +2 | while IFS= read -r svc; do
+          networksetup -setdnsservers "$svc" empty 2>/dev/null || true
+        done
+        dscacheutil -flushcache 2>/dev/null || true
+        killall -HUP mDNSResponder 2>/dev/null || true
+        launchctl unload '\(plistPath)' 2>/dev/null || true
+        rm -f '\(plistPath)'
+        rm -rf '\(prefix)'
+        echo "Safe World blocking removed. DNS is back to DHCP."
+        SAFEWORLD_UNINSTALL
+        chmod 755 '\(prefix)/uninstall.sh'
+
         cp '\(staging)/com.safeworld.dnsd.plist' '\(plistPath)'
         chown root:wheel '\(plistPath)'
         chmod 644 '\(plistPath)'
