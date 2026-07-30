@@ -35,7 +35,23 @@ android {
     namespace = "com.safeworld.app"
     compileSdk = 35
 
+    // The packet relay for full-tunnel mode. Native because under `0.0.0.0/0` every packet on the
+    // device crosses it, where per-packet allocation in the JVM means GC pauses mid-call.
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+            version = "3.22.1"
+        }
+    }
+
+    ndkVersion = "27.0.12077973"
+
     defaultConfig {
+        // Only the ABIs a real device uses, plus x86_64 so the emulator can run it. Each adds its
+        // own copy of the .so to a universal APK.
+        ndk { abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86_64") }
+        // The relay's parsing has to be tested where the .so actually is — on a device.
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         applicationId = "com.safeworld.app"
         // 26 (Android 8.0) is where VpnService behaves consistently enough to
         // rely on; see apps/android/README.md.
@@ -89,6 +105,11 @@ android {
 
 dependencies {
     implementation(project(":core"))
+
+    // On-device tests for the native relay: its parsing can only be verified where the .so is.
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.junit)
 
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.serialization.json)

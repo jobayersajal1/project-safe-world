@@ -49,6 +49,9 @@ keystore.properties
 apps/macos/dmg-staging/
 apps/macos/dist/
 
+# NDK / CMake build output
+.cxx/
+
 # Xcode / Swift
 .build/
 build/
