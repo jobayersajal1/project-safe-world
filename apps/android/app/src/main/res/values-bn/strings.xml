@@ -165,4 +165,11 @@
     <string name="private_dns_title">Private DNS Safe World-কে আটকে দিচ্ছে</string>
     <string name="private_dns_body">আপনার ফোন ওয়েব অনুসন্ধানগুলো এনক্রিপ্ট করে অন্য একটি সেবায় পাঠাচ্ছে, যেখানে Safe World সেগুলো দেখতে পারে না। Private DNS বন্ধ (Off) বা Automatic না করা পর্যন্ত ব্লকিং কাজ করবে না।</string>
     <string name="private_dns_action">নেটওয়ার্ক সেটিংস খুলুন</string>
+    <string name="fullblock_meta">Facebook ও Instagram অ্যাপও ব্লক করুন</string>
+    <string name="fullblock_netflix">Netflix অ্যাপও ব্লক করুন</string>
+    <string name="fullblock_generic">অ্যাপটিও ব্লক করুন</string>
+    <string name="fullblock_description">শুধু ওয়েবসাইট নয়, অ্যাপের নিজের সংযোগও ব্লক করে — অ্যাপ সাধারণ ওয়েব লুকআপ এড়িয়ে গেলেও কাজ করে।</string>
+    <string name="fullblock_description_collateral">শুধু ওয়েবসাইট নয়, অ্যাপের নিজের সংযোগও ব্লক করে। এতে %1$s-ও ব্লক হবে, কারণ সেগুলো একই সার্ভারে চলে।</string>
+    <string name="fullblock_off_pin_title">অ্যাপ ব্লক করা বন্ধ করবেন?</string>
+    <string name="fullblock_off_pin_message">এই অ্যাপটিকে আবার সংযোগ করতে দিতে আপনার পিন দিন।</string>
 </resources>

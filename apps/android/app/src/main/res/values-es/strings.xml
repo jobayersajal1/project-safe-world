@@ -163,4 +163,11 @@
     <string name="private_dns_title">El DNS privado está bloqueando Safe World</string>
     <string name="private_dns_body">Tu teléfono envía las consultas web cifradas a otro proveedor, donde Safe World no puede revisarlas. El bloqueo no funcionará hasta que pongas el DNS privado en Desactivado o Automático.</string>
     <string name="private_dns_action">Abrir ajustes de red</string>
+    <string name="fullblock_meta">Bloquear también las apps de Facebook e Instagram</string>
+    <string name="fullblock_netflix">Bloquear también la app de Netflix</string>
+    <string name="fullblock_generic">Bloquear también la app</string>
+    <string name="fullblock_description">Bloquea las conexiones de la propia app, no solo su web: funciona aunque la app evite las consultas web normales.</string>
+    <string name="fullblock_description_collateral">Bloquea las conexiones de la propia app, no solo su web. Esto también bloquea %1$s, que usan los mismos servidores.</string>
+    <string name="fullblock_off_pin_title">¿Dejar de bloquear la app?</string>
+    <string name="fullblock_off_pin_message">Introduce tu PIN para permitir que esta app vuelva a conectarse.</string>
 </resources>
