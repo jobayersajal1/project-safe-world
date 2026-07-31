@@ -175,7 +175,7 @@
 
     <string name="appblock_title">অ্যাপ ব্লক করুন</string>
     <string name="appblock_games_label">গেম ও বাজির অ্যাপ</string>
-    <string name="appblock_games_description">ফ্রি ফায়ার, পাবজি, লুডু, তিন পাত্তি, ড্রিম১১ এবং এ ধরনের অ্যাপ — ওয়েবসাইট ব্লক হোক বা না হোক, অ্যাপগুলো বন্ধ থাকবে।</string>
+    <string name="appblock_games_description">ফ্রি ফায়ার, পাবজি, লুডু, তিন পাত্তি, ড্রিম১১ এবং এ ধরনের অ্যাপ।</string>
     <string name="appblock_choose_label">অ্যাপ বেছে নিন</string>
     <string name="appblock_choose_summary">%1$s টি বাছাই করা, তার মধ্যে %2$s টি এই ফোনে আছে</string>
     <string name="appblock_loading">আপনার অ্যাপগুলো পড়া হচ্ছে…</string>
@@ -183,11 +183,20 @@
     <string name="appblock_consent_body">কোনো অ্যাপ ব্লক করতে হলে সেফ ওয়ার্ল্ডকে শুধু ওয়েবসাইটের খোঁজ নয়, আপনার ফোনের প্রতিটি সংযোগ পরীক্ষা করতে হয়। এতে ব্যাটারি একটু বেশি খরচ হয়। কোনো তথ্য কোথাও পাঠানো হয় না — সব পরীক্ষা এই ফোনেই হয়।</string>
     <string name="appblock_consent_accept">চালু করুন</string>
     <string name="appblock_consent_cancel">বাতিল</string>
-    <string name="appblock_games_off_pin_title">গেম ব্লক করা বন্ধ করবেন?</string>
+    <string name="appblock_games_off_pin_title">গেম অ্যাপ ব্লক করা বন্ধ করবেন?</string>
     <string name="appblock_remove_pin_title">এই অ্যাপগুলো আনব্লক করবেন?</string>
     <string name="appblock_off_pin_message">এই অ্যাপগুলোকে আবার সংযোগ করতে দিতে আপনার পিন দিন।</string>
     <string name="licence_title">লাইসেন্স</string>
     <string name="licence_body">অ্যান্ড্রয়েডের জন্য সেফ ওয়ার্ল্ড একটি মুক্ত সফটওয়্যার, GNU General Public License v3 এর অধীনে। আপনি এটি ব্যবহার, অধ্যয়ন, বিতরণ ও পরিবর্তন করতে পারেন। এর অ্যাপ ব্লক করার ইঞ্জিনটি NetGuard থেকে নেওয়া, © মার্সেল বোকহর্স্ট, সেটিও GPL v3।</string>
     <string name="licence_gpl">লাইসেন্সের শর্তাবলি</string>
     <string name="licence_netguard">NetGuard প্রকল্প</string>
+    <string name="category_list6_label">গেম</string>
+    <string name="category_list6_description">গেম পোর্টাল, ব্রাউজার গেম ও গেমিং প্ল্যাটফর্ম।</string>
+    <string name="appblock_intro">শুধু ওয়েবসাইট নয়, অ্যাপগুলোকেই ইন্টারনেটে পৌঁছাতে দেয় না। অ্যাপ সাধারণ ওয়েব খোঁজ এড়িয়ে গেলেও কাজ করে।</string>
+    <string name="appblock_social_label">সোশ্যাল মিডিয়া অ্যাপ</string>
+    <string name="appblock_social_description">Facebook, Instagram, TikTok, X, Snapchat ও এ ধরনের অ্যাপ। মেসেজিং অ্যাপ কখনো ব্লক করা হয় না।</string>
+    <string name="appblock_entertainment_label">বিনোদন অ্যাপ</string>
+    <string name="appblock_entertainment_description">YouTube, Netflix, Spotify, Twitch ও অন্যান্য স্ট্রিমিং অ্যাপ।</string>
+    <string name="appblock_social_off_pin_title">সোশ্যাল মিডিয়া অ্যাপ ব্লক করা বন্ধ করবেন?</string>
+    <string name="appblock_entertainment_off_pin_title">বিনোদন অ্যাপ ব্লক করা বন্ধ করবেন?</string>
 </resources>

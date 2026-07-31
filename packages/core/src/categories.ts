@@ -10,7 +10,7 @@
  * The mapping is not a secret (it's right here), it just isn't advertised by
  * the artifacts themselves.
  */
-export type CategoryId = "list1" | "list2" | "list3" | "list4" | "list5";
+export type CategoryId = "list1" | "list2" | "list3" | "list4" | "list5" | "list6";
 
 export interface CategoryMeta {
   id: CategoryId;
@@ -84,6 +84,14 @@ export const CATEGORIES: readonly CategoryMeta[] = [
     defaultEnabled: false,
     optional: true,
     ruleIdBase: 5 * RULE_ID_STRIDE,
+  },
+  {
+    id: "list6",
+    label: "Games",
+    description: "Game portals, browser games, and gaming platforms.",
+    defaultEnabled: false,
+    optional: true,
+    ruleIdBase: 6 * RULE_ID_STRIDE,
   },
 ] as const;
 

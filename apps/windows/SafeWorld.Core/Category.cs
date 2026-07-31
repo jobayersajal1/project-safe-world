@@ -15,6 +15,7 @@ public enum CategoryId
     Adult,
     Social,
     Entertainment,
+    Games,
 }
 
 public static class CategoryIdExtensions
@@ -27,6 +28,7 @@ public static class CategoryIdExtensions
         CategoryId.Adult => "list3",
         CategoryId.Social => "list4",
         CategoryId.Entertainment => "list5",
+        CategoryId.Games => "list6",
         _ => throw new ArgumentOutOfRangeException(nameof(id)),
     };
 
@@ -37,6 +39,7 @@ public static class CategoryIdExtensions
         "list3" => CategoryId.Adult,
         "list4" => CategoryId.Social,
         "list5" => CategoryId.Entertainment,
+        "list6" => CategoryId.Games,
         _ => null,
     };
 }
@@ -66,6 +69,7 @@ public static class Categories
         new(CategoryId.Adult, "Adult Content", "Pornography and explicit adult sites.", true, false),
         new(CategoryId.Social, "Social Media", "Facebook, Instagram, X/Twitter, TikTok, and similar feeds.", false, true),
         new(CategoryId.Entertainment, "Entertainment", "YouTube, Netflix, and other streaming and video sites.", false, true),
+        new(CategoryId.Games, "Games", "Game portals, browser games, and gaming platforms.", false, true),
     };
 
     /// <summary>Categories the user opts into, presented as a question rather than as part of the app's baseline promise.</summary>

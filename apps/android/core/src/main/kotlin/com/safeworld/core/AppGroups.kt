@@ -27,17 +27,16 @@ object AppGroups {
 
     /**
      * @param id stable identifier, used as the persisted key.
-     * @param category the category whose switch turns this group on, or null when the group has its
-     *   own switch. Social and entertainment apps ride on the category the user already toggles —
-     *   asking twice ("block social sites?" then "block social apps?") is a distinction the user
-     *   did not make and does not want to make.
+     * @param category the domain category covering the *same* subject, for the UI to pair them up.
+     *   **It does not turn this group on** — each group has its own switch, because blocking
+     *   facebook.com in a browser and stopping the Facebook app from reaching the network are
+     *   different decisions with different costs. The first is free; the second routes every packet
+     *   on the device through us. Someone may well want one without the other.
      */
-    enum class AppGroup(val id: String, val category: CategoryId?) {
+    enum class AppGroup(val id: String, val category: CategoryId) {
         SOCIAL("apps_social", CategoryId.SOCIAL),
         ENTERTAINMENT("apps_entertainment", CategoryId.ENTERTAINMENT),
-
-        /** Its own switch: there is no "games" domain category, and it does not need one. */
-        GAMES("apps_games", null);
+        GAMES("apps_games", CategoryId.GAMES);
 
         companion object {
             fun fromId(raw: String): AppGroup? = entries.firstOrNull { it.id == raw }
@@ -126,19 +125,12 @@ object AppGroups {
     fun forGroup(group: AppGroup): List<AppEntry> = ALL.filter { it.group == group }
 
     /**
-     * The groups currently switched on.
-     *
-     * @param gamesEnabled [AppGroup.GAMES] has no category behind it, so its switch is passed in.
-     */
-    fun enabledGroups(settings: Settings, gamesEnabled: Boolean): Set<AppGroup> =
-        AppGroup.entries.filterTo(mutableSetOf()) { group ->
-            val category = group.category
-            if (category == null) gamesEnabled else settings.categories[category] == true
-        }
-
-    /**
      * Every package the user's choices add up to: the enabled groups' catalogues plus whatever they
      * picked by hand.
+     *
+     * Takes the enabled groups directly rather than reading them out of [Settings], because app
+     * blocking is not a category setting — `Settings` is the cross-platform shape, and Android is
+     * the only platform that can block an app at all.
      *
      * Hand-picked packages are **not** filtered by group, because they were chosen individually and
      * there is nothing to infer a group from. That also means they survive turning a group off,
@@ -146,14 +138,12 @@ object AppGroups {
      * themselves.
      */
     fun blockedPackages(
-        settings: Settings,
-        gamesEnabled: Boolean,
+        enabledGroups: Set<AppGroup>,
         userPicked: Set<String>,
     ): Set<String> {
-        val groups = enabledGroups(settings, gamesEnabled)
-        val packages = ALL.filterTo(mutableSetOf()) { it.group in groups }.mapTo(mutableSetOf()) {
-            it.packageName
-        }
+        val packages = ALL.asSequence()
+            .filter { it.group in enabledGroups }
+            .mapTo(mutableSetOf()) { it.packageName }
         packages.addAll(userPicked)
         return packages
     }

@@ -1,6 +1,7 @@
 package com.safeworld.app
 
 import android.content.Context
+import com.safeworld.core.AppGroups.AppGroup
 import com.safeworld.core.Blocklists
 import com.safeworld.core.Categories
 import com.safeworld.core.CategoryId
@@ -226,18 +227,24 @@ class SettingsStore private constructor(context: Context) {
     val appBlockRevision: StateFlow<Int> = _appBlockRevision.asStateFlow()
 
     /**
-     * Whether the Games group is on.
+     * Which app groups are switched on.
      *
-     * Its own flag rather than a sixth `CategoryId`: a category means a domain
-     * list, and this one has none — the gambling *sites* behind these apps are
-     * already in the mandatory `list2`. Adding `list6` would force a matching
-     * port into TypeScript, Swift and C# for something that blocks nothing on
-     * any of those platforms.
+     * **Independent of the categories with the same names.** Blocking social
+     * *websites* and stopping the Facebook *app* from reaching the network are
+     * different decisions: the first is a DNS rule that costs nothing, the
+     * second routes every packet on the device through us. Tying them together
+     * would mean someone who wanted one had to accept the other.
      */
-    fun isGamesBlocked(): Boolean = prefs.getBoolean(KEY_BLOCK_GAMES, false)
+    fun blockedAppGroups(): Set<AppGroup> =
+        prefs.getStringSet(KEY_BLOCKED_APP_GROUPS, emptySet())
+            .orEmpty()
+            .mapNotNullTo(mutableSetOf()) { AppGroup.fromId(it) }
 
-    fun setGamesBlocked(on: Boolean) {
-        prefs.edit().putBoolean(KEY_BLOCK_GAMES, on).apply()
+    fun setAppGroupBlocked(group: AppGroup, on: Boolean) {
+        val next = blockedAppGroups().toMutableSet()
+        if (on) next.add(group) else next.remove(group)
+        prefs.edit().putStringSet(KEY_BLOCKED_APP_GROUPS, next.mapTo(mutableSetOf()) { it.id })
+            .apply()
         _appBlockRevision.value += 1
     }
 
@@ -506,7 +513,7 @@ class SettingsStore private constructor(context: Context) {
         private const val KEY_STATS = "stats"
         private const val KEY_REMOTE_DOMAINS = "remoteDomains"
         private const val KEY_FULL_BLOCK = "fullyBlockedServices"
-        private const val KEY_BLOCK_GAMES = "blockGames"
+        private const val KEY_BLOCKED_APP_GROUPS = "blockedAppGroups"
         private const val KEY_BLOCKED_PACKAGES = "blockedPackages"
         private const val KEY_FULL_TUNNEL_ACK = "fullTunnelAcknowledged"
         private const val KEY_LAST_UPDATE_ID = "lastAppliedUpdateId"

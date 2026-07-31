@@ -55,8 +55,7 @@ class BlockedApps private constructor(context: Context) {
      */
     fun refresh(store: SettingsStore = SettingsStore.get(appContext)) {
         val chosen = AppGroups.blockedPackages(
-            settings = store.settings.value,
-            gamesEnabled = store.isGamesBlocked(),
+            enabledGroups = store.blockedAppGroups(),
             userPicked = store.blockedPackages(),
         )
         packages = chosen

@@ -105,6 +105,16 @@ export const SOURCES: readonly Source[] = [
     homepage: "https://github.com/blocklistproject/Lists",
   },
   {
+    id: "blocklistproject-fortnite",
+    category: "list6",
+    url: "https://raw.githubusercontent.com/blocklistproject/Lists/master/fortnite.txt",
+    format: "hosts",
+    license: "Unlicense (public domain)",
+    redistributable: true,
+    homepage: "https://github.com/blocklistproject/Lists",
+    note: "The only gaming feed any of the usual maintainers publish. Gaming is not a standard blocklist category the way porn and gambling are, so list6 is mostly curated.",
+  },
+  {
     id: "blocklistproject-youtube",
     category: "list5",
     url: "https://raw.githubusercontent.com/blocklistproject/Lists/master/youtube.txt",

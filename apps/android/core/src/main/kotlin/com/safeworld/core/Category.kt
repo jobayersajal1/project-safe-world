@@ -33,7 +33,10 @@ enum class CategoryId(val id: String) {
     SOCIAL("list4"),
 
     @SerialName("list5")
-    ENTERTAINMENT("list5");
+    ENTERTAINMENT("list5"),
+
+    @SerialName("list6")
+    GAMES("list6");
 
     companion object {
         /** The `CategoryId` with this wire id, or null if unrecognized. */
@@ -98,6 +101,13 @@ object Categories {
             id = CategoryId.ENTERTAINMENT,
             label = "Entertainment",
             description = "YouTube, Netflix, and other streaming and video sites.",
+            defaultEnabled = false,
+            optional = true,
+        ),
+        CategoryMeta(
+            id = CategoryId.GAMES,
+            label = "Games",
+            description = "Game portals, browser games, and gaming platforms.",
             defaultEnabled = false,
             optional = true,
         ),

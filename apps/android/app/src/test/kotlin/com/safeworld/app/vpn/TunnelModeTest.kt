@@ -1,5 +1,6 @@
 package com.safeworld.app.vpn
 
+import com.safeworld.core.AppGroups.AppGroup
 import com.safeworld.core.CategoryId
 import com.safeworld.core.Settings
 import org.junit.Assert.assertEquals
@@ -48,29 +49,27 @@ class TunnelModeTest {
 
     // MARK: Which switches put apps in scope
 
-    @Test
-    fun `the opt-in categories ask for per-app blocking`() {
-        assertFalse(TunnelMode.perAppSwitchesOn(settings(), gamesEnabled = false))
-        assertTrue(TunnelMode.perAppSwitchesOn(settings(social = true), gamesEnabled = false))
-        assertTrue(TunnelMode.perAppSwitchesOn(settings(entertainment = true), gamesEnabled = false))
-    }
-
-    /** Games has no category behind it, so it must reach the packet path on its own. */
-    @Test
-    fun `games asks for per-app blocking with every category off`() {
-        assertTrue(TunnelMode.perAppSwitchesOn(settings(), gamesEnabled = true))
-    }
-
     /**
-     * The mandatory categories are always on and are blocked by domain, so they must never drag a
-     * user onto the expensive path — that would make every install pay the packet cost.
+     * App blocking is its own set of switches, **not derived from the categories.** Blocking social
+     * websites is a DNS rule that costs nothing; stopping the Facebook app routes every packet on
+     * the device through us. Someone who turned on the first has not asked for the second, and a
+     * category switch must never move them onto the expensive tunnel.
      */
     @Test
-    fun `mandatory categories alone stay cheap`() {
-        val base = Settings.defaults()
-        assertTrue(base.categories[CategoryId.SCAM] == true)
-        assertFalse(TunnelMode.perAppSwitchesOn(base, gamesEnabled = false))
-        assertEquals(TunnelMode.DnsOnly, TunnelMode.select(base, blockedApps = false))
+    fun `category switches alone never ask for per-app blocking`() {
+        assertFalse(TunnelMode.perAppSwitchesOn(emptySet()))
+        // Every optional category on, no app group on: still the cheap tunnel.
+        assertEquals(
+            TunnelMode.DnsOnly,
+            TunnelMode.select(settings(social = true, entertainment = true), blockedApps = false),
+        )
+    }
+
+    @Test
+    fun `any app group asks for per-app blocking`() {
+        for (group in AppGroup.entries) {
+            assertTrue("$group should ask for it", TunnelMode.perAppSwitchesOn(setOf(group)))
+        }
     }
 
     // MARK: The resolved package set, not the switches, is what decides

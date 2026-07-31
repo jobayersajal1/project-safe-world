@@ -35,6 +35,7 @@ import com.safeworld.app.SettingsStore
 import com.safeworld.app.vpn.BlockedApps
 import com.safeworld.app.vpn.SafeWorldVpnService
 import com.safeworld.core.AppGroups
+import com.safeworld.core.AppGroups.AppGroup
 import com.safeworld.core.Settings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -48,8 +49,9 @@ import kotlinx.coroutines.withContext
  * around by using DNS-over-HTTPS or an address it already knows. It is a different bargain, and the
  * user is told before they take it rather than after their battery goes.
  *
- * Social and entertainment apps ride on the category switches above; only Games has its own,
- * because there is no games domain list for it to belong to.
+ * **Each group is its own switch, independent of the category above with the same name.** Blocking
+ * facebook.com in a browser and stopping the Facebook app from reaching the network are different
+ * decisions with very different costs, and someone may want either one without the other.
  */
 @Composable
 fun AppBlockSection(
@@ -65,10 +67,10 @@ fun AppBlockSection(
 
     // Recomputed on every selection change: the count is the only feedback that a toggle did
     // anything, since none of these apps are named on this screen.
-    val blocked = remember(settings, revision) {
+    val enabledGroups = remember(revision) { store.blockedAppGroups() }
+    val blocked = remember(revision) {
         AppGroups.blockedPackages(
-            settings = settings,
-            gamesEnabled = store.isGamesBlocked(),
+            enabledGroups = store.blockedAppGroups(),
             userPicked = store.blockedPackages(),
         )
     }
@@ -76,8 +78,7 @@ fun AppBlockSection(
         BlockedApps.get(context).also { it.refresh(store) }.installedCount
     }
 
-    val gamesOffTitle = stringResource(R.string.appblock_games_off_pin_title)
-    val gamesOffMessage = stringResource(R.string.appblock_off_pin_message)
+    val offMessage = stringResource(R.string.appblock_off_pin_message)
 
     /**
      * Turning any of this on is where the full tunnel starts, so the warning goes here rather than
@@ -90,19 +91,30 @@ fun AppBlockSection(
     Text(stringResource(R.string.appblock_title), style = MaterialTheme.typography.titleSmall)
     androidx.compose.material3.Card {
         Column(Modifier.padding(vertical = 8.dp)) {
-            AppToggleRow(
-                label = stringResource(R.string.appblock_games_label),
-                description = stringResource(R.string.appblock_games_description),
-                checked = store.isGamesBlocked(),
-                onCheckedChange = { on ->
-                    val apply = {
-                        store.setGamesBlocked(on)
-                        SafeWorldVpnService.refresh(context)
-                    }
-                    if (on) withConsent(apply) else requestPin(gamesOffTitle, gamesOffMessage, apply)
-                },
+            Text(
+                stringResource(R.string.appblock_intro),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             )
             HorizontalDivider()
+
+            for (group in AppGroup.entries) {
+                val offTitle = stringResource(appGroupOffPinTitleFor(group))
+                AppToggleRow(
+                    label = stringResource(appGroupLabelFor(group)),
+                    description = stringResource(appGroupDescriptionFor(group)),
+                    checked = group in enabledGroups,
+                    onCheckedChange = { on ->
+                        val apply = {
+                            store.setAppGroupBlocked(group, on)
+                            SafeWorldVpnService.refresh(context)
+                        }
+                        if (on) withConsent(apply) else requestPin(offTitle, offMessage, apply)
+                    },
+                )
+                HorizontalDivider()
+            }
 
             Row(
                 Modifier

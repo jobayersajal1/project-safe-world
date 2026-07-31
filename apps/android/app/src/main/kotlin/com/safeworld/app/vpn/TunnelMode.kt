@@ -1,6 +1,6 @@
 package com.safeworld.app.vpn
 
-import com.safeworld.core.CategoryId
+import com.safeworld.core.AppGroups.AppGroup
 import com.safeworld.core.Settings
 
 /**
@@ -60,12 +60,13 @@ enum class TunnelMode {
         fun needsPerAppBlocking(blockedPackages: Set<String>): Boolean = blockedPackages.isNotEmpty()
 
         /**
-         * The switches that put apps in scope: the two categories that have an app catalogue behind
-         * them, plus Games, which has no category because it has no domain list.
+         * Whether any app group is switched on.
+         *
+         * Deliberately not derived from the categories. Blocking social *websites* is a DNS rule
+         * that costs nothing; stopping the Facebook *app* routes every packet on the device through
+         * us. Someone who turns on the first has not asked for the second, and must not be moved
+         * onto the expensive tunnel by a switch that never mentioned it.
          */
-        fun perAppSwitchesOn(settings: Settings, gamesEnabled: Boolean): Boolean =
-            gamesEnabled ||
-                settings.categories[CategoryId.SOCIAL] == true ||
-                settings.categories[CategoryId.ENTERTAINMENT] == true
+        fun perAppSwitchesOn(enabledGroups: Set<AppGroup>): Boolean = enabledGroups.isNotEmpty()
     }
 }

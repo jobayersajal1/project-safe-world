@@ -147,11 +147,24 @@ category is one `CATEGORIES` entry (plus a blocklist JSON and a `rule_resources`
 manifest). Each category owns a disjoint rule-id range via `ruleIdBase`/`RULE_ID_STRIDE` so
 generated rule ids never collide.
 
-There are five, split by `optional`. `list1`/`list2`/`list3` (scam, gambling, adult) are the
+There are six, split by `optional`. `list1`/`list2`/`list3` (scam, gambling, adult) are the
 protection promise — on by default, and **forced on** by `enforceMandatoryCategories` on both
-Android and iOS so a stale stored value can't leave one off. `list4`/`list5` (social,
-entertainment) are opt-in, off until the user asks. Chrome is the exception by design: it's the
-self-control build with no PIN, where everything toggles freely.
+Android and iOS so a stale stored value can't leave one off. `list4`/`list5`/`list6` (social,
+entertainment, games) are opt-in, off until the user asks. Chrome is the exception by design: it's
+the self-control build with no PIN, where everything toggles freely.
+
+`list6` is much smaller than the others (~117 domains) and mostly hand-curated: gaming is not a
+standard blocklist category the way porn and gambling are, and `blocklistproject`'s `fortnite.txt`
+is the only feed any of the usual maintainers publish for it. It covers storefronts, launchers and
+browser-game portals. Treat its size as expected rather than as a build that went wrong.
+
+**Categories block websites. App groups block apps. They are deliberately separate switches** —
+see `apps/android/core/.../AppGroups.kt`. `AppGroup.category` names the category covering the same
+subject so the UI can pair the rows, but it does **not** turn the group on: blocking facebook.com
+in a browser is a DNS rule that costs nothing, while stopping the Facebook app routes every packet
+on the device through us (`TunnelMode.FullTunnel`). Deriving one from the other would move someone
+onto the expensive tunnel with a switch that never mentioned it, so `TunnelMode.perAppSwitchesOn`
+takes the enabled groups and never reads `Settings.categories`.
 
 **iOS and Android are the same product; only the enforcement mechanism differs.** Both have the
 PIN, the recovery code, the four languages, the help section, and the blocked-count home screen —

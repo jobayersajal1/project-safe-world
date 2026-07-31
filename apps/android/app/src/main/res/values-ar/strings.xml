@@ -180,8 +180,8 @@
     <string name="fullblock_off_pin_message">أدخل رمز PIN للسماح لهذا التطبيق بالاتصال مجددًا.</string>
 
     <string name="appblock_title">حظر التطبيقات</string>
-    <string name="appblock_games_label">الألعاب وتطبيقات المراهنات</string>
-    <string name="appblock_games_description">فري فاير وببجي ولودو وتين باتي ودريم11 وما شابهها — تُحظر سواء حُجبت مواقعها أم لا.</string>
+    <string name="appblock_games_label">تطبيقات الألعاب والمراهنات</string>
+    <string name="appblock_games_description">فري فاير وببجي ولودو وتين باتي ودريم11 وما شابهها.</string>
     <string name="appblock_choose_label">اختيار التطبيقات</string>
     <string name="appblock_choose_summary">%1$s مختارة، منها %2$s على هذا الهاتف</string>
     <string name="appblock_loading">جارٍ قراءة تطبيقاتك…</string>
@@ -189,11 +189,20 @@
     <string name="appblock_consent_body">لحظر تطبيق، على Safe World فحص كل اتصال يجريه هاتفك، وليس عمليات البحث عن المواقع فقط. هذا يستهلك بطارية أكثر قليلًا. لا يُرسل أي شيء إلى أي جهة — كل الفحص يتم على هذا الهاتف.</string>
     <string name="appblock_consent_accept">تشغيل</string>
     <string name="appblock_consent_cancel">إلغاء</string>
-    <string name="appblock_games_off_pin_title">إيقاف حظر الألعاب؟</string>
+    <string name="appblock_games_off_pin_title">إيقاف حظر تطبيقات الألعاب؟</string>
     <string name="appblock_remove_pin_title">إلغاء حظر هذه التطبيقات؟</string>
     <string name="appblock_off_pin_message">أدخل رمز PIN للسماح لهذه التطبيقات بالاتصال مجددًا.</string>
     <string name="licence_title">الترخيص</string>
     <string name="licence_body">Safe World لأندرويد برنامج حر بموجب رخصة جنو العمومية العامة الإصدار 3. يمكنك استخدامه ودراسته ومشاركته وتعديله. محرّك حظر التطبيقات مأخوذ من NetGuard، © مارسيل بوكهورست، وهو أيضًا تحت GPL v3.</string>
     <string name="licence_gpl">شروط الترخيص</string>
     <string name="licence_netguard">مشروع NetGuard</string>
+    <string name="category_list6_label">الألعاب</string>
+    <string name="category_list6_description">بوابات الألعاب وألعاب المتصفح ومنصات الألعاب.</string>
+    <string name="appblock_intro">يمنع التطبيقات نفسها من الوصول إلى الإنترنت، وليس مواقعها فقط. يعمل حتى لو تجنّب التطبيق عمليات البحث المعتادة.</string>
+    <string name="appblock_social_label">تطبيقات التواصل الاجتماعي</string>
+    <string name="appblock_social_description">فيسبوك وإنستغرام وتيك توك وX وسناب شات وما شابهها. تطبيقات المراسلة لا تُحظر أبدًا.</string>
+    <string name="appblock_entertainment_label">تطبيقات الترفيه</string>
+    <string name="appblock_entertainment_description">يوتيوب ونتفليكس وسبوتيفاي وتويتش وتطبيقات البث الأخرى.</string>
+    <string name="appblock_social_off_pin_title">إيقاف حظر تطبيقات التواصل الاجتماعي؟</string>
+    <string name="appblock_entertainment_off_pin_title">إيقاف حظر تطبيقات الترفيه؟</string>
 </resources>

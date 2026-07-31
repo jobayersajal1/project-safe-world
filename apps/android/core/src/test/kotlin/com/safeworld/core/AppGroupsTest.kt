@@ -68,70 +68,57 @@ class AppGroupsTest {
         assertEquals("messaging must stay reachable", emptyList<String>(), found)
     }
 
+    /**
+     * Each group pairs with a category of the same subject for the UI's benefit, but **the category
+     * does not switch it on.** Blocking social websites and stopping the Facebook app are different
+     * decisions with different costs, and one must not silently imply the other.
+     */
     @Test
-    fun `social and entertainment follow their category, games has its own switch`() {
+    fun `every group names the category it pairs with`() {
         assertEquals(CategoryId.SOCIAL, AppGroup.SOCIAL.category)
         assertEquals(CategoryId.ENTERTAINMENT, AppGroup.ENTERTAINMENT.category)
-        assertNull("games must not ride on a category", AppGroup.GAMES.category)
+        assertEquals(CategoryId.GAMES, AppGroup.GAMES.category)
     }
 
     // MARK: Which packages a given set of switches produces
 
-    private fun settings(vararg on: CategoryId) = Settings(
-        categories = CategoryId.entries.associateWith { it in on },
-    )
-
     @Test
     fun `nothing is blocked when no group is on`() {
-        val blocked = AppGroups.blockedPackages(settings(), gamesEnabled = false, userPicked = emptySet())
-        assertEquals(emptySet<String>(), blocked)
+        assertEquals(emptySet<String>(), AppGroups.blockedPackages(emptySet(), emptySet()))
     }
 
     @Test
-    fun `turning on the social category blocks social apps and nothing else`() {
-        val blocked = AppGroups.blockedPackages(
-            settings(CategoryId.SOCIAL),
-            gamesEnabled = false,
-            userPicked = emptySet(),
-        )
+    fun `turning on a group blocks its apps and nothing else`() {
+        val blocked = AppGroups.blockedPackages(setOf(AppGroup.SOCIAL), emptySet())
         assertTrue(blocked.contains("com.facebook.katana"))
         assertFalse(blocked.contains("com.google.android.youtube"))
         assertFalse(blocked.contains("com.dts.freefireth"))
     }
 
     @Test
-    fun `games is independent of every category`() {
+    fun `groups combine`() {
         val blocked = AppGroups.blockedPackages(
-            settings(),
-            gamesEnabled = true,
-            userPicked = emptySet(),
+            setOf(AppGroup.ENTERTAINMENT, AppGroup.GAMES),
+            emptySet(),
         )
+        assertTrue(blocked.contains("com.google.android.youtube"))
         assertTrue(blocked.contains("com.dts.freefireth"))
-        assertTrue(blocked.contains("com.app.dream11Pro"))
         assertFalse(blocked.contains("com.facebook.katana"))
     }
 
     /**
-     * A hand-picked app was chosen individually, so there is no group to un-choose it. Turning
-     * Games off must not quietly un-block something the user added themselves.
+     * A hand-picked app was chosen individually, so there is no group to un-choose it. Turning a
+     * group off must not quietly un-block something the user added themselves.
      */
     @Test
     fun `hand-picked packages survive every group being off`() {
-        val blocked = AppGroups.blockedPackages(
-            settings(),
-            gamesEnabled = false,
-            userPicked = setOf("com.example.somegame"),
-        )
+        val blocked = AppGroups.blockedPackages(emptySet(), setOf("com.example.somegame"))
         assertEquals(setOf("com.example.somegame"), blocked)
     }
 
     @Test
     fun `a hand-picked app already in a group is not counted twice`() {
-        val blocked = AppGroups.blockedPackages(
-            settings(),
-            gamesEnabled = true,
-            userPicked = setOf("com.dts.freefireth"),
-        )
+        val blocked = AppGroups.blockedPackages(setOf(AppGroup.GAMES), setOf("com.dts.freefireth"))
         assertEquals(1, blocked.count { it == "com.dts.freefireth" })
     }
 }

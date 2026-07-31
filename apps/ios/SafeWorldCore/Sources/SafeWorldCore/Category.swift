@@ -13,6 +13,7 @@ public enum CategoryId: String, CaseIterable, Codable, Hashable, Sendable {
     case adult = "list3"
     case social = "list4"
     case entertainment = "list5"
+    case games = "list6"
 }
 
 public struct CategoryMeta: Sendable {
@@ -77,6 +78,13 @@ public enum Categories {
             id: .entertainment,
             label: "Entertainment",
             description: "YouTube, Netflix, and other streaming and video sites.",
+            defaultEnabled: false,
+            optional: true
+        ),
+        CategoryMeta(
+            id: .games,
+            label: "Games",
+            description: "Game portals, browser games, and gaming platforms.",
             defaultEnabled: false,
             optional: true
         ),
