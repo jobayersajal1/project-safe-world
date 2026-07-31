@@ -32,9 +32,9 @@
     <string name="blocked_headline_detail">%1$s موقع معروف، يتم تحديثها تلقائيًا.</string>
 
     <string name="block_more_title">تريد حظر المزيد؟</string>
-    <string name="category_list4_label">وسائل التواصل الاجتماعي</string>
+    <string name="category_list4_label">مواقع التواصل الاجتماعي</string>
     <string name="category_list4_description">فيسبوك وإنستغرام وX وتيك توك وريديت والمواقع المشابهة.</string>
-    <string name="category_list5_label">الترفيه</string>
+    <string name="category_list5_label">مواقع الترفيه</string>
     <string name="category_list5_description">يوتيوب ونتفليكس وتويتش ومواقع البث الأخرى.</string>
     <string name="category_off_pin_title">إيقاف حظر %1$s؟</string>
     <string name="category_off_pin_message">أدخل رمز PIN لإلغاء حظر هذه المواقع.</string>
@@ -196,7 +196,7 @@
     <string name="licence_body">Safe World لأندرويد برنامج حر بموجب رخصة جنو العمومية العامة الإصدار 3. يمكنك استخدامه ودراسته ومشاركته وتعديله. محرّك حظر التطبيقات مأخوذ من NetGuard، © مارسيل بوكهورست، وهو أيضًا تحت GPL v3.</string>
     <string name="licence_gpl">شروط الترخيص</string>
     <string name="licence_netguard">مشروع NetGuard</string>
-    <string name="category_list6_label">الألعاب</string>
+    <string name="category_list6_label">مواقع الألعاب</string>
     <string name="category_list6_description">بوابات الألعاب وألعاب المتصفح ومنصات الألعاب.</string>
     <string name="appblock_intro">يمنع التطبيقات نفسها من الوصول إلى الإنترنت، وليس مواقعها فقط. يعمل حتى لو تجنّب التطبيق عمليات البحث المعتادة.</string>
     <string name="appblock_social_label">تطبيقات التواصل الاجتماعي</string>

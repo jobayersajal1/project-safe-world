@@ -39,9 +39,9 @@
 
     <!-- Home: opt-in categories -->
     <string name="block_more_title">Want to block more?</string>
-    <string name="category_list4_label">Social media</string>
+    <string name="category_list4_label">Social media websites</string>
     <string name="category_list4_description">Facebook, Instagram, X, TikTok, Reddit and similar feeds.</string>
-    <string name="category_list5_label">Entertainment</string>
+    <string name="category_list5_label">Entertainment websites</string>
     <string name="category_list5_description">YouTube, Netflix, Twitch and other streaming sites.</string>
     <!-- %1$s is a category name, e.g. "Social media". -->
     <string name="category_off_pin_title">Stop blocking %1$s?</string>
@@ -210,7 +210,7 @@
     <string name="licence_body">Safe World for Android is free software under the GNU General Public License v3. You may use, study, share and change it. Its app-blocking engine comes from NetGuard, © Marcel Bokhorst, also GPL v3.</string>
     <string name="licence_gpl">Licence terms</string>
     <string name="licence_netguard">NetGuard project</string>
-    <string name="category_list6_label">Games</string>
+    <string name="category_list6_label">Games websites</string>
     <string name="category_list6_description">Game portals, browser games, and gaming platforms.</string>
     <string name="appblock_intro">Stops the apps themselves from reaching the internet, not just their websites. Works even when an app avoids normal web lookups.</string>
     <string name="appblock_social_label">Social media apps</string>

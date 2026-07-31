@@ -34,9 +34,9 @@
     <string name="blocked_headline_detail">%1$sটি পরিচিত সাইট, স্বয়ংক্রিয়ভাবে হালনাগাদ হয়।</string>
 
     <string name="block_more_title">আরও ব্লক করতে চান?</string>
-    <string name="category_list4_label">সোশ্যাল মিডিয়া</string>
+    <string name="category_list4_label">সোশ্যাল মিডিয়া ওয়েবসাইট</string>
     <string name="category_list4_description">Facebook, Instagram, X, TikTok, Reddit ও এ ধরনের ফিড।</string>
-    <string name="category_list5_label">বিনোদন</string>
+    <string name="category_list5_label">বিনোদন ওয়েবসাইট</string>
     <string name="category_list5_description">YouTube, Netflix, Twitch ও অন্যান্য স্ট্রিমিং সাইট।</string>
     <string name="category_off_pin_title">%1$s ব্লক করা বন্ধ করবেন?</string>
     <string name="category_off_pin_message">এই সাইটগুলো আনব্লক করতে আপনার পিন দিন।</string>
@@ -190,7 +190,7 @@
     <string name="licence_body">অ্যান্ড্রয়েডের জন্য সেফ ওয়ার্ল্ড একটি মুক্ত সফটওয়্যার, GNU General Public License v3 এর অধীনে। আপনি এটি ব্যবহার, অধ্যয়ন, বিতরণ ও পরিবর্তন করতে পারেন। এর অ্যাপ ব্লক করার ইঞ্জিনটি NetGuard থেকে নেওয়া, © মার্সেল বোকহর্স্ট, সেটিও GPL v3।</string>
     <string name="licence_gpl">লাইসেন্সের শর্তাবলি</string>
     <string name="licence_netguard">NetGuard প্রকল্প</string>
-    <string name="category_list6_label">গেম</string>
+    <string name="category_list6_label">গেম ওয়েবসাইট</string>
     <string name="category_list6_description">গেম পোর্টাল, ব্রাউজার গেম ও গেমিং প্ল্যাটফর্ম।</string>
     <string name="appblock_intro">শুধু ওয়েবসাইট নয়, অ্যাপগুলোকেই ইন্টারনেটে পৌঁছাতে দেয় না। অ্যাপ সাধারণ ওয়েব খোঁজ এড়িয়ে গেলেও কাজ করে।</string>
     <string name="appblock_social_label">সোশ্যাল মিডিয়া অ্যাপ</string>
