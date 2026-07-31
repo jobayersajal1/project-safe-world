@@ -56,16 +56,17 @@ object SafeWorldRelay {
     /**
      * Whether full-tunnel mode may be used.
      *
-     * Separate from [available] on purpose: the library can load and classify packets long before it
-     * can *forward* them, and those are the two different questions. Routing `0.0.0.0/0` while this
-     * is false would pull every packet on the device into a tunnel that can only drop — a phone with
-     * no internet, not a phone with YouTube blocked.
+     * Separate from [available] on purpose: this classifier could load and parse packets long
+     * before anything could *forward* them, and those are two different questions. Routing
+     * `0.0.0.0/0` without a forwarder pulls every packet on the device into something that can only
+     * drop — a phone with no internet, not a phone with YouTube blocked.
      *
-     * Flips to true when TCP and UDP forwarding land. Until then `TunnelMode.select` refuses to
-     * choose full-tunnel however the settings are configured, so no combination of toggles can take
-     * someone offline.
+     * Now answered by whether `libsafeworld_netguard` loaded. It is a real check rather than a
+     * constant: on a device whose ABI we do not ship, or a build where the native step was skipped,
+     * the answer must be no and `TunnelMode.select` must fall back to the DNS-only tunnel — which
+     * still blocks 4.4M domains, and still blackholes a blocked app's lookups.
      */
-    val canForward: Boolean get() = false
+    val canForward: Boolean get() = NativeTunnel.available
 
     fun classify(packet: ByteArray, length: Int): Verdict = when (nativeClassify(packet, length)) {
         1 -> Verdict.DNS

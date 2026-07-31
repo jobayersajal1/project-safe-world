@@ -28,11 +28,17 @@ class TunnelModeTest {
         assertEquals(TunnelMode.DnsOnly, TunnelMode.select(settings(), blockedApps = false))
     }
 
+    /**
+     * The gate, exercised in the state this test runs in: no native library can load under a plain
+     * JVM, so `canForward` is false here, and no arrangement of settings may reach the full tunnel.
+     *
+     * That is the same state a device whose ABI we do not ship is in, which is why testing it on
+     * the JVM is worth something rather than being an artefact — routing `0.0.0.0/0` with nothing
+     * able to forward is a phone with no internet.
+     */
     @Test
-    fun `full tunnel is refused while the relay cannot forward`() {
-        // The gate. `canForward` is false until forwarding exists, and until then this must hold
-        // even when the user has asked for app blocking.
-        assertFalse("test is meaningless once forwarding lands", SafeWorldRelay.canForward)
+    fun `full tunnel is refused when the forwarder cannot load`() {
+        assertFalse("no native library should load under a plain JVM", SafeWorldRelay.canForward)
         assertEquals(TunnelMode.DnsOnly, TunnelMode.select(settings(social = true), blockedApps = true))
         assertEquals(
             TunnelMode.DnsOnly,

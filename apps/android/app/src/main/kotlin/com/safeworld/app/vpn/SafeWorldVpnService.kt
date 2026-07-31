@@ -93,6 +93,9 @@ class SafeWorldVpnService : VpnService() {
     private var worker: Thread? = null
     private var forwarders: ExecutorService? = null
 
+    /** The userspace TCP/IP forwarder. Non-null only under a full tunnel. */
+    private var native: NativeTunnel? = null
+
     /**
      * Re-resolves UIDs when an app is installed, replaced or removed.
      *
@@ -274,9 +277,26 @@ class SafeWorldVpnService : VpnService() {
 
         tunnel = fd
         forwarders = Executors.newFixedThreadPool(FORWARDER_THREADS)
-        worker = Thread({ runTunnel(fd) }, "safe-world-dns").apply {
-            isDaemon = true
-            start()
+
+        // Exactly one of these owns the tun fd. Running both would have two readers competing for
+        // the same packets, each seeing half of every connection.
+        if (mode == TunnelMode.FullTunnel) {
+            val forwarder = NativeTunnel(this, apps, store)
+            native = forwarder
+            worker = Thread({
+                // Blocks until stop(). Domain filtering moves into the forwarder's
+                // `isDomainBlocked` here — it covers DNS answers and TLS SNI both.
+                runCatching { forwarder.run(fd.fd) }
+                    .onFailure { Log.e(TAG, "native forwarder stopped", it) }
+            }, "safe-world-forwarder").apply {
+                isDaemon = true
+                start()
+            }
+        } else {
+            worker = Thread({ runTunnel(fd) }, "safe-world-dns").apply {
+                isDaemon = true
+                start()
+            }
         }
         registerPackageChanges()
         _running.value = true
@@ -334,6 +354,14 @@ class SafeWorldVpnService : VpnService() {
     private fun stop() {
         _running.value = false
         unregisterPackageChanges()
+
+        // Before the fd closes: the native loop is inside epoll on it, and it has to be told to
+        // come out rather than discovering a closed descriptor underneath itself.
+        native?.let {
+            runCatching { it.stop() }
+            runCatching { it.close() }
+        }
+        native = null
 
         worker?.interrupt()
         worker = null
