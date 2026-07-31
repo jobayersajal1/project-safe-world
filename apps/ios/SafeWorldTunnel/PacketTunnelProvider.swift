@@ -44,6 +44,13 @@ final class PacketTunnelProvider: NEPacketTunnelProvider {
     private let upstreamResolver = "1.1.1.1"
 
     private var engine: FilterEngine?
+
+    /// The user's app-blocking selection, read from the shared App Group container.
+    ///
+    /// A value type over `UserDefaults`, so reading it per packet costs a defaults lookup rather
+    /// than any coordination with the app — which is just as well, because the app is a different
+    /// process and there is no channel to it while the tunnel runs.
+    private let blockedApps = BlockedAppStore()
     private var session: NWUDPSession?
 
     override func startTunnel(options: [String: NSObject]?, completionHandler: @escaping (Error?) -> Void) {
@@ -92,37 +99,62 @@ final class PacketTunnelProvider: NEPacketTunnelProvider {
         completionHandler()
     }
 
-    /// Reads continuously; `readPackets(completionHandler:)` delivers one batch
-    /// and must be re-armed each time.
+    /// Reads continuously; the completion handler delivers one batch and must be re-armed.
+    ///
+    /// **`readPacketObjects`, not `readPackets`.** The two differ in exactly one thing that matters
+    /// here: an `NEPacket` carries `metadata.sourceAppSigningIdentifier`, the bundle identifier of
+    /// the app that sent it. That is what makes per-app blocking possible at all on iOS — it is the
+    /// same question Android answers with `getConnectionOwnerUid`, and iOS answers it with a
+    /// stabler, more readable value. Reading raw `Data` throws that away.
     private func readPackets() {
-        packetFlow.readPackets { [weak self] packets, _ in
+        packetFlow.readPacketObjects { [weak self] packets in
             guard let self else { return }
             for packet in packets {
-                self.handle(packet: [UInt8](packet))
+                self.handle(packet: packet)
             }
             self.readPackets()
         }
     }
 
-    private func handle(packet: [UInt8]) {
+    private func handle(packet: NEPacket) {
         guard
-            let datagram = Ipv4Udp.parse(packet),
-            datagram.destinationPort == 53,
-            let name = DnsMessage.questionName(datagram.payload)
+            let datagram = Ipv4Udp.parse([UInt8](packet.data)),
+            datagram.destinationPort == 53
         else {
             // Not a DNS query we understand. Dropped rather than guessed at —
             // the tunnel only claims DNS, so this should be rare.
             return
         }
 
+        // Whose query is this? A blocked app gets NXDOMAIN for everything it asks, whatever the
+        // name — the app is what is blocked, not any particular site.
+        //
+        // Checked before the name is even parsed, because for a blocked app the name does not
+        // matter. `blockedApps` is re-read here rather than cached at startup so a toggle applies
+        // to the next lookup without restarting the tunnel.
+        let blocked = blockedApps
+        if !blocked.isEmpty,
+           let sender = packet.metadata?.sourceAppSigningIdentifier,
+           blocked.blockedBundleIds.contains(sender) {
+            refuse(datagram)
+            return
+        }
+
+        guard let name = DnsMessage.questionName(datagram.payload) else { return }
+
         if engine?.isBlocked(name) == true {
-            guard let nx = DnsMessage.nxDomainResponse(datagram.payload) else { return }
-            let reply = Ipv4Udp.buildResponse(to: datagram, payload: nx)
-            packetFlow.writePackets([Data(reply)], withProtocols: [NSNumber(value: AF_INET)])
+            refuse(datagram)
             return
         }
 
         forward(datagram)
+    }
+
+    /// Answer a query with NXDOMAIN, for a blocked name or a blocked app alike.
+    private func refuse(_ datagram: UdpDatagram) {
+        guard let nx = DnsMessage.nxDomainResponse(datagram.payload) else { return }
+        let reply = Ipv4Udp.buildResponse(to: datagram, payload: nx)
+        packetFlow.writePackets([Data(reply)], withProtocols: [NSNumber(value: AF_INET)])
     }
 
     /// Send an allowed query upstream and write the answer back into the tunnel.

@@ -28,6 +28,9 @@ struct HomeView: View {
                 blockedCountSection
                 optionalCategoriesSection
                 addWebsitesSection
+                // Its own section rather than more rows above: everything above is a Safari
+                // content-blocker rule and costs nothing, this needs the packet tunnel.
+                AppBlockSection(store: store, gate: gate)
                 safariSection
                 tunnelSection
 

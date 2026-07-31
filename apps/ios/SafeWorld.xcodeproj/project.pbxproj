@@ -14,6 +14,7 @@
 		178C421895CC48C9EAC21521 /* PinStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7135D56A17CF762FD7EC8CE0 /* PinStore.swift */; };
 		1806B910C8005E974BBF5A40 /* SafeWorldApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888922C535B0B08BFF28D2B0 /* SafeWorldApp.swift */; };
 		1A1136A6B075FC325B413E0E /* CountFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B99E8E78D3EC58CFD0B84B /* CountFormat.swift */; };
+		1E4D618E37199075A18AB258 /* AppBlockSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2994A502B6A5F24C24192994 /* AppBlockSection.swift */; };
 		256682B7D64AFC3942CF6C53 /* TunnelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E96FA0B89076AF669BBE991 /* TunnelManager.swift */; };
 		2E0BE28552C7AC402A4A3EF0 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C069EA14FDF6282494F53E66 /* Localizable.xcstrings */; };
 		3230702E32982640B416A8A5 /* SafeWorldTunnel.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 5802E650C1A5840112BE70F9 /* SafeWorldTunnel.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -73,6 +74,7 @@
 		1F8A7F1716ABDD2709EEC542 /* UpdateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateService.swift; sourceTree = "<group>"; };
 		1FA580CF498F370803254DE7 /* RemoteUpdateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteUpdateService.swift; sourceTree = "<group>"; };
 		20F57803E891EBCB8882EA57 /* PinUi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinUi.swift; sourceTree = "<group>"; };
+		2994A502B6A5F24C24192994 /* AppBlockSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBlockSection.swift; sourceTree = "<group>"; };
 		37E8C2D74D27AF33AC33EDBA /* SafeWorldBlocker.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = SafeWorldBlocker.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		3EBBC75F37013962EC7F0821 /* blockerList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = blockerList.json; sourceTree = "<group>"; };
 		41EA29C7041009A677AF6DFB /* ContentBlockerRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentBlockerRequestHandler.swift; sourceTree = "<group>"; };
@@ -165,6 +167,7 @@
 		C8C4936C357306FA04A925F7 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2994A502B6A5F24C24192994 /* AppBlockSection.swift */,
 				879C4FB2DB466A93EA395324 /* HomeView.swift */,
 				20F57803E891EBCB8882EA57 /* PinUi.swift */,
 				1823BC5E585D8B1B6FB792D8 /* RootView.swift */,
@@ -358,6 +361,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E4D618E37199075A18AB258 /* AppBlockSection.swift in Sources */,
 				D0C998984D21D36F1AB5804B /* ContentBlockerSync.swift in Sources */,
 				1A1136A6B075FC325B413E0E /* CountFormat.swift in Sources */,
 				3B7555576DB3C61D6F3BBC08 /* HomeView.swift in Sources */,
