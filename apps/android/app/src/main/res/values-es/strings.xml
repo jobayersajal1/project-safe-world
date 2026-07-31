@@ -28,12 +28,12 @@
     <string name="interrupted_dismiss">Descartar (requiere PIN)</string>
     <string name="interrupted_pin_message">Introduce tu PIN para descartar este aviso.</string>
 
-    <string name="blocked_headline">Hemos bloqueado %1$s sitios web</string>
+    <string name="blocked_headline">Hemos bloqueado %1$s sitios web dañinos</string>
     <string name="blocked_headline_detail">%1$s sitios conocidos, actualizados automáticamente.</string>
 
     <string name="block_more_title">¿Quieres bloquear más?</string>
     <string name="category_list4_label">Webs de redes sociales</string>
-    <string name="category_list4_description">Facebook, Instagram, X, TikTok, Reddit y otros feeds similares.</string>
+    <string name="category_list4_description">Facebook, Instagram, X, TikTok, Reddit, webs de citas y feeds similares.</string>
     <string name="category_list5_label">Webs de entretenimiento</string>
     <string name="category_list5_description">YouTube, Netflix, Twitch y otros sitios de streaming.</string>
     <string name="category_off_pin_title">¿Dejar de bloquear %1$s?</string>
@@ -192,7 +192,7 @@
     <string name="category_list6_description">Portales de juegos, juegos de navegador y plataformas de videojuegos.</string>
     <string name="appblock_intro">Impide que las apps lleguen a internet, no solo sus webs. Funciona aunque la app evite las búsquedas web normales.</string>
     <string name="appblock_social_label">Apps de redes sociales</string>
-    <string name="appblock_social_description">Facebook, Instagram, TikTok, X, Snapchat y similares. Las apps de mensajería nunca se bloquean.</string>
+    <string name="appblock_social_description">Facebook, Instagram, TikTok, X, Snapchat, Tinder y similares. Las apps de mensajería nunca se bloquean.</string>
     <string name="appblock_entertainment_label">Apps de entretenimiento</string>
     <string name="appblock_entertainment_description">YouTube, Netflix, Spotify, Twitch y otras apps de streaming.</string>
     <string name="appblock_social_off_pin_title">¿Dejar de bloquear las apps de redes sociales?</string>

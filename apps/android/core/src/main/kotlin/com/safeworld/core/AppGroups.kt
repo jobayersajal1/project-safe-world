@@ -76,6 +76,39 @@ object AppGroups {
         AppEntry("com.imo.android.imoim", "imo", AppGroup.SOCIAL),
         AppEntry("com.likeme.app", "Likee", AppGroup.SOCIAL),
 
+        // MARK: Social — dating and stranger chat
+        //
+        // Grouped with social rather than given a row of their own. Someone asking to stop
+        // scrolling feeds is asking to stop the same pull, and a separate "dating" switch would
+        // make the user announce something about themselves to turn it on — on a screen a parent
+        // or spouse may be looking at. The random-video-chat apps sit here too: they are the same
+        // behaviour with the matching step removed, and they are where the worst of it happens.
+        AppEntry("com.tinder", "Tinder", AppGroup.SOCIAL),
+        AppEntry("com.bumble.app", "Bumble", AppGroup.SOCIAL),
+        AppEntry("co.hinge.app", "Hinge", AppGroup.SOCIAL),
+        AppEntry("com.badoo.mobile", "Badoo", AppGroup.SOCIAL),
+        AppEntry("com.okcupid.okcupid", "OkCupid", AppGroup.SOCIAL),
+        AppEntry("com.pof.android", "Plenty of Fish", AppGroup.SOCIAL),
+        AppEntry("com.match.android.matchmobile", "Match", AppGroup.SOCIAL),
+        AppEntry("com.zoosk.zoosk", "Zoosk", AppGroup.SOCIAL),
+        AppEntry("com.ftw_and_co.happn", "Happn", AppGroup.SOCIAL),
+        AppEntry("com.grindrapp.android", "Grindr", AppGroup.SOCIAL),
+        AppEntry("com.p1.mobile.putong", "Tantan", AppGroup.SOCIAL),
+        AppEntry("com.lovoo.android", "LOVOO", AppGroup.SOCIAL),
+        AppEntry("com.waplog.social", "Waplog", AppGroup.SOCIAL),
+        AppEntry("com.myyearbook.m", "MeetMe", AppGroup.SOCIAL),
+        AppEntry("com.skout.android", "Skout", AppGroup.SOCIAL),
+        AppEntry("com.taggedapp", "Tagged", AppGroup.SOCIAL),
+        AppEntry("com.azarlive.android", "Azar", AppGroup.SOCIAL),
+        AppEntry("litmatch.chat.meet.friends", "Litmatch", AppGroup.SOCIAL),
+        AppEntry("com.holla.datchat", "Holla", AppGroup.SOCIAL),
+        AppEntry("com.yubo.app", "Yubo", AppGroup.SOCIAL),
+        AppEntry("com.quackquack", "QuackQuack", AppGroup.SOCIAL),
+        AppEntry("com.aisle", "Aisle", AppGroup.SOCIAL),
+        AppEntry("com.shaadi.android", "Shaadi", AppGroup.SOCIAL),
+        AppEntry("com.bharatmatrimony", "BharatMatrimony", AppGroup.SOCIAL),
+        AppEntry("com.jeevansathi", "Jeevansathi", AppGroup.SOCIAL),
+
         // MARK: Entertainment
         AppEntry("com.google.android.youtube", "YouTube", AppGroup.ENTERTAINMENT),
         AppEntry("com.google.android.apps.youtube.music", "YouTube Music", AppGroup.ENTERTAINMENT),

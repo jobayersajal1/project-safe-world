@@ -28,12 +28,12 @@
     <string name="interrupted_dismiss">تجاهل (يتطلب رمز PIN)</string>
     <string name="interrupted_pin_message">أدخل رمز PIN لتجاهل هذا التحذير.</string>
 
-    <string name="blocked_headline">حظرنا %1$s موقع إلكتروني</string>
+    <string name="blocked_headline">حظرنا %1$s موقع إلكتروني ضار</string>
     <string name="blocked_headline_detail">%1$s موقع معروف، يتم تحديثها تلقائيًا.</string>
 
     <string name="block_more_title">تريد حظر المزيد؟</string>
     <string name="category_list4_label">مواقع التواصل الاجتماعي</string>
-    <string name="category_list4_description">فيسبوك وإنستغرام وX وتيك توك وريديت والمواقع المشابهة.</string>
+    <string name="category_list4_description">فيسبوك وإنستغرام وX وتيك توك وريديت ومواقع المواعدة والمواقع المشابهة.</string>
     <string name="category_list5_label">مواقع الترفيه</string>
     <string name="category_list5_description">يوتيوب ونتفليكس وتويتش ومواقع البث الأخرى.</string>
     <string name="category_off_pin_title">إيقاف حظر %1$s؟</string>
@@ -200,7 +200,7 @@
     <string name="category_list6_description">بوابات الألعاب وألعاب المتصفح ومنصات الألعاب.</string>
     <string name="appblock_intro">يمنع التطبيقات نفسها من الوصول إلى الإنترنت، وليس مواقعها فقط. يعمل حتى لو تجنّب التطبيق عمليات البحث المعتادة.</string>
     <string name="appblock_social_label">تطبيقات التواصل الاجتماعي</string>
-    <string name="appblock_social_description">فيسبوك وإنستغرام وتيك توك وX وسناب شات وما شابهها. تطبيقات المراسلة لا تُحظر أبدًا.</string>
+    <string name="appblock_social_description">فيسبوك وإنستغرام وتيك توك وX وسناب شات وتيندر وما شابهها. تطبيقات المراسلة لا تُحظر أبدًا.</string>
     <string name="appblock_entertainment_label">تطبيقات الترفيه</string>
     <string name="appblock_entertainment_description">يوتيوب ونتفليكس وسبوتيفاي وتويتش وتطبيقات البث الأخرى.</string>
     <string name="appblock_social_off_pin_title">إيقاف حظر تطبيقات التواصل الاجتماعي؟</string>

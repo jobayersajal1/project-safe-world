@@ -28,14 +28,14 @@
     <string name="interrupted_dismiss">সরিয়ে দিন (পিন লাগবে)</string>
     <string name="interrupted_pin_message">এই সতর্কবার্তাটি সরাতে আপনার পিন দিন।</string>
 
-    <string name="blocked_headline">আমরা %1$sটি ওয়েবসাইট ব্লক করেছি</string>
+    <string name="blocked_headline">আমরা %1$sটি ক্ষতিকর ওয়েবসাইট ব্লক করেছি</string>
     <!-- "৮৫ হাজারটি" is grammatical; the count arrives as a full word, not an
          abbreviation, which is why CountFormat uses CLDR's LONG style. -->
     <string name="blocked_headline_detail">%1$sটি পরিচিত সাইট, স্বয়ংক্রিয়ভাবে হালনাগাদ হয়।</string>
 
     <string name="block_more_title">আরও ব্লক করতে চান?</string>
     <string name="category_list4_label">সোশ্যাল মিডিয়া ওয়েবসাইট</string>
-    <string name="category_list4_description">Facebook, Instagram, X, TikTok, Reddit ও এ ধরনের ফিড।</string>
+    <string name="category_list4_description">Facebook, Instagram, X, TikTok, Reddit, ডেটিং সাইট ও এ ধরনের ফিড।</string>
     <string name="category_list5_label">বিনোদন ওয়েবসাইট</string>
     <string name="category_list5_description">YouTube, Netflix, Twitch ও অন্যান্য স্ট্রিমিং সাইট।</string>
     <string name="category_off_pin_title">%1$s ব্লক করা বন্ধ করবেন?</string>
@@ -194,7 +194,7 @@
     <string name="category_list6_description">গেম পোর্টাল, ব্রাউজার গেম ও গেমিং প্ল্যাটফর্ম।</string>
     <string name="appblock_intro">শুধু ওয়েবসাইট নয়, অ্যাপগুলোকেই ইন্টারনেটে পৌঁছাতে দেয় না। অ্যাপ সাধারণ ওয়েব খোঁজ এড়িয়ে গেলেও কাজ করে।</string>
     <string name="appblock_social_label">সোশ্যাল মিডিয়া অ্যাপ</string>
-    <string name="appblock_social_description">Facebook, Instagram, TikTok, X, Snapchat ও এ ধরনের অ্যাপ। মেসেজিং অ্যাপ কখনো ব্লক করা হয় না।</string>
+    <string name="appblock_social_description">Facebook, Instagram, TikTok, X, Snapchat, Tinder ও এ ধরনের অ্যাপ। মেসেজিং অ্যাপ কখনো ব্লক করা হয় না।</string>
     <string name="appblock_entertainment_label">বিনোদন অ্যাপ</string>
     <string name="appblock_entertainment_description">YouTube, Netflix, Spotify, Twitch ও অন্যান্য স্ট্রিমিং অ্যাপ।</string>
     <string name="appblock_social_off_pin_title">সোশ্যাল মিডিয়া অ্যাপ ব্লক করা বন্ধ করবেন?</string>
