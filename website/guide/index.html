@@ -1,0 +1,475 @@
+<meta charset="utf-8" />
+<title>Safe World — User guide (Android)</title>
+<meta name="description" content="A screenshot-by-screenshot guide to every Safe World feature on Android: what each switch does when it's on, when it's off, and why it exists." />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 4 54 13v16c0 16-9.5 26.5-22 31C19.5 55.5 10 45 10 29V13Z' fill='%2312161c' stroke='%23e3a542' stroke-width='3'/%3E%3Ccircle cx='32' cy='30' r='7' fill='%23e3a542'/%3E%3C/svg%3E" />
+
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #12161c; --bg-raised: #1a2029; --bg-sunken: #0d1015;
+    --ink: #edebe4; --ink-dim: #9ba3ae;
+    --accent: #e3a542; --accent-ink: #241704;
+    --line: #262d38; --ok: #5fae94; --danger: #c9584a;
+    --shadow: rgba(0,0,0,.35);
+    --font-display: "Iowan Old Style", "Palatino Linotype", Georgia, "Noto Serif", serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    --radius: 14px;
+  }
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --bg: #eef1f4; --bg-raised: #fff; --bg-sunken: #e3e8ed;
+    --ink: #1b222c; --ink-dim: #566072;
+    --accent: #b5731a; --accent-ink: #fff;
+    --line: #d7dee6; --ok: #2f7a5e; --danger: #b23f30;
+    --shadow: rgba(30,40,55,.1);
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      color-scheme: light;
+      --bg: #eef1f4; --bg-raised: #fff; --bg-sunken: #e3e8ed;
+      --ink: #1b222c; --ink-dim: #566072;
+      --accent: #b5731a; --accent-ink: #fff;
+      --line: #d7dee6; --ok: #2f7a5e; --danger: #b23f30;
+      --shadow: rgba(30,40,55,.1);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--font-body); line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 600; text-wrap: balance; margin: 0; }
+  p { margin: 0; }
+  a { color: var(--accent); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .wrap { max-width: 60rem; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 3rem); }
+
+  header.site {
+    border-block-end: 1px solid var(--line);
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    position: sticky; top: 0; z-index: 20; backdrop-filter: blur(10px);
+  }
+  .nav { display: flex; align-items: center; gap: 1rem; padding-block: .9rem; }
+  .brand {
+    display: flex; align-items: center; gap: .55rem; text-decoration: none;
+    font-family: var(--font-display); font-weight: 600; font-size: 1.15rem;
+    margin-inline-end: auto; color: inherit;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: .5em; border-radius: 999px;
+    padding: .55em 1.1em; font-size: .9rem; font-weight: 600; text-decoration: none;
+    white-space: nowrap; border: 1px solid var(--line); color: var(--ink);
+  }
+  .btn-accent { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+
+  .hero { padding-block: clamp(2.5rem, 6vw, 4rem) 1.5rem; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: .78rem; letter-spacing: .09em;
+    text-transform: uppercase; color: var(--accent); display: block; margin-block-end: .9rem;
+  }
+  .hero h1 { font-size: clamp(1.9rem, 4.5vw, 2.8rem); line-height: 1.15; }
+  .hero p { color: var(--ink-dim); margin-block-start: 1rem; max-width: 44rem; }
+
+  .toolbar { display: flex; gap: .6rem; flex-wrap: wrap; margin-block: 1.75rem 0; }
+  .toolbar button {
+    font: inherit; font-size: .85rem; font-weight: 600; cursor: pointer;
+    background: var(--bg-raised); color: var(--ink); border: 1px solid var(--line);
+    border-radius: 999px; padding: .45em 1em;
+  }
+  .toolbar button:hover { border-color: var(--ink-dim); }
+
+  .note {
+    background: var(--bg-raised); border: 1px solid var(--line);
+    border-inline-start: 3px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 1rem 1.2rem; margin-block-start: 1.5rem;
+    font-size: .93rem; color: var(--ink-dim);
+  }
+  .note strong { color: var(--ink); }
+
+  main { padding-block-end: 4rem; }
+
+  details.step {
+    background: var(--bg-raised); border: 1px solid var(--line);
+    border-radius: var(--radius); margin-block-start: 1rem; overflow: hidden;
+  }
+  details.step > summary {
+    cursor: pointer; list-style: none; padding: 1.15rem 1.3rem;
+    display: flex; align-items: center; gap: .9rem; font-weight: 600;
+  }
+  details.step > summary::-webkit-details-marker { display: none; }
+  details.step > summary::after {
+    content: "+"; margin-inline-start: auto; font-family: var(--font-mono);
+    font-size: 1.25rem; color: var(--ink-dim); line-height: 1;
+  }
+  details.step[open] > summary::after { content: "\2212"; }
+  details.step > summary:hover { background: color-mix(in srgb, var(--accent) 7%, transparent); }
+  .num {
+    flex: none; width: 1.9rem; height: 1.9rem; border-radius: 50%;
+    background: var(--bg-sunken); color: var(--accent); border: 1px solid var(--line);
+    display: grid; place-items: center; font-family: var(--font-mono); font-size: .8rem;
+  }
+  .step-body { padding: 0 1.3rem 1.4rem; border-block-start: 1px solid var(--line); padding-block-start: 1.3rem; }
+  .lede { color: var(--ink-dim); margin-block-end: 1.25rem; }
+
+  .shots { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); }
+  figure { margin: 0; }
+  figure img {
+    width: 100%; height: auto; display: block; border-radius: 10px;
+    border: 1px solid var(--line); background: var(--bg-sunken);
+    box-shadow: 0 8px 20px var(--shadow);
+  }
+  figcaption { margin-block-start: .7rem; font-size: .88rem; color: var(--ink-dim); }
+  figcaption b { color: var(--ink); font-weight: 600; }
+
+  .facts { margin-block-start: 1.4rem; display: grid; gap: .7rem; }
+  .fact {
+    display: grid; grid-template-columns: 7.5rem 1fr; gap: .9rem;
+    font-size: .93rem; align-items: start;
+  }
+  @media (max-width: 560px) { .fact { grid-template-columns: 1fr; gap: .15rem; } }
+  .fact dt {
+    font-family: var(--font-mono); font-size: .74rem; text-transform: uppercase;
+    letter-spacing: .05em; color: var(--accent); padding-block-start: .2em;
+  }
+  .fact dd { margin: 0; color: var(--ink-dim); }
+  .fact dd b { color: var(--ink); font-weight: 600; }
+
+  .pill {
+    display: inline-block; font-family: var(--font-mono); font-size: .72rem;
+    border-radius: 999px; padding: .2em .7em; border: 1px solid var(--line);
+    color: var(--ink-dim); background: var(--bg-sunken); margin-inline-end: .35rem;
+  }
+  .pill.on { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 45%, transparent); }
+  .pill.off { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 45%, transparent); }
+
+  footer.site {
+    border-block-start: 1px solid var(--line); padding-block: 2rem;
+    color: var(--ink-dim); font-size: .9rem;
+    display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+  }
+  footer.site a { text-decoration: none; }
+</style>
+
+<header class="site">
+  <div class="wrap nav">
+    <a class="brand" href="../">
+      <svg width="22" height="22" viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M32 4 54 13v16c0 16-9.5 26.5-22 31C19.5 55.5 10 45 10 29V13Z" fill="none" stroke="var(--accent)" stroke-width="3.5"/>
+        <circle cx="32" cy="30" r="6.5" fill="var(--accent)"/>
+      </svg>
+      <span>Safe World</span>
+    </a>
+    <a class="btn btn-accent" href="../#download">Download</a>
+  </div>
+</header>
+
+<div class="wrap hero">
+  <span class="eyebrow">User guide · Android</span>
+  <h1>Every switch in Safe World, and what it actually does.</h1>
+  <p>
+    Each section below shows the real screen, what changes when you turn something on or off, and
+    why the feature exists. Open the ones you need — you don't have to read it in order.
+  </p>
+
+  <div class="toolbar">
+    <button type="button" data-all="open">Expand all</button>
+    <button type="button" data-all="close">Collapse all</button>
+  </div>
+
+  <div class="note">
+    <strong>One rule explains every prompt in this app:</strong> making protection
+    <em>stronger</em> is always free — turning a category on, adding a site, blocking an app.
+    Making it <em>weaker</em> costs your PIN. That's the whole design, and it's why there's no
+    switch at all for the scam, real-money-gaming, and sensitive-content lists: installing
+    Safe World is the decision to block those.
+  </div>
+</div>
+
+<main class="wrap">
+
+  <details class="step" open>
+    <summary><span class="num">1</span> First run: choose a PIN and save your recovery code</summary>
+    <div class="step-body">
+      <p class="lede">
+        Safe World asks for a PIN before anything else, so protection is never switched on with
+        nothing guarding it. Immediately after, it shows a recovery code — the only way back in if
+        you forget the PIN.
+      </p>
+      <div class="shots">
+        <figure>
+          <img src="img/00-first-run-set-pin.png" alt="Choose a PIN screen with PIN and Confirm PIN fields" loading="lazy">
+          <figcaption><b>Choose a PIN.</b> At least 4 digits. You'll need it to turn protection off or unblock anything later.</figcaption>
+        </figure>
+        <figure>
+          <img src="img/22-recovery-code.png" alt="Save your recovery code screen showing a 20-character code" loading="lazy">
+          <figcaption><b>Save your recovery code.</b> Shown once and never again — it's stored scrambled, so nobody can look it up. Write it down.</figcaption>
+        </figure>
+      </div>
+      <dl class="facts">
+        <div class="fact"><dt>Purpose</dt><dd>Stops a moment of weakness from undoing your own setup. The PIN is friction you chose while thinking clearly.</dd></div>
+        <div class="fact"><dt>If you forget</dt><dd>Tap <b>Forgot your PIN?</b> on any prompt and enter the recovery code. That code is then used up, and a fresh one is issued.</dd></div>
+        <div class="fact"><dt>Lost both?</dt><dd>Only clearing the app's data resets it — which also wipes every setting and the uninstall friction.</dd></div>
+      </dl>
+    </div>
+  </details>
+
+  <details class="step">
+    <summary><span class="num">2</span> Turn protection on</summary>
+    <div class="step-body">
+      <p class="lede">
+        The single switch that starts and stops all website blocking. Android will ask once for VPN
+        permission — that "VPN" runs entirely on your phone and connects to no server.
+      </p>
+      <div class="shots">
+        <figure>
+          <img src="img/01-home-protection-off.png" alt="Home screen with Protection switch off" loading="lazy">
+          <figcaption><span class="pill off">OFF</span> The card is grey and says plainly: <b>nothing is being blocked</b>.</figcaption>
+        </figure>
+        <figure>
+          <img src="img/02-home-protection-on.png" alt="Home screen with Protection on showing 4.4 million blocked" loading="lazy">
+          <figcaption><span class="pill on">ON</span> Turns purple and states the exact count — <b>4,430,965 sites</b>, updated automatically.</figcaption>
+        </figure>
+      </div>
+      <dl class="facts">
+        <div class="fact"><dt>Turning on</dt><dd>Free — one tap.</dd></div>
+        <div class="fact"><dt>Turning off</dt><dd><b>Asks for your PIN.</b></dd></div>
+        <div class="fact"><dt>Purpose</dt><dd>The card deliberately never claims protection while the switch is off. An app that says "4.4 million blocked" above a dead switch is the exact lie this one refuses to tell.</dd></div>
+      </dl>
+    </div>
+  </details>
+
+  <details class="step">
+    <summary><span class="num">3</span> See it working: bad site blocked, normal site fine</summary>
+    <div class="step-body">
+      <p class="lede">
+        Blocking happens at the lookup stage, so a blocked site never loads at all — you get the
+        browser's own "can't be reached" page, and none of its content is ever fetched.
+      </p>
+      <div class="shots">
+        <figure>
+          <img src="img/30-wikipedia-works.png" alt="Wikipedia article loading normally with protection on" loading="lazy">
+          <figcaption><b>Wikipedia loads normally.</b> Ordinary browsing is untouched — this is not a whitelist.</figcaption>
+        </figure>
+        <figure>
+          <img src="img/31-blocked-site.png" alt="Browser showing site cannot be reached for a blocked real-money card game site" loading="lazy">
+          <figcaption><b>A real-money card-game site is refused</b> — <code>DNS_PROBE_FINISHED_NXDOMAIN</code>. Nothing from the site is downloaded or shown.</figcaption>
+        </figure>
+      </div>
+      <dl class="facts">
+        <div class="fact"><dt>Why it looks like an error</dt><dd>Because it is one, on purpose: the phone is told the address doesn't exist. That's cheaper and more private than intercepting pages.</dd></div>
+        <div class="fact"><dt>Covers</dt><dd>Every app and browser on the phone, not just Chrome.</dd></div>
+        <div class="fact"><dt>Limits</dt><dd>Sites reached by raw IP, or apps using their own encrypted lookups, can slip past. <b>Block apps</b> (section 6) closes that.</dd></div>
+      </dl>
+    </div>
+  </details>
+
+  <details class="step">
+    <summary><span class="num">4</span> Block more: social media, entertainment, games</summary>
+    <div class="step-body">
+      <p class="lede">
+        Three optional categories, all off by default. These are the ones you add because you want
+        them — so switching one <em>on</em> never asks for anything.
+      </p>
+      <div class="shots">
+        <figure>
+          <img src="img/33-social-toggled-on.png" alt="Social media websites toggle switched on" loading="lazy">
+          <figcaption><span class="pill on">ON</span> The blocked count jumps immediately, and a matching "also block the apps" row appears.</figcaption>
+        </figure>
+        <figure>
+          <img src="img/32-facebook-before.png" alt="Facebook login page loading before the toggle" loading="lazy">
+          <figcaption><b>Before:</b> with the switch off, Facebook opens normally.</figcaption>
+        </figure>
+        <figure>
+          <img src="img/34-facebook-after.png" alt="Facebook refusing to load after the toggle" loading="lazy">
+          <figcaption><b>After:</b> same phone, same browser, switch on — refused.</figcaption>
+        </figure>
+      </div>
+      <dl class="facts">
+        <div class="fact"><dt>Turning on</dt><dd>Free.</dd></div>
+        <div class="fact"><dt>Turning off</dt><dd><b>Asks for your PIN.</b></dd></div>
+        <div class="fact"><dt>Honest warning</dt><dd>The Facebook &amp; Instagram app row says out loud that it also blocks WhatsApp and Messenger — they run on the same servers, and there is no way to separate them.</dd></div>
+      </dl>
+    </div>
+  </details>
+
+  <details class="step">
+    <summary><span class="num">5</span> Add your own websites</summary>
+    <div class="step-body">
+      <p class="lede">Anything the categories don't cover, blocked by name.</p>
+      <div class="shots">
+        <figure>
+          <img src="img/08-add-websites.png" alt="Add websites field with comma-separated domain entry and Save button" loading="lazy">
+          <figcaption><b>Type domains separated by commas.</b> Subdomains are included automatically — <code>example.com</code> also covers <code>shop.example.com</code>.</figcaption>
+        </figure>
+      </div>
+      <dl class="facts">
+        <div class="fact"><dt>Adding</dt><dd>Free — saving a list that keeps everything it had goes straight through.</dd></div>
+        <div class="fact"><dt>Removing</dt><dd><b>Asks for your PIN</b>, because saving a shorter list is a weakening.</dd></div>
+      </dl>
+    </div>
+  </details>
+
+  <details class="step">
+    <summary><span class="num">6</span> Block apps, not just their websites</summary>
+    <div class="step-body">
+      <p class="lede">
+        Some apps never make ordinary web lookups, so blocking their website does nothing. This
+        stops the apps themselves from reaching the internet.
+      </p>
+      <div class="shots">
+        <figure>
+          <img src="img/09-block-apps.png" alt="Block apps section listing social media, entertainment and games and betting apps" loading="lazy">
+          <figcaption><b>Ready-made groups</b> — social media, entertainment, and games &amp; betting (Free Fire, PUBG, Ludo, Teen Patti, Dream11), plus <b>Choose apps</b> to pick your own.</figcaption>
+        </figure>
+      </div>
+      <dl class="facts">
+        <div class="fact"><dt>The trade-off</dt><dd>Safe World must check <em>every</em> connection the phone makes, not just web lookups. That uses more battery, and the app asks before turning it on.</dd></div>
+        <div class="fact"><dt>Still private</dt><dd>All checking happens on the phone. Nothing is sent anywhere.</dd></div>
+        <div class="fact"><dt>Never blocked</dt><dd>Messaging apps, so a blocked phone can still reach family.</dd></div>
+        <div class="fact"><dt>Unblocking</dt><dd><b>Asks for your PIN.</b></dd></div>
+      </dl>
+    </div>
+  </details>
+
+  <details class="step">
+    <summary><span class="num">7</span> Make protection stick (always-on VPN)</summary>
+    <div class="step-body">
+      <p class="lede">
+        Android allows only one VPN at a time — so installing any other VPN app silently switches
+        Safe World off. This is the only way to prevent that, and only you can turn it on.
+      </p>
+      <div class="shots">
+        <figure>
+          <img src="img/13-always-on-vpn.png" alt="Make protection stick section explaining always-on VPN, plus uninstall protection below" loading="lazy">
+          <figcaption><b>Open VPN settings</b>, tap the gear next to Safe World, then turn on <b>both</b> switches: <em>Always-on VPN</em> and <em>Block connections without VPN</em>.</figcaption>
+        </figure>
+      </div>
+      <dl class="facts">
+        <div class="fact"><dt>What it does</dt><dd>Android itself starts Safe World, and refuses to pass any traffic while it isn't running.</dd></div>
+        <div class="fact"><dt>Why it's outside the app</dt><dd>Android deliberately won't let an app grant this to itself — it has to be you, in system settings.</dd></div>
+        <div class="fact"><dt>If it happens anyway</dt><dd>Safe World notices, warns you it stopped filtering, and names the other VPN as the likely cause.</dd></div>
+      </dl>
+    </div>
+  </details>
+
+  <details class="step">
+    <summary><span class="num">8</span> Uninstall protection</summary>
+    <div class="step-body">
+      <p class="lede">Makes Safe World harder to delete in a moment of temptation.</p>
+      <div class="shots">
+        <figure>
+          <img src="img/14-device-admin-prompt.png" alt="Android Activate device admin app prompt for Safe World" loading="lazy">
+          <figcaption><b>Android's own confirmation.</b> Note what it says: Safe World asks for <em>no other permission</em> — it cannot lock, wipe, or monitor the device.</figcaption>
+        </figure>
+      </div>
+      <dl class="facts">
+        <div class="fact"><dt>What it does</dt><dd>Registers as a device admin, so Android refuses to uninstall the app while it's on.</dd></div>
+        <div class="fact"><dt>Honest limit</dt><dd>It is <b>friction, not a lock</b> — the app itself says so. It can still be removed from Android's settings.</dd></div>
+        <div class="fact"><dt>Turning off</dt><dd><b>Asks for your PIN</b>, and you're warned if it ever gets switched off without you.</dd></div>
+      </dl>
+    </div>
+  </details>
+
+  <details class="step">
+    <summary><span class="num">9</span> What the PIN actually gates</summary>
+    <div class="step-body">
+      <p class="lede">
+        The same prompt appears everywhere something would reduce protection — and nowhere else.
+      </p>
+      <div class="shots">
+        <figure>
+          <img src="img/20-pin-prompt.png" alt="Turn off protection PIN prompt with Forgot your PIN link" loading="lazy">
+          <figcaption><b>Every weakening funnels through this one dialog</b>, so no screen can accidentally skip the gate.</figcaption>
+        </figure>
+      </div>
+      <dl class="facts">
+        <div class="fact"><dt>Asks for PIN</dt><dd>Turning protection off · turning a category off · unblocking apps · removing sites you added · changing what's always allowed · disabling uninstall protection.</dd></div>
+        <div class="fact"><dt>Never asks</dt><dd>Anything that blocks <em>more</em>.</dd></div>
+        <div class="fact"><dt>Wrong guesses</dt><dd>Too many attempts locks the prompt for a while. The recovery code is exempt — being locked out is exactly when you'd need it.</dd></div>
+      </dl>
+    </div>
+  </details>
+
+  <details class="step">
+    <summary><span class="num">10</span> Settings: language, PIN, always-allow, updates</summary>
+    <div class="step-body">
+      <p class="lede">The second tab. Everything here is housekeeping rather than blocking.</p>
+      <div class="shots">
+        <figure>
+          <img src="img/15-settings-top.png" alt="Settings screen showing language options and PIN section" loading="lazy">
+          <figcaption><b>Language</b> (English, বাংলা, Español, العربية, or follow the phone) and <b>Change PIN</b> / <b>new recovery code</b>.</figcaption>
+        </figure>
+        <figure>
+          <img src="img/16-settings-mid.png" alt="Always allow list and rate the app section" loading="lazy">
+          <figcaption><b>Always allow</b> — one domain per line. This <em>wins over everything</em>, including the categories, so it's PIN-gated.</figcaption>
+        </figure>
+        <figure>
+          <img src="img/17-settings-bottom.png" alt="App version section showing an available update" loading="lazy">
+          <figcaption><b>App version.</b> Checks for a newer build and installs it, with Android asking permission first.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </details>
+
+  <details class="step">
+    <summary><span class="num">11</span> Optional: download the extra lists</summary>
+    <div class="step-body">
+      <p class="lede">
+        Offered once, on first run. Some blocklists can't legally be bundled inside the app, so your
+        device fetches them from the people who maintain them.
+      </p>
+      <div class="shots">
+        <figure>
+          <img src="img/23-extra-lists-offer.png" alt="Block even more sites offer screen" loading="lazy">
+          <figcaption><b>About 927 thousand more sites, ~18 MB</b>, downloaded over Wi-Fi when possible. <b>Not now</b> is a real answer — the app works fully without them.</figcaption>
+        </figure>
+      </div>
+      <dl class="facts">
+        <div class="fact"><dt>Bundled lists</dt><dd>Work offline, forever, with no network call at all.</dd></div>
+        <div class="fact"><dt>What's sent</dt><dd>Nothing about you. Your device downloads a list; it never uploads what you browse.</dd></div>
+      </dl>
+    </div>
+  </details>
+
+  <div class="note">
+    <strong>Screenshots were taken on an Android 15 device running Safe World 0.4.1.</strong>
+    Wording and counts move as the lists grow, so your numbers will differ. Stuck, or something
+    blocked that shouldn't be? <a href="../#help">Get in touch</a>.
+  </div>
+</main>
+
+<footer class="site wrap">
+  <span>Content filtering that stays on your device.</span>
+  <div><a href="../">← Back to Safe World</a></div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  var steps = document.querySelectorAll("details.step");
+  document.querySelectorAll("[data-all]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var open = btn.getAttribute("data-all") === "open";
+      steps.forEach(function (d) { d.open = open; });
+    });
+  });
+  // Deep-link to a section: /guide/#3 opens step 3.
+  function openFromHash() {
+    var n = parseInt((location.hash || "").slice(1), 10);
+    if (n >= 1 && n <= steps.length) {
+      steps[n - 1].open = true;
+      steps[n - 1].scrollIntoView({ block: "start" });
+    }
+  }
+  window.addEventListener("hashchange", openFromHash);
+  openFromHash();
+})();
+</script>
