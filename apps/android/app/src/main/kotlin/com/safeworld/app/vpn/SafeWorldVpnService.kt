@@ -148,6 +148,10 @@ class SafeWorldVpnService : VpnService() {
     // MARK: Tunnel lifecycle
 
     private fun start() {
+        val settings = store.settings.value
+        val mode = TunnelMode.select(settings, TunnelMode.needsPerAppBlocking(settings))
+        Log.i(TAG, "establishing tunnel in $mode mode")
+
         val dnsServers = systemDnsServers()
 
         val builder = Builder()
@@ -173,6 +177,12 @@ class SafeWorldVpnService : VpnService() {
         for (resolver in PUBLIC_RESOLVERS) {
             if (dnsServers.any { it.hostAddress == resolver }) continue
             runCatching { builder.addRoute(resolver, IPV4_HOST_PREFIX_LENGTH) }
+        }
+
+        if (mode == TunnelMode.FullTunnel) {
+            // Everything, so a blocked app's packets arrive here whatever it did to find the
+            // address. Only reachable when the relay can forward — see `TunnelMode.select`.
+            builder.addRoute("0.0.0.0", 0)
         }
 
         // Services the user chose to block outright. Their prefixes are routed in so the packets

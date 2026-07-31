@@ -44,10 +44,28 @@ object SafeWorldRelay {
         available = runCatching {
             System.loadLibrary("safeworld_relay")
             nativeAbiCheck() == 1
-        }.onFailure {
-            Log.w(TAG, "native relay unavailable; staying on the DNS-only tunnel", it)
+        }.onFailure { error ->
+            // Wrapped because `android.util.Log` is a stub that throws under plain JVM unit tests,
+            // and a logging call that fails inside a failure handler turns "the library is missing"
+            // into ExceptionInInitializerError — the class then cannot be touched at all, including
+            // by the gate that keeps full-tunnel mode off.
+            runCatching { Log.w(TAG, "native relay unavailable; staying DNS-only", error) }
         }.getOrDefault(false)
     }
+
+    /**
+     * Whether full-tunnel mode may be used.
+     *
+     * Separate from [available] on purpose: the library can load and classify packets long before it
+     * can *forward* them, and those are the two different questions. Routing `0.0.0.0/0` while this
+     * is false would pull every packet on the device into a tunnel that can only drop — a phone with
+     * no internet, not a phone with YouTube blocked.
+     *
+     * Flips to true when TCP and UDP forwarding land. Until then `TunnelMode.select` refuses to
+     * choose full-tunnel however the settings are configured, so no combination of toggles can take
+     * someone offline.
+     */
+    val canForward: Boolean get() = false
 
     fun classify(packet: ByteArray, length: Int): Verdict = when (nativeClassify(packet, length)) {
         1 -> Verdict.DNS
