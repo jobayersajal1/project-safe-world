@@ -594,7 +594,7 @@
         </div>
         <div class="card">
           <h3 data-i18n="arch.ios_name">iOS</h3>
-          <p data-i18n="arch.ios_body">SafeWorldCore compiles your settings into a single Safari Content Blocker list, executed by Safari's own on-device engine — the same primitive Apple ships for ad blockers, applied to harmful-content categories instead.</p>
+          <p data-i18n="arch.ios_body">SafeWorldCore compiles your settings into a Safari Content Blocker list, and a packet tunnel filters lookups from every other app. Because iOS names the app behind each packet, whole apps can be blocked too — not just the sites they load.</p>
         </div>
       </div>
     </div>
@@ -658,7 +658,7 @@
         <div class="status-item">
           <span class="chip chip-progress" data-i18n="status.chip_progress">In progress</span>
           <span class="status-platform" data-i18n="arch.ios_name">iOS</span>
-          <span class="status-desc" data-i18n="status.ios_body">SwiftUI app and Safari Content Blocker, backed by the SafeWorldCore package.</span>
+          <span class="status-desc" data-i18n="status.ios_body">SwiftUI app, Safari Content Blocker and a packet tunnel that blocks whole apps, backed by the SafeWorldCore package.</span>
         </div>
       </div>
     </div>
@@ -770,7 +770,7 @@
       "arch.android_name": "Android",
       "arch.android_body": "A local VpnService tunnels only the device's DNS traffic — to nowhere but itself. Every query is checked on-device; blocked names get a synthesized NXDOMAIN, everything else is forwarded unmodified to the resolver your device already uses.",
       "arch.ios_name": "iOS",
-      "arch.ios_body": "SafeWorldCore compiles your settings into a single Safari Content Blocker list, executed by Safari's own on-device engine — the same primitive Apple ships for ad blockers, applied to harmful-content categories instead.",
+      "arch.ios_body": "SafeWorldCore compiles your settings into a Safari Content Blocker list, and a packet tunnel filters lookups from every other app. Because iOS names the app behind each packet, whole apps can be blocked too — not just the sites they load.",
       "compare.eyebrow": "Safe World vs. cloud DNS filters",
       "compare.h2": "The same protection, without the middleman.",
       "compare.col_sw": "Safe World",
@@ -798,7 +798,7 @@
       "status.chip_shipping": "Shipping",
       "status.chip_progress": "In progress",
       "status.chrome_body": "Manifest V3 extension using declarativeNetRequest — load it unpacked today.",
-      "status.ios_body": "SwiftUI app and Safari Content Blocker, backed by the SafeWorldCore package.",
+      "status.ios_body": "SwiftUI app, Safari Content Blocker and a packet tunnel that blocks whole apps, backed by the SafeWorldCore package.",
       "status.android_body": "Compose app and local VpnService DNS sinkhole for device-wide blocking.",
       "status.macos_body": "Menu-bar app running a local DNS resolver — blocks over 4 million sites in every app.",
       "status.windows_body": "Tray app running a local DNS resolver — blocks over 4 million sites in every app.",
@@ -869,7 +869,7 @@
       "arch.android_name": "Android",
       "arch.android_body": "একটি লোকাল VpnService শুধু ডিভাইসের DNS ট্রাফিক টানেল করে — নিজের মধ্যেই, আর কোথাও না। প্রতিটি কোয়েরি ডিভাইসেই পরীক্ষা করা হয়; ব্লক করা নামের জন্য একটি তৈরি করা NXDOMAIN পাঠানো হয়, বাকি সব অপরিবর্তিত অবস্থায় আপনার ডিভাইস আগে থেকে ব্যবহার করা রিজলভারে পাঠানো হয়।",
       "arch.ios_name": "iOS",
-      "arch.ios_body": "SafeWorldCore আপনার সেটিংস একটি একক Safari Content Blocker তালিকায় কম্পাইল করে, যা Safari-এর নিজস্ব অন-ডিভাইস ইঞ্জিন চালায় — Apple বিজ্ঞাপন ব্লকারের জন্য যে একই প্রিমিটিভ দেয়, তা এখানে ক্ষতিকর কনটেন্ট ক্যাটাগরিতে প্রয়োগ করা হয়েছে।",
+      "arch.ios_body": "SafeWorldCore আপনার সেটিংস একটি Safari Content Blocker তালিকায় কম্পাইল করে, আর একটি প্যাকেট টানেল বাকি সব অ্যাপের অনুসন্ধান ফিল্টার করে। iOS প্রতিটি প্যাকেটের পেছনের অ্যাপের নাম জানায় বলে গোটা অ্যাপও ব্লক করা যায় — শুধু তাদের সাইট নয়।",
       "compare.eyebrow": "Safe World বনাম ক্লাউড DNS ফিল্টার",
       "compare.h2": "একই সুরক্ষা, মাঝখানের কেউ ছাড়াই।",
       "compare.col_sw": "Safe World",
@@ -897,7 +897,7 @@
       "status.chip_shipping": "চালু আছে",
       "status.chip_progress": "চলমান",
       "status.chrome_body": "declarativeNetRequest ব্যবহার করা Manifest V3 এক্সটেনশন — আজই আনপ্যাকড লোড করুন।",
-      "status.ios_body": "SwiftUI অ্যাপ এবং Safari Content Blocker, SafeWorldCore প্যাকেজের উপর ভিত্তি করে।",
+      "status.ios_body": "SwiftUI অ্যাপ, Safari Content Blocker এবং গোটা অ্যাপ ব্লক করার প্যাকেট টানেল — SafeWorldCore প্যাকেজের উপর ভিত্তি করে।",
       "status.android_body": "ডিভাইস-জোড়া ব্লকিংয়ের জন্য Compose অ্যাপ এবং লোকাল VpnService DNS সিংকহোল।",
       "status.macos_body": "মেনু-বার অ্যাপ, লোকাল DNS রিজলভার চালায় — সব অ্যাপে ৪০ লাখেরও বেশি সাইট ব্লক করে।",
       "status.windows_body": "ট্রে অ্যাপ, লোকাল DNS রিজলভার চালায় — সব অ্যাপে ৪০ লাখেরও বেশি সাইট ব্লক করে।",
@@ -968,7 +968,7 @@
       "arch.android_name": "Android",
       "arch.android_body": "Un VpnService local túnelía únicamente el tráfico DNS del dispositivo — hacia ningún sitio salvo sí mismo. Cada consulta se verifica en el dispositivo; los nombres bloqueados reciben un NXDOMAIN sintetizado, el resto se reenvía sin modificar al resolutor que tu dispositivo ya usaba.",
       "arch.ios_name": "iOS",
-      "arch.ios_body": "SafeWorldCore compila tu configuración en una única lista de Content Blocker de Safari, ejecutada por el propio motor en el dispositivo de Safari — el mismo mecanismo que Apple ofrece para bloqueadores de anuncios, aplicado en cambio a categorías de contenido dañino.",
+      "arch.ios_body": "SafeWorldCore compila tu configuración en una lista de Content Blocker de Safari, y un túnel de paquetes filtra las consultas del resto de apps. Como iOS identifica la app detrás de cada paquete, también se pueden bloquear apps enteras, no solo las webs que cargan.",
       "compare.eyebrow": "Safe World frente a los filtros DNS en la nube",
       "compare.h2": "La misma protección, sin intermediarios.",
       "compare.col_sw": "Safe World",
@@ -996,7 +996,7 @@
       "status.chip_shipping": "Disponible",
       "status.chip_progress": "En desarrollo",
       "status.chrome_body": "Extensión Manifest V3 que usa declarativeNetRequest — cárgala sin empaquetar hoy mismo.",
-      "status.ios_body": "App en SwiftUI y Content Blocker de Safari, respaldados por el paquete SafeWorldCore.",
+      "status.ios_body": "App en SwiftUI, Content Blocker de Safari y un túnel de paquetes que bloquea apps enteras, respaldados por el paquete SafeWorldCore.",
       "status.android_body": "App en Compose y sumidero DNS local por VpnService para bloqueo en todo el dispositivo.",
       "status.macos_body": "App en la barra de menús con un resolutor DNS local: bloquea más de 4 millones de sitios en todas las apps.",
       "status.windows_body": "App en la bandeja con un resolutor DNS local: bloquea más de 4 millones de sitios en todas las apps.",
@@ -1067,7 +1067,7 @@
       "arch.android_name": "Android",
       "arch.android_body": "يُنشئ VpnService محلي نفقاً لـ DNS فقط — لا يذهب إلى أي مكان سوى نفسه. يُفحص كل استعلام على الجهاز، وتحصل الأسماء المحظورة على رد NXDOMAIN مُصطنع، ويُعاد توجيه الباقي كما هو إلى الخادم الذي كان جهازك يستخدمه أصلاً.",
       "arch.ios_name": "iOS",
-      "arch.ios_body": "يُجمّع SafeWorldCore إعداداتك في قائمة Content Blocker واحدة لـ Safari، يُنفّذها محرك Safari المحلي ذاته — نفس الآلية التي توفرها Apple لمواقع حجب الإعلانات، لكن مطبّقة هنا على فئات المحتوى الضار.",
+      "arch.ios_body": "يُجمّع SafeWorldCore إعداداتك في قائمة Content Blocker لـ Safari، ويُرشّح نفق الحزم استعلامات بقية التطبيقات. ولأن iOS يكشف التطبيق الذي أرسل كل حزمة، يمكن حظر التطبيقات بالكامل أيضًا، وليس مواقعها فقط.",
       "compare.eyebrow": "Safe World مقابل مرشحات DNS السحابية",
       "compare.h2": "نفس الحماية، بلا وسيط.",
       "compare.col_sw": "Safe World",
@@ -1095,7 +1095,7 @@
       "status.chip_shipping": "متاح",
       "status.chip_progress": "قيد التطوير",
       "status.chrome_body": "إضافة Manifest V3 تستخدم declarativeNetRequest — حمّلها بشكل غير مُجمّع اليوم.",
-      "status.ios_body": "تطبيق SwiftUI وContent Blocker لـ Safari، مدعوماً بحزمة SafeWorldCore.",
+      "status.ios_body": "تطبيق SwiftUI وContent Blocker لـ Safari ونفق حزم يحظر التطبيقات بالكامل، مدعومة بحزمة SafeWorldCore.",
       "status.android_body": "تطبيق Compose وبالوعة DNS محلية عبر VpnService للحظر على مستوى الجهاز بالكامل.",
       "status.macos_body": "تطبيق في شريط القوائم يشغّل مُحلل DNS محلي — يحظر أكثر من 4 ملايين موقع في كل التطبيقات.",
       "status.windows_body": "تطبيق في شريط المهام يشغّل مُحلل DNS محلي — يحظر أكثر من 4 ملايين موقع في كل التطبيقات.",
