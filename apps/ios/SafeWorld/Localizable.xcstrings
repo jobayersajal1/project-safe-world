@@ -1030,6 +1030,35 @@
         }
       }
     },
+    "blocked_headline_detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blocked %1$@ known sites, kept up to date automatically"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@টি পরিচিত সাইট ব্লক করা হয়েছে, স্বয়ংক্রিয়ভাবে হালনাগাদ হয়"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bloqueados %1$@ sitios conocidos, actualizados automáticamente"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تم حظر %1$@ موقع معروف، ويتم تحديثها تلقائيًا"
+          }
+        }
+      }
+    },
     "blocked_headline_off": {
       "extractionState": "manual",
       "localizations": {

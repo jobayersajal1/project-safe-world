@@ -218,5 +218,6 @@
     <string name="appblock_social_off_pin_title">Stop blocking social media apps?</string>
     <string name="appblock_entertainment_off_pin_title">Stop blocking entertainment apps?</string>
     <string name="blocked_headline_off">Turn on protection above to block %1$s websites</string>
+    <string name="blocked_headline_detail">Blocked %1$s known sites, kept up to date automatically</string>
     <string name="blocked_more_hint">Block more harmful apps and websites below</string>
 </resources>

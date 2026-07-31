@@ -197,5 +197,6 @@
     <string name="appblock_social_off_pin_title">সোশ্যাল মিডিয়া অ্যাপ ব্লক করা বন্ধ করবেন?</string>
     <string name="appblock_entertainment_off_pin_title">বিনোদন অ্যাপ ব্লক করা বন্ধ করবেন?</string>
     <string name="blocked_headline_off">%1$sটি ওয়েবসাইট ব্লক করতে উপরে সুরক্ষা চালু করুন</string>
+    <string name="blocked_headline_detail">%1$sটি পরিচিত সাইট ব্লক করা হয়েছে, স্বয়ংক্রিয়ভাবে হালনাগাদ হয়</string>
     <string name="blocked_more_hint">নিচে আরও ক্ষতিকর অ্যাপ ও ওয়েবসাইট ব্লক করুন</string>
 </resources>

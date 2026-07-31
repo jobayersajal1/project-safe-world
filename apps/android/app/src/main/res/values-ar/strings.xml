@@ -205,5 +205,6 @@
     <string name="appblock_social_off_pin_title">إيقاف حظر تطبيقات التواصل الاجتماعي؟</string>
     <string name="appblock_entertainment_off_pin_title">إيقاف حظر تطبيقات الترفيه؟</string>
     <string name="blocked_headline_off">فعّل الحماية بالأعلى لحظر %1$s موقع إلكتروني</string>
+    <string name="blocked_headline_detail">تم حظر %1$s موقع معروف، ويتم تحديثها تلقائيًا</string>
     <string name="blocked_more_hint">احظر المزيد من التطبيقات والمواقع الضارة بالأسفل</string>
 </resources>

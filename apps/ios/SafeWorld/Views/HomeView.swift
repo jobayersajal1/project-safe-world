@@ -101,6 +101,11 @@ struct HomeView: View {
                 .font(.title2.weight(.semibold))
 
                 if store.settings.enabled {
+                    // The exact figure, under the rounded headline. The headline is the claim
+                    // someone repeats; this is the number that makes it checkable.
+                    Text(L("blocked_headline_detail", CountFormat.exact(store.blockedDomainCount)))
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
                     Text(L("blocked_more_hint"))
                         .font(.footnote)
                         .foregroundStyle(.secondary)

@@ -289,6 +289,13 @@ private fun BlockedCountCard(count: Int, running: Boolean) {
                 style = MaterialTheme.typography.headlineSmall,
             )
             if (running) {
+                // The exact figure, under the rounded headline. The headline is the claim someone
+                // repeats; this is the number that makes it checkable, and it says the lists keep
+                // moving without the user doing anything.
+                Text(
+                    stringResource(R.string.blocked_headline_detail, CountFormat.grouped(count)),
+                    style = MaterialTheme.typography.bodySmall,
+                )
                 Text(
                     stringResource(R.string.blocked_more_hint),
                     style = MaterialTheme.typography.bodySmall,
