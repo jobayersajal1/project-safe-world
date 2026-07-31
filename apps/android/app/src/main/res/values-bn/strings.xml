@@ -186,4 +186,8 @@
     <string name="appblock_games_off_pin_title">গেম ব্লক করা বন্ধ করবেন?</string>
     <string name="appblock_remove_pin_title">এই অ্যাপগুলো আনব্লক করবেন?</string>
     <string name="appblock_off_pin_message">এই অ্যাপগুলোকে আবার সংযোগ করতে দিতে আপনার পিন দিন।</string>
+    <string name="licence_title">লাইসেন্স</string>
+    <string name="licence_body">অ্যান্ড্রয়েডের জন্য সেফ ওয়ার্ল্ড একটি মুক্ত সফটওয়্যার, GNU General Public License v3 এর অধীনে। আপনি এটি ব্যবহার, অধ্যয়ন, বিতরণ ও পরিবর্তন করতে পারেন। এর অ্যাপ ব্লক করার ইঞ্জিনটি NetGuard থেকে নেওয়া, © মার্সেল বোকহর্স্ট, সেটিও GPL v3।</string>
+    <string name="licence_gpl">লাইসেন্সের শর্তাবলি</string>
+    <string name="licence_netguard">NetGuard প্রকল্প</string>
 </resources>

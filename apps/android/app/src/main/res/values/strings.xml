@@ -206,4 +206,8 @@
     <string name="appblock_games_off_pin_title">Stop blocking games?</string>
     <string name="appblock_remove_pin_title">Unblock these apps?</string>
     <string name="appblock_off_pin_message">Enter your PIN to let these apps connect again.</string>
+    <string name="licence_title">Licence</string>
+    <string name="licence_body">Safe World for Android is free software under the GNU General Public License v3. You may use, study, share and change it. Its app-blocking engine comes from NetGuard, © Marcel Bokhorst, also GPL v3.</string>
+    <string name="licence_gpl">Licence terms</string>
+    <string name="licence_netguard">NetGuard project</string>
 </resources>

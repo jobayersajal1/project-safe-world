@@ -27,4 +27,14 @@ object SupportLinks {
 
     val emailUrl: String
         get() = "mailto:$EMAIL"
+
+    /**
+     * The licence this app is under, and the project whose code put it there.
+     *
+     * GPL-3.0 requires both to reach the person running the software, so these are shown in
+     * Settings ▸ Help rather than only living in the repository.
+     */
+    const val GPL_URL = "https://www.gnu.org/licenses/gpl-3.0.html"
+
+    const val NETGUARD_URL = "https://github.com/M66B/NetGuard"
 }

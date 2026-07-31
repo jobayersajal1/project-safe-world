@@ -192,4 +192,8 @@
     <string name="appblock_games_off_pin_title">إيقاف حظر الألعاب؟</string>
     <string name="appblock_remove_pin_title">إلغاء حظر هذه التطبيقات؟</string>
     <string name="appblock_off_pin_message">أدخل رمز PIN للسماح لهذه التطبيقات بالاتصال مجددًا.</string>
+    <string name="licence_title">الترخيص</string>
+    <string name="licence_body">Safe World لأندرويد برنامج حر بموجب رخصة جنو العمومية العامة الإصدار 3. يمكنك استخدامه ودراسته ومشاركته وتعديله. محرّك حظر التطبيقات مأخوذ من NetGuard، © مارسيل بوكهورست، وهو أيضًا تحت GPL v3.</string>
+    <string name="licence_gpl">شروط الترخيص</string>
+    <string name="licence_netguard">مشروع NetGuard</string>
 </resources>

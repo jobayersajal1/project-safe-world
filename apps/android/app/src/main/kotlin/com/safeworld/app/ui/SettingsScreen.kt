@@ -412,6 +412,44 @@ private fun HelpSection() {
             )
         }
     }
+
+    LicenceSection(open = ::open)
+}
+
+/**
+ * The licence notice, which is an obligation rather than a courtesy.
+ *
+ * Safe World for Android is GPL-3.0, because its packet forwarder is NetGuard's. GPL-3.0
+ * requires the licence and the copyright to reach the person running the software — a file
+ * in the repository is not that, since almost nobody who installs an APK ever sees it.
+ */
+@Composable
+private fun LicenceSection(open: (String) -> Unit) {
+    Text(stringResource(R.string.licence_title), style = MaterialTheme.typography.titleSmall)
+    Card {
+        Column(Modifier.padding(vertical = 8.dp)) {
+            Text(
+                stringResource(R.string.licence_body),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            )
+            HorizontalDivider()
+
+            ContactRow(
+                label = stringResource(R.string.licence_gpl),
+                value = SupportLinks.GPL_URL,
+                onClick = { open(SupportLinks.GPL_URL) },
+            )
+            HorizontalDivider()
+
+            ContactRow(
+                label = stringResource(R.string.licence_netguard),
+                value = SupportLinks.NETGUARD_URL,
+                onClick = { open(SupportLinks.NETGUARD_URL) },
+            )
+        }
+    }
 }
 
 /** A contact line. A null [onClick] renders it as text rather than a tap target. */
