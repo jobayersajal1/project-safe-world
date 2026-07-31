@@ -40,12 +40,19 @@ class TunnelModeTest {
         )
     }
 
+    // MARK: Which switches put apps in scope
+
     @Test
-    fun `the opt-in categories are what asks for per-app blocking`() {
-        assertFalse(TunnelMode.needsPerAppBlocking(settings()))
-        assertTrue(TunnelMode.needsPerAppBlocking(settings(social = true)))
-        assertTrue(TunnelMode.needsPerAppBlocking(settings(entertainment = true)))
-        assertTrue(TunnelMode.needsPerAppBlocking(settings(social = true, entertainment = true)))
+    fun `the opt-in categories ask for per-app blocking`() {
+        assertFalse(TunnelMode.perAppSwitchesOn(settings(), gamesEnabled = false))
+        assertTrue(TunnelMode.perAppSwitchesOn(settings(social = true), gamesEnabled = false))
+        assertTrue(TunnelMode.perAppSwitchesOn(settings(entertainment = true), gamesEnabled = false))
+    }
+
+    /** Games has no category behind it, so it must reach the packet path on its own. */
+    @Test
+    fun `games asks for per-app blocking with every category off`() {
+        assertTrue(TunnelMode.perAppSwitchesOn(settings(), gamesEnabled = true))
     }
 
     /**
@@ -56,7 +63,24 @@ class TunnelModeTest {
     fun `mandatory categories alone stay cheap`() {
         val base = Settings.defaults()
         assertTrue(base.categories[CategoryId.SCAM] == true)
-        assertFalse(TunnelMode.needsPerAppBlocking(base))
-        assertEquals(TunnelMode.DnsOnly, TunnelMode.select(base, TunnelMode.needsPerAppBlocking(base)))
+        assertFalse(TunnelMode.perAppSwitchesOn(base, gamesEnabled = false))
+        assertEquals(TunnelMode.DnsOnly, TunnelMode.select(base, blockedApps = false))
+    }
+
+    // MARK: The resolved package set, not the switches, is what decides
+
+    /**
+     * A phone with none of these apps installed has nothing for a full tunnel to do. Forwarding
+     * every packet on the device to discover that would be the whole cost for none of the benefit.
+     */
+    @Test
+    fun `switches on but nothing installed stays cheap`() {
+        assertFalse(TunnelMode.needsPerAppBlocking(emptySet()))
+        assertEquals(TunnelMode.DnsOnly, TunnelMode.select(settings(social = true), blockedApps = false))
+    }
+
+    @Test
+    fun `one installed blocked app is enough`() {
+        assertTrue(TunnelMode.needsPerAppBlocking(setOf("com.dts.freefireth")))
     }
 }

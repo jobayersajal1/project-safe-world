@@ -172,4 +172,18 @@
     <string name="fullblock_description_collateral">শুধু ওয়েবসাইট নয়, অ্যাপের নিজের সংযোগও ব্লক করে। এতে %1$s-ও ব্লক হবে, কারণ সেগুলো একই সার্ভারে চলে।</string>
     <string name="fullblock_off_pin_title">অ্যাপ ব্লক করা বন্ধ করবেন?</string>
     <string name="fullblock_off_pin_message">এই অ্যাপটিকে আবার সংযোগ করতে দিতে আপনার পিন দিন।</string>
+
+    <string name="appblock_title">অ্যাপ ব্লক করুন</string>
+    <string name="appblock_games_label">গেম ও বাজির অ্যাপ</string>
+    <string name="appblock_games_description">ফ্রি ফায়ার, পাবজি, লুডু, তিন পাত্তি, ড্রিম১১ এবং এ ধরনের অ্যাপ — ওয়েবসাইট ব্লক হোক বা না হোক, অ্যাপগুলো বন্ধ থাকবে।</string>
+    <string name="appblock_choose_label">অ্যাপ বেছে নিন</string>
+    <string name="appblock_choose_summary">%1$s টি বাছাই করা, তার মধ্যে %2$s টি এই ফোনে আছে</string>
+    <string name="appblock_loading">আপনার অ্যাপগুলো পড়া হচ্ছে…</string>
+    <string name="appblock_consent_title">প্রতিটি সংযোগ পরীক্ষা করবেন?</string>
+    <string name="appblock_consent_body">কোনো অ্যাপ ব্লক করতে হলে সেফ ওয়ার্ল্ডকে শুধু ওয়েবসাইটের খোঁজ নয়, আপনার ফোনের প্রতিটি সংযোগ পরীক্ষা করতে হয়। এতে ব্যাটারি একটু বেশি খরচ হয়। কোনো তথ্য কোথাও পাঠানো হয় না — সব পরীক্ষা এই ফোনেই হয়।</string>
+    <string name="appblock_consent_accept">চালু করুন</string>
+    <string name="appblock_consent_cancel">বাতিল</string>
+    <string name="appblock_games_off_pin_title">গেম ব্লক করা বন্ধ করবেন?</string>
+    <string name="appblock_remove_pin_title">এই অ্যাপগুলো আনব্লক করবেন?</string>
+    <string name="appblock_off_pin_message">এই অ্যাপগুলোকে আবার সংযোগ করতে দিতে আপনার পিন দিন।</string>
 </resources>

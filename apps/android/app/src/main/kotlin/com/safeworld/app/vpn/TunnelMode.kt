@@ -50,14 +50,22 @@ enum class TunnelMode {
         }
 
         /**
-         * True when a category whose apps can only be stopped by UID is on.
+         * True when the user has asked for something only a UID rule can deliver.
          *
-         * Deliberately not "any optional category": address-range blocking already handles Meta and
-         * Netflix without a full tunnel, and paying the packet-path cost for something already
-         * solved would be the wrong trade.
+         * Driven by the resolved package set rather than by the switches, so it is false when the
+         * switches are on but none of those apps are installed. A phone with no Facebook, no
+         * YouTube and no games has nothing for a full tunnel to do, and making it forward every
+         * packet to discover that would be pure cost.
          */
-        fun needsPerAppBlocking(settings: Settings): Boolean =
-            settings.categories[CategoryId.SOCIAL] == true ||
+        fun needsPerAppBlocking(blockedPackages: Set<String>): Boolean = blockedPackages.isNotEmpty()
+
+        /**
+         * The switches that put apps in scope: the two categories that have an app catalogue behind
+         * them, plus Games, which has no category because it has no domain list.
+         */
+        fun perAppSwitchesOn(settings: Settings, gamesEnabled: Boolean): Boolean =
+            gamesEnabled ||
+                settings.categories[CategoryId.SOCIAL] == true ||
                 settings.categories[CategoryId.ENTERTAINMENT] == true
     }
 }

@@ -156,6 +156,11 @@ fun HomeScreen(
             }
         }
 
+        // Deliberately its own section rather than more rows above: everything above blocks by
+        // domain and costs nothing, this routes every packet on the device. Different bargain,
+        // different heading.
+        AppBlockSection(store = store, settings = settings, requestPin = requestPin)
+
         AlwaysOnSection()
 
         Text(stringResource(R.string.uninstall_title), style = MaterialTheme.typography.titleSmall)

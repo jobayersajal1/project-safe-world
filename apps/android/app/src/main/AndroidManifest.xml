@@ -20,6 +20,86 @@
     -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
+    <!--
+        To let the user block an app that isn't in our built-in catalogue.
+
+        Android 11 hid the installed-app list behind this, and a blocker that can only block the
+        games we happened to think of is not much of a blocker — new ones appear constantly, and
+        the one someone actually loses hours to is usually not on any list. Play grants this for
+        parental-control and device-security apps, which is exactly what this is; the picker is
+        the only thing that reads it, and nothing is transmitted anywhere.
+
+        The <queries> block below is the fallback: it keeps the built-in catalogue working by name
+        even if this permission is ever refused, because a curated list of packages we name
+        explicitly needs no broad visibility.
+    -->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+
+    <!--
+        The built-in catalogue, so it resolves even without QUERY_ALL_PACKAGES.
+
+        Mirrors AppGroups.ALL in :core. Regenerate rather than hand-edit:
+
+          grep -oE 'AppEntry\("[a-zA-Z0-9_.]+"' \
+            core/src/main/kotlin/com/safeworld/core/AppGroups.kt \
+            | sed -E 's/AppEntry\("([^"]+)"/\1/'
+
+        A name here that is missing from AppGroups is harmless; one missing here that AppGroups has
+        is not, if the permission is ever absent — that app silently resolves to nothing and is
+        never blocked, which looks exactly like the feature working.
+    -->
+    <queries>
+        <package android:name="com.facebook.katana" />
+        <package android:name="com.facebook.lite" />
+        <package android:name="com.instagram.android" />
+        <package android:name="com.instagram.lite" />
+        <package android:name="com.zhiliaoapp.musically" />
+        <package android:name="com.ss.android.ugc.trill" />
+        <package android:name="com.twitter.android" />
+        <package android:name="com.snapchat.android" />
+        <package android:name="com.reddit.frontpage" />
+        <package android:name="com.pinterest" />
+        <package android:name="com.linkedin.android" />
+        <package android:name="com.tumblr" />
+        <package android:name="com.imo.android.imoim" />
+        <package android:name="com.likeme.app" />
+        <package android:name="com.google.android.youtube" />
+        <package android:name="com.google.android.apps.youtube.music" />
+        <package android:name="com.google.android.apps.youtube.kids" />
+        <package android:name="com.netflix.mediaclient" />
+        <package android:name="tv.twitch.android.app" />
+        <package android:name="com.spotify.music" />
+        <package android:name="com.amazon.avod.thirdpartyclient" />
+        <package android:name="com.disney.disneyplus" />
+        <package android:name="in.startv.hotstar" />
+        <package android:name="com.mxtech.videoplayer.ad" />
+        <package android:name="com.bongobd.bongobd" />
+        <package android:name="com.dts.freefireth" />
+        <package android:name="com.dts.freefiremax" />
+        <package android:name="com.tencent.ig" />
+        <package android:name="com.pubg.imobile" />
+        <package android:name="com.pubg.krmobile" />
+        <package android:name="com.activision.callofduty.shooter" />
+        <package android:name="com.mobile.legends" />
+        <package android:name="com.riotgames.league.wildrift" />
+        <package android:name="com.supercell.clashofclans" />
+        <package android:name="com.supercell.clashroyale" />
+        <package android:name="com.supercell.brawlstars" />
+        <package android:name="com.roblox.client" />
+        <package android:name="com.innersloth.spacemafia" />
+        <package android:name="com.nianticlabs.pokemongo" />
+        <package android:name="com.king.candycrushsaga" />
+        <package android:name="com.miniclip.eightballpool" />
+        <package android:name="com.ludo.king" />
+        <package android:name="com.ea.gp.fifamobile" />
+        <package android:name="com.app.dream11Pro" />
+        <package android:name="com.mpl.androidapp" />
+        <package android:name="com.winzo.gold" />
+        <package android:name="com.octro.teenpatti" />
+        <package android:name="com.moonfrog.teenpatti.gold" />
+        <package android:name="com.zupee.ludo" />
+    </queries>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"

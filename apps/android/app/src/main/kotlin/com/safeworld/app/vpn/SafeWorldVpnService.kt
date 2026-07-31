@@ -4,13 +4,18 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.VpnService
+import android.os.Build
 import android.os.ParcelFileDescriptor
+import android.os.Process
+import android.system.OsConstants
 import android.util.Log
 import com.safeworld.app.LocaleHelper
 import com.safeworld.app.MainActivity
@@ -30,6 +35,7 @@ import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.Inet4Address
 import java.net.InetAddress
+import java.net.InetSocketAddress
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -74,9 +80,40 @@ class SafeWorldVpnService : VpnService() {
     @Volatile
     private var blockedRanges: ServiceRanges.Matcher = ServiceRanges.Matcher.EMPTY
 
+    /**
+     * UIDs to blackhole, resolved at [start] and refreshed by `ACTION_REFRESH`.
+     *
+     * Null until the first tunnel comes up, so the packet path can skip the whole mechanism on the
+     * ordinary install where no app blocking is on.
+     */
+    @Volatile
+    private var blockedApps: BlockedApps? = null
+
     private var tunnel: ParcelFileDescriptor? = null
     private var worker: Thread? = null
     private var forwarders: ExecutorService? = null
+
+    /**
+     * Re-resolves UIDs when an app is installed, replaced or removed.
+     *
+     * **A reinstall gives an app a new UID.** Without this the service would keep dropping traffic
+     * for a UID nobody owns any more while the reinstalled app ran unblocked — and reinstalling is
+     * the obvious thing to try when an app stops working, so it is the first bypass anyone would
+     * find by accident.
+     *
+     * Registered at runtime rather than in the manifest: `ACTION_PACKAGE_ADDED` is an implicit
+     * broadcast, and manifest receivers stopped getting those in Android 8. A runtime registration
+     * is exempt, and the service is running for exactly as long as this matters.
+     */
+    private val packageChanges = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val apps = blockedApps ?: return
+            apps.refresh(store)
+            Log.i(TAG, "package change (${intent.action}); ${apps.installedCount} uids blocked")
+        }
+    }
+
+    private var packageChangesRegistered = false
 
     /** Serializes writes back into the tun fd across the worker and forwarders. */
     private val writeLock = Any()
@@ -149,8 +186,14 @@ class SafeWorldVpnService : VpnService() {
 
     private fun start() {
         val settings = store.settings.value
-        val mode = TunnelMode.select(settings, TunnelMode.needsPerAppBlocking(settings))
-        Log.i(TAG, "establishing tunnel in $mode mode")
+
+        // Resolved before the mode is chosen: what decides is whether any blocked app is actually
+        // installed, not whether the switch is on. A phone with no Facebook and no games gives a
+        // full tunnel nothing to do, and it should not pay for one.
+        val apps = BlockedApps.get(this).also { it.refresh(store) }
+        blockedApps = apps
+        val mode = TunnelMode.select(settings, TunnelMode.needsPerAppBlocking(apps.packages))
+        Log.i(TAG, "establishing tunnel in $mode mode, ${apps.installedCount} app uids blocked")
 
         val dnsServers = systemDnsServers()
 
@@ -183,6 +226,15 @@ class SafeWorldVpnService : VpnService() {
             // Everything, so a blocked app's packets arrive here whatever it did to find the
             // address. Only reachable when the relay can forward — see `TunnelMode.select`.
             builder.addRoute("0.0.0.0", 0)
+
+            // IPv6 as well, and this is not optional. Routing only v4 would leave a blocked app
+            // free to reach every v6 address on the internet while the UI reported it blocked —
+            // and modern mobile networks are v6-first, so that is the common case, not the corner
+            // one. Needs an address on the interface too, or the route has no source to use.
+            runCatching {
+                builder.addAddress(TUN_ADDRESS_V6, TUN_PREFIX_LENGTH_V6)
+                builder.addRoute("::", 0)
+            }.onFailure { Log.w(TAG, "no IPv6 on this tunnel", it) }
         }
 
         // Services the user chose to block outright. Their prefixes are routed in so the packets
@@ -226,6 +278,7 @@ class SafeWorldVpnService : VpnService() {
             isDaemon = true
             start()
         }
+        registerPackageChanges()
         _running.value = true
         // Records that protection has genuinely run at least once, which is what
         // makes a later "it stopped" claim true rather than just noticing that a
@@ -257,8 +310,30 @@ class SafeWorldVpnService : VpnService() {
         }
     }
 
+    private fun registerPackageChanges() {
+        if (packageChangesRegistered) return
+        val filter = IntentFilter().apply {
+            addAction(Intent.ACTION_PACKAGE_ADDED)
+            addAction(Intent.ACTION_PACKAGE_REPLACED)
+            addAction(Intent.ACTION_PACKAGE_FULLY_REMOVED)
+            // Package broadcasts carry the package in the data URI, and a filter without this
+            // scheme matches none of them.
+            addDataScheme("package")
+        }
+        runCatching { registerReceiver(packageChanges, filter) }
+            .onSuccess { packageChangesRegistered = true }
+            .onFailure { Log.w(TAG, "could not watch package changes", it) }
+    }
+
+    private fun unregisterPackageChanges() {
+        if (!packageChangesRegistered) return
+        runCatching { unregisterReceiver(packageChanges) }
+        packageChangesRegistered = false
+    }
+
     private fun stop() {
         _running.value = false
+        unregisterPackageChanges()
 
         worker?.interrupt()
         worker = null
@@ -333,6 +408,22 @@ class SafeWorldVpnService : VpnService() {
         val datagram = Ipv4Udp.parse(buffer, length) ?: return
         if (datagram.destinationPort != DNS_PORT) return
 
+        // Whose query is this? If it belongs to a blocked app, the answer is NXDOMAIN whatever it
+        // asked for — the app is what is blocked, not any particular name.
+        //
+        // This is the *fallback*, not the mechanism. When the relay can forward, the full tunnel
+        // drops these packets outright and never reaches here, which also covers the app that uses
+        // DNS-over-HTTPS or an address it already knows. This path only covers apps that ask us,
+        // and it exists so a device that cannot run the forwarder gets partial blocking rather than
+        // none.
+        val apps = blockedApps
+        if (apps != null && !apps.isEmpty && ownerIsBlocked(datagram, apps)) {
+            val refusal = DnsMessage.nxDomainResponse(datagram.payload) ?: return
+            writePacket(output, Ipv4Udp.buildResponse(datagram, refusal))
+            store.incrementBlockedToday()
+            return
+        }
+
         val host = DnsMessage.questionName(datagram.payload)
         if (host.isNullOrEmpty()) {
             // Unparseable or non-standard query — forward it rather than break it.
@@ -349,6 +440,38 @@ class SafeWorldVpnService : VpnService() {
         val response = DnsMessage.nxDomainResponse(datagram.payload) ?: return
         writePacket(output, Ipv4Udp.buildResponse(datagram, response))
         store.incrementBlockedToday()
+    }
+
+    /**
+     * Whether the app that sent [datagram] is one the user blocked.
+     *
+     * `getConnectionOwnerUid` is the only sanctioned way to ask — `/proc/net/udp` stopped being
+     * readable for other apps' sockets in Android 10, which is the same release that added this.
+     * Below API 29 there is no answer available here at all, so those devices get app blocking only
+     * once the full tunnel lands (the native forwarder does its own lookup).
+     *
+     * Returns false whenever the platform declines to say, which is the safe direction: an
+     * unattributed query falls through to ordinary domain filtering rather than being refused.
+     */
+    private fun ownerIsBlocked(datagram: UdpDatagram, apps: BlockedApps): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return false
+        val manager = getSystemService(ConnectivityManager::class.java) ?: return false
+        val uid = runCatching {
+            manager.getConnectionOwnerUid(
+                OsConstants.IPPROTO_UDP,
+                InetSocketAddress(
+                    InetAddress.getByAddress(datagram.sourceAddress),
+                    datagram.sourcePort,
+                ),
+                InetSocketAddress(
+                    InetAddress.getByAddress(datagram.destinationAddress),
+                    datagram.destinationPort,
+                ),
+            )
+        }.getOrDefault(Process.INVALID_UID)
+
+        if (uid == Process.INVALID_UID) return false
+        return apps.contains(uid)
     }
 
     /**
@@ -496,6 +619,10 @@ class SafeWorldVpnService : VpnService() {
         /** Link-local-ish address for the tun endpoint; nothing else uses it. */
         private const val TUN_ADDRESS = "10.111.222.1"
         private const val TUN_PREFIX_LENGTH = 32
+
+        /** Unique-local (fc00::/7) endpoint, added only under a full tunnel. */
+        private const val TUN_ADDRESS_V6 = "fd00:6f77:7361:6665::1"
+        private const val TUN_PREFIX_LENGTH_V6 = 128
         private const val IPV4_HOST_PREFIX_LENGTH = 32
         private const val MTU = 1500
         private const val DNS_PORT = 53

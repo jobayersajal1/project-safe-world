@@ -1,0 +1,137 @@
+package com.safeworld.core
+
+import com.safeworld.core.AppGroups.AppGroup
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
+import org.junit.Test
+
+/**
+ * The catalogue's failure mode is silence: a package name that matches nothing installed blocks
+ * nothing, and looks identical to the feature working. Nothing here can prove a name is *correct*
+ * — only a device can — so these check the properties that would make a name impossible.
+ */
+class AppGroupsTest {
+
+    @Test
+    fun `no package name appears twice`() {
+        val duplicates = AppGroups.ALL
+            .groupBy { it.packageName }
+            .filterValues { it.size > 1 }
+            .keys
+        assertEquals("duplicate package names", emptySet<String>(), duplicates)
+    }
+
+    @Test
+    fun `every package name is a syntactically valid application id`() {
+        // Lower-cased ASCII labels separated by dots, each starting with a letter. A name that fails
+        // this cannot be an installed package under any circumstances, so it is a typo.
+        val valid = Regex("[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z][a-zA-Z0-9_]*)+")
+        val malformed = AppGroups.ALL.map { it.packageName }.filterNot { valid.matches(it) }
+        assertEquals("malformed package names", emptyList<String>(), malformed)
+    }
+
+    @Test
+    fun `every group has entries`() {
+        for (group in AppGroup.entries) {
+            assertTrue("$group has no apps", AppGroups.forGroup(group).isNotEmpty())
+        }
+    }
+
+    @Test
+    fun `group ids round-trip`() {
+        for (group in AppGroup.entries) {
+            assertEquals(group, AppGroup.fromId(group.id))
+        }
+        assertNull(AppGroup.fromId("apps_nonexistent"))
+    }
+
+    /**
+     * Blocking someone's messaging is not what "block social media" means, and doing it silently
+     * would be the app deciding something the user did not ask for. Pinned so a later addition to
+     * the catalogue has to argue with a test rather than slip through.
+     */
+    @Test
+    fun `messaging apps are never in the catalogue`() {
+        val messaging = setOf(
+            "com.whatsapp",
+            "com.whatsapp.w4b",
+            "com.facebook.orca",
+            "org.telegram.messenger",
+            "org.thoughtcrime.securesms",
+            "com.viber.voip",
+            "com.skype.raider",
+            "com.google.android.apps.messaging",
+        )
+        val found = AppGroups.ALL.map { it.packageName }.filter { it in messaging }
+        assertEquals("messaging must stay reachable", emptyList<String>(), found)
+    }
+
+    @Test
+    fun `social and entertainment follow their category, games has its own switch`() {
+        assertEquals(CategoryId.SOCIAL, AppGroup.SOCIAL.category)
+        assertEquals(CategoryId.ENTERTAINMENT, AppGroup.ENTERTAINMENT.category)
+        assertNull("games must not ride on a category", AppGroup.GAMES.category)
+    }
+
+    // MARK: Which packages a given set of switches produces
+
+    private fun settings(vararg on: CategoryId) = Settings(
+        categories = CategoryId.entries.associateWith { it in on },
+    )
+
+    @Test
+    fun `nothing is blocked when no group is on`() {
+        val blocked = AppGroups.blockedPackages(settings(), gamesEnabled = false, userPicked = emptySet())
+        assertEquals(emptySet<String>(), blocked)
+    }
+
+    @Test
+    fun `turning on the social category blocks social apps and nothing else`() {
+        val blocked = AppGroups.blockedPackages(
+            settings(CategoryId.SOCIAL),
+            gamesEnabled = false,
+            userPicked = emptySet(),
+        )
+        assertTrue(blocked.contains("com.facebook.katana"))
+        assertFalse(blocked.contains("com.google.android.youtube"))
+        assertFalse(blocked.contains("com.dts.freefireth"))
+    }
+
+    @Test
+    fun `games is independent of every category`() {
+        val blocked = AppGroups.blockedPackages(
+            settings(),
+            gamesEnabled = true,
+            userPicked = emptySet(),
+        )
+        assertTrue(blocked.contains("com.dts.freefireth"))
+        assertTrue(blocked.contains("com.app.dream11Pro"))
+        assertFalse(blocked.contains("com.facebook.katana"))
+    }
+
+    /**
+     * A hand-picked app was chosen individually, so there is no group to un-choose it. Turning
+     * Games off must not quietly un-block something the user added themselves.
+     */
+    @Test
+    fun `hand-picked packages survive every group being off`() {
+        val blocked = AppGroups.blockedPackages(
+            settings(),
+            gamesEnabled = false,
+            userPicked = setOf("com.example.somegame"),
+        )
+        assertEquals(setOf("com.example.somegame"), blocked)
+    }
+
+    @Test
+    fun `a hand-picked app already in a group is not counted twice`() {
+        val blocked = AppGroups.blockedPackages(
+            settings(),
+            gamesEnabled = true,
+            userPicked = setOf("com.dts.freefireth"),
+        )
+        assertEquals(1, blocked.count { it == "com.dts.freefireth" })
+    }
+}

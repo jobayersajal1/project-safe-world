@@ -207,6 +207,60 @@ class SettingsStore private constructor(context: Context) {
         _settings.value = _settings.value.copy()
     }
 
+    // MARK: App blocking
+    //
+    // Kept out of `Settings` for the same reason as the PIN: that type is the
+    // cross-platform shape, and Android is the only platform that can block an
+    // app rather than a domain. iOS has no equivalent outside MDM, and the
+    // desktop resolvers see addresses, not processes.
+
+    private val _appBlockRevision = MutableStateFlow(0)
+
+    /**
+     * Bumped whenever the app-blocking selection changes.
+     *
+     * Same reason [blocklistRevision] exists: these live in `SharedPreferences`
+     * rather than in `_settings`, so Compose has nothing to recompose on when
+     * they change.
+     */
+    val appBlockRevision: StateFlow<Int> = _appBlockRevision.asStateFlow()
+
+    /**
+     * Whether the Games group is on.
+     *
+     * Its own flag rather than a sixth `CategoryId`: a category means a domain
+     * list, and this one has none — the gambling *sites* behind these apps are
+     * already in the mandatory `list2`. Adding `list6` would force a matching
+     * port into TypeScript, Swift and C# for something that blocks nothing on
+     * any of those platforms.
+     */
+    fun isGamesBlocked(): Boolean = prefs.getBoolean(KEY_BLOCK_GAMES, false)
+
+    fun setGamesBlocked(on: Boolean) {
+        prefs.edit().putBoolean(KEY_BLOCK_GAMES, on).apply()
+        _appBlockRevision.value += 1
+    }
+
+    /** Packages the user picked by hand, beyond the built-in catalogue. */
+    fun blockedPackages(): Set<String> =
+        prefs.getStringSet(KEY_BLOCKED_PACKAGES, emptySet()).orEmpty()
+
+    fun setBlockedPackages(packages: Set<String>) {
+        prefs.edit().putStringSet(KEY_BLOCKED_PACKAGES, packages).apply()
+        _appBlockRevision.value += 1
+    }
+
+    /**
+     * Whether the user has been shown what routing every packet through the app
+     * costs. Asked once, before the first time it happens.
+     */
+    val fullTunnelAcknowledged: Boolean
+        get() = prefs.getBoolean(KEY_FULL_TUNNEL_ACK, false)
+
+    fun acknowledgeFullTunnel() {
+        prefs.edit().putBoolean(KEY_FULL_TUNNEL_ACK, true).apply()
+    }
+
     // MARK: Mutating
 
     fun update(mutate: (Settings) -> Settings) {
@@ -452,6 +506,9 @@ class SettingsStore private constructor(context: Context) {
         private const val KEY_STATS = "stats"
         private const val KEY_REMOTE_DOMAINS = "remoteDomains"
         private const val KEY_FULL_BLOCK = "fullyBlockedServices"
+        private const val KEY_BLOCK_GAMES = "blockGames"
+        private const val KEY_BLOCKED_PACKAGES = "blockedPackages"
+        private const val KEY_FULL_TUNNEL_ACK = "fullTunnelAcknowledged"
         private const val KEY_LAST_UPDATE_ID = "lastAppliedUpdateId"
         private const val KEY_PIN_SALT = "pinSalt"
         private const val KEY_PIN_HASH = "pinHash"

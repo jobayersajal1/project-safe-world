@@ -187,4 +187,23 @@
     <string name="fullblock_description_collateral">Blocks the app\'s own connections, not just its website. This also blocks %1$s, which run on the same servers.</string>
     <string name="fullblock_off_pin_title">Stop blocking the app?</string>
     <string name="fullblock_off_pin_message">Enter your PIN to let this app connect again.</string>
+
+    <!--
+        App blocking. Deliberately never says "we route all your traffic" without also saying
+        nothing leaves the phone: a local VPN looks alarming in the system UI, and the honest
+        reassurance has to arrive at the same moment as the alarming part.
+    -->
+    <string name="appblock_title">Block apps</string>
+    <string name="appblock_games_label">Games &amp; betting apps</string>
+    <string name="appblock_games_description">Free Fire, PUBG, Ludo, Teen Patti, Dream11 and the like — stopped whether or not their websites are.</string>
+    <string name="appblock_choose_label">Choose apps</string>
+    <string name="appblock_choose_summary">%1$s chosen, %2$s of them on this phone</string>
+    <string name="appblock_loading">Reading your apps…</string>
+    <string name="appblock_consent_title">Check every connection?</string>
+    <string name="appblock_consent_body">Blocking an app means Safe World has to check every connection your phone makes, not just website lookups. That uses more battery. Nothing is sent anywhere — all the checking happens on this phone.</string>
+    <string name="appblock_consent_accept">Turn on</string>
+    <string name="appblock_consent_cancel">Cancel</string>
+    <string name="appblock_games_off_pin_title">Stop blocking games?</string>
+    <string name="appblock_remove_pin_title">Unblock these apps?</string>
+    <string name="appblock_off_pin_message">Enter your PIN to let these apps connect again.</string>
 </resources>

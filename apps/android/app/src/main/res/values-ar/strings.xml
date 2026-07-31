@@ -178,4 +178,18 @@
     <string name="fullblock_description_collateral">يحظر اتصالات التطبيق نفسه، وليس موقعه فقط. وهذا يحظر أيضًا %1$s لأنها تعمل على الخوادم نفسها.</string>
     <string name="fullblock_off_pin_title">إيقاف حظر التطبيق؟</string>
     <string name="fullblock_off_pin_message">أدخل رمز PIN للسماح لهذا التطبيق بالاتصال مجددًا.</string>
+
+    <string name="appblock_title">حظر التطبيقات</string>
+    <string name="appblock_games_label">الألعاب وتطبيقات المراهنات</string>
+    <string name="appblock_games_description">فري فاير وببجي ولودو وتين باتي ودريم11 وما شابهها — تُحظر سواء حُجبت مواقعها أم لا.</string>
+    <string name="appblock_choose_label">اختيار التطبيقات</string>
+    <string name="appblock_choose_summary">%1$s مختارة، منها %2$s على هذا الهاتف</string>
+    <string name="appblock_loading">جارٍ قراءة تطبيقاتك…</string>
+    <string name="appblock_consent_title">فحص كل اتصال؟</string>
+    <string name="appblock_consent_body">لحظر تطبيق، على Safe World فحص كل اتصال يجريه هاتفك، وليس عمليات البحث عن المواقع فقط. هذا يستهلك بطارية أكثر قليلًا. لا يُرسل أي شيء إلى أي جهة — كل الفحص يتم على هذا الهاتف.</string>
+    <string name="appblock_consent_accept">تشغيل</string>
+    <string name="appblock_consent_cancel">إلغاء</string>
+    <string name="appblock_games_off_pin_title">إيقاف حظر الألعاب؟</string>
+    <string name="appblock_remove_pin_title">إلغاء حظر هذه التطبيقات؟</string>
+    <string name="appblock_off_pin_message">أدخل رمز PIN للسماح لهذه التطبيقات بالاتصال مجددًا.</string>
 </resources>

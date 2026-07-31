@@ -170,4 +170,18 @@
     <string name="fullblock_description_collateral">Bloquea las conexiones de la propia app, no solo su web. Esto también bloquea %1$s, que usan los mismos servidores.</string>
     <string name="fullblock_off_pin_title">¿Dejar de bloquear la app?</string>
     <string name="fullblock_off_pin_message">Introduce tu PIN para permitir que esta app vuelva a conectarse.</string>
+
+    <string name="appblock_title">Bloquear apps</string>
+    <string name="appblock_games_label">Juegos y apps de apuestas</string>
+    <string name="appblock_games_description">Free Fire, PUBG, Ludo, Teen Patti, Dream11 y similares: se bloquean estén o no bloqueadas sus webs.</string>
+    <string name="appblock_choose_label">Elegir apps</string>
+    <string name="appblock_choose_summary">%1$s elegidas, %2$s de ellas en este teléfono</string>
+    <string name="appblock_loading">Leyendo tus apps…</string>
+    <string name="appblock_consent_title">¿Comprobar cada conexión?</string>
+    <string name="appblock_consent_body">Para bloquear una app, Safe World tiene que comprobar cada conexión que hace tu teléfono, no solo las búsquedas de webs. Eso gasta algo más de batería. No se envía nada a ninguna parte: todas las comprobaciones se hacen en este teléfono.</string>
+    <string name="appblock_consent_accept">Activar</string>
+    <string name="appblock_consent_cancel">Cancelar</string>
+    <string name="appblock_games_off_pin_title">¿Dejar de bloquear los juegos?</string>
+    <string name="appblock_remove_pin_title">¿Desbloquear estas apps?</string>
+    <string name="appblock_off_pin_message">Introduce tu PIN para permitir que estas apps vuelvan a conectarse.</string>
 </resources>
