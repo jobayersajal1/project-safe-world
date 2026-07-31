@@ -29,7 +29,6 @@
     <string name="interrupted_pin_message">أدخل رمز PIN لتجاهل هذا التحذير.</string>
 
     <string name="blocked_headline">حظرنا %1$s موقع إلكتروني ضار</string>
-    <string name="blocked_headline_detail">%1$s موقع معروف، يتم تحديثها تلقائيًا.</string>
 
     <string name="block_more_title">تريد حظر المزيد؟</string>
     <string name="category_list4_label">مواقع التواصل الاجتماعي</string>
@@ -205,4 +204,6 @@
     <string name="appblock_entertainment_description">يوتيوب ونتفليكس وسبوتيفاي وتويتش وتطبيقات البث الأخرى.</string>
     <string name="appblock_social_off_pin_title">إيقاف حظر تطبيقات التواصل الاجتماعي؟</string>
     <string name="appblock_entertainment_off_pin_title">إيقاف حظر تطبيقات الترفيه؟</string>
+    <string name="blocked_headline_off">فعّل الحماية بالأعلى لحظر %1$s موقع إلكتروني</string>
+    <string name="blocked_more_hint">احظر المزيد من التطبيقات والمواقع الضارة بالأسفل</string>
 </resources>

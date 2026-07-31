@@ -1030,31 +1030,60 @@
         }
       }
     },
-    "blocked_headline_detail": {
+    "blocked_headline_off": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ known sites, kept up to date automatically."
+            "value": "Turn on protection above to block %1$@ websites"
           }
         },
         "bn": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@টি পরিচিত সাইট, স্বয়ংক্রিয়ভাবে হালনাগাদ হয়।"
+            "value": "%1$@টি ওয়েবসাইট ব্লক করতে উপরে সুরক্ষা চালু করুন"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ sitios conocidos, actualizados automáticamente."
+            "value": "Activa la protección arriba para bloquear %1$@ sitios web"
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ موقع معروف، يتم تحديثها تلقائيًا."
+            "value": "فعّل الحماية بالأعلى لحظر %1$@ موقع إلكتروني"
+          }
+        }
+      }
+    },
+    "blocked_more_hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Block more harmful apps and websites below"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "নিচে আরও ক্ষতিকর অ্যাপ ও ওয়েবসাইট ব্লক করুন"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bloquea más apps y webs dañinas abajo"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "احظر المزيد من التطبيقات والمواقع الضارة بالأسفل"
           }
         }
       }

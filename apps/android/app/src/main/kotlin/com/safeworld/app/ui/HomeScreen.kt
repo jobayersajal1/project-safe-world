@@ -116,7 +116,7 @@ fun HomeScreen(
             PrivateDnsWarning()
         }
 
-        BlockedCountCard(count = blockedCount)
+        BlockedCountCard(count = blockedCount, running = running)
 
         // With no per-list rows, an accepted download that hasn't landed yet would
         // otherwise be invisible: the count simply wouldn't move, with nothing
@@ -254,24 +254,46 @@ private fun ProtectionCard(
 /**
  * The headline claim. Counts only the lists that are actually enabled, so it
  * rises when the user opts into more and never overstates what is happening.
+ *
+ * **Says something different when protection is off**, because the same
+ * sentence would be a lie: nothing is being blocked, and a card announcing 4.4
+ * million blocked sites above a switch that is off is exactly the kind of
+ * reassurance this app must never give. Off, it states the offer and points at
+ * the switch; on, it states the fact and points at what else can be added.
+ *
+ * @param running whether the tunnel is actually up, not whether it is meant to
+ *   be — the same signal `ProtectionCard` shows, so the two cannot disagree.
  */
 @Composable
-private fun BlockedCountCard(count: Int) {
+private fun BlockedCountCard(count: Int, running: Boolean) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            containerColor = if (running) {
+                MaterialTheme.colorScheme.primaryContainer
+            } else {
+                MaterialTheme.colorScheme.surfaceVariant
+            },
+            contentColor = if (running) {
+                MaterialTheme.colorScheme.onPrimaryContainer
+            } else {
+                MaterialTheme.colorScheme.onSurfaceVariant
+            },
         ),
     ) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(
-                stringResource(R.string.blocked_headline, CountFormat.compact(count)),
+                stringResource(
+                    if (running) R.string.blocked_headline else R.string.blocked_headline_off,
+                    CountFormat.compact(count),
+                ),
                 style = MaterialTheme.typography.headlineSmall,
             )
-            Text(
-                stringResource(R.string.blocked_headline_detail, CountFormat.grouped(count)),
-                style = MaterialTheme.typography.bodySmall,
-            )
+            if (running) {
+                Text(
+                    stringResource(R.string.blocked_more_hint),
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            }
         }
     }
 }

@@ -87,14 +87,24 @@ struct HomeView: View {
 
     // MARK: How much is blocked
 
+    /// **Says something different when protection is off**, because the same sentence would be a
+    /// lie: nothing is being blocked, and a card announcing 4.4 million blocked sites above a switch
+    /// that is off is exactly the kind of reassurance this app must never give. Off, it states the
+    /// offer and points at the switch; on, it states the fact and points at what else can be added.
     private var blockedCountSection: some View {
         Section {
             VStack(alignment: .leading, spacing: 6) {
-                Text(L("blocked_headline", CountFormat.compact(store.blockedDomainCount)))
-                    .font(.title2.weight(.semibold))
-                Text(L("blocked_headline_detail", CountFormat.exact(store.blockedDomainCount)))
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
+                Text(L(
+                    store.settings.enabled ? "blocked_headline" : "blocked_headline_off",
+                    CountFormat.compact(store.blockedDomainCount)
+                ))
+                .font(.title2.weight(.semibold))
+
+                if store.settings.enabled {
+                    Text(L("blocked_more_hint"))
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
             }
             .padding(.vertical, 4)
 

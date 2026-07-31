@@ -34,8 +34,6 @@
 
     <!-- Home: how much is blocked. %1$s is a rounded count like "85 thousand". -->
     <string name="blocked_headline">We have blocked %1$s harmful websites</string>
-    <!-- %1$s is the exact count, grouped: "64,238". -->
-    <string name="blocked_headline_detail">%1$s known sites, kept up to date automatically.</string>
 
     <!-- Home: opt-in categories -->
     <string name="block_more_title">Want to block more?</string>
@@ -219,4 +217,6 @@
     <string name="appblock_entertainment_description">YouTube, Netflix, Spotify, Twitch and other streaming apps.</string>
     <string name="appblock_social_off_pin_title">Stop blocking social media apps?</string>
     <string name="appblock_entertainment_off_pin_title">Stop blocking entertainment apps?</string>
+    <string name="blocked_headline_off">Turn on protection above to block %1$s websites</string>
+    <string name="blocked_more_hint">Block more harmful apps and websites below</string>
 </resources>
