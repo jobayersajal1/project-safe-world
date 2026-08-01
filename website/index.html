@@ -130,13 +130,15 @@
   .brand svg { flex: none; }
   .nav-links {
     display: flex;
-    gap: 1.4rem;
+    gap: 1.15rem;
     font-size: 0.92rem;
     color: var(--ink-dim);
   }
-  .nav-links a { text-decoration: none; }
+  /* Labels must never break mid-phrase — "How it works" wrapping to three
+     lines pushes the whole bar to double height. */
+  .nav-links a { text-decoration: none; white-space: nowrap; }
   .nav-links a:hover { color: var(--ink); }
-  @media (max-width: 760px) { .nav-links { display: none; } }
+  @media (max-width: 860px) { .nav-links { display: none; } }
 
   select#lang {
     background: var(--bg-raised);
@@ -313,6 +315,17 @@
   .download-icon { color: var(--accent); }
   .download-card h3 { margin: 0; }
   .download-card .btn { margin-block-start: 0.3rem; }
+  /* ---------- Tutorial video ---------- */
+  .video-wrap { max-width: 56rem; }
+  .video-wrap video {
+    width: 100%; height: auto; display: block; border-radius: var(--radius);
+    background: #000; border: 1px solid var(--line);
+    box-shadow: 0 12px 32px var(--shadow); aspect-ratio: 16 / 9;
+  }
+  .video-note { margin-block-start: 1rem; font-size: 0.95rem; }
+  .video-note a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .video-note a:hover { text-decoration: underline; }
+
   .guide-link { margin-block-start: 1rem; font-size: 0.97rem; }
   .guide-link a { color: var(--accent); text-decoration: none; font-weight: 600; }
   .guide-link a:hover { text-decoration: underline; }
@@ -421,8 +434,8 @@
       <span data-i18n="nav.brand">Safe World</span>
     </a>
     <nav class="nav-links">
+      <a href="#tutorial" data-i18n="nav.tutorial">Tutorial</a>
       <a href="#download" data-i18n="nav.download">Download</a>
-      <a href="guide/" data-i18n="nav.guide">User guide</a>
       <a href="#how" data-i18n="nav.how">How it works</a>
       <a href="#compare" data-i18n="nav.compare">Compare</a>
       <a href="#platforms" data-i18n="nav.platforms">Platforms</a>
@@ -484,7 +497,32 @@
             </div>
           </div>
         </div>
-        <a class="btn btn-accent download-now" href="#download" data-i18n="hero.download_cta">Download now</a>
+        <a class="btn btn-accent download-now" href="guide/#video">
+          <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true">
+            <rect x="2.6" y="4.8" width="18.8" height="14.4" rx="2.6" fill="none" stroke="currentColor" stroke-width="1.9"/>
+            <path d="M10.2 9.4 15 12l-4.8 2.6Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+          <span data-i18n="hero.watch_cta">Watch tutorial</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="tutorial">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow" data-i18n="tutorial.eyebrow">Watch first · 2 min 50 s</span>
+        <h2 data-i18n="tutorial.h2">See exactly what it does, before you install it.</h2>
+        <p data-i18n="tutorial.body">Every feature, on the real app: what each switch does, what changes when it's on or off, and why it's there.</p>
+      </div>
+      <div class="video-wrap reveal">
+        <video controls preload="none" playsinline poster="guide/video/poster.jpg">
+          <source src="guide/video/safe-world-tutorial.mp4" type="video/mp4">
+          <a href="guide/video/safe-world-tutorial.mp4" data-i18n="tutorial.fallback">Download the tutorial video</a>
+        </video>
+        <p class="video-note">
+          <a href="guide/" data-i18n="tutorial.read_guide">Prefer to read? Open the full written guide →</a>
+        </p>
       </div>
     </div>
   </section>
@@ -717,6 +755,8 @@
 <footer class="site wrap">
   <span data-i18n="footer.tagline">Content filtering that stays on your device.</span>
   <div class="foot-links">
+    <a href="#tutorial" data-i18n="nav.tutorial">Tutorial</a>
+    <a href="guide/" data-i18n="nav.guide">User guide</a>
     <a href="privacy.html" data-i18n="footer.privacy">Privacy</a>
     <a href="https://github.com/jobayersajal1/project-safe-world" target="_blank" rel="noopener" data-i18n="footer.github">GitHub</a>
     <a href="https://github.com/jobayersajal1/project-safe-world/blob/main/LICENSE" target="_blank" rel="noopener" data-i18n="footer.license">License</a>
@@ -737,6 +777,13 @@
       "nav.oss": "Open source",
       "nav.help": "Help",
       "nav.download": "Download",
+      "nav.tutorial": "Tutorial",
+      "hero.watch_cta": "Watch tutorial",
+      "tutorial.eyebrow": "Watch first \u00b7 2 min 50 s",
+      "tutorial.h2": "See exactly what it does, before you install it.",
+      "tutorial.body": "Every feature, on the real app: what each switch does, what changes when it's on or off, and why it's there.",
+      "tutorial.fallback": "Download the tutorial video",
+      "tutorial.read_guide": "Prefer to read? Open the full written guide \u2192",
       "nav.guide": "User guide",
       "hero.eyebrow": "Free protection for the whole family",
       "hero.h1": "Protect your kids and family — from harmful websites and apps.",
@@ -838,6 +885,13 @@
       "nav.oss": "ওপেন সোর্স",
       "nav.help": "সহায়তা",
       "nav.download": "ডাউনলোড",
+      "nav.tutorial": "টিউটোরিয়াল",
+      "hero.watch_cta": "টিউটোরিয়াল দেখুন",
+      "tutorial.eyebrow": "আগে দেখুন \u00b7 ২ মিনিট ৫০ সেকেন্ড",
+      "tutorial.h2": "ইনস্টল করার আগেই দেখে নিন এটি ঠিক কী করে।",
+      "tutorial.body": "আসল অ্যাপে প্রতিটি ফিচার: কোন সুইচ কী করে, চালু বা বন্ধ করলে কী বদলায়, এবং কেন এটি আছে।",
+      "tutorial.fallback": "টিউটোরিয়াল ভিডিও ডাউনলোড করুন",
+      "tutorial.read_guide": "পড়তে চান? সম্পূর্ণ লিখিত নির্দেশিকা দেখুন \u2192",
       "nav.guide": "ব্যবহার নির্দেশিকা",
       "hero.eyebrow": "পুরো পরিবারের জন্য বিনামূল্যে সুরক্ষা",
       "hero.h1": "আপনার সন্তান ও পরিবারকে — ক্ষতিকর ওয়েবসাইট ও অ্যাপ থেকে রক্ষা করুন।",
@@ -939,6 +993,13 @@
       "nav.oss": "Código abierto",
       "nav.help": "Ayuda",
       "nav.download": "Descargar",
+      "nav.tutorial": "Tutorial",
+      "hero.watch_cta": "Ver el tutorial",
+      "tutorial.eyebrow": "Mira primero \u00b7 2 min 50 s",
+      "tutorial.h2": "Mira exactamente lo que hace, antes de instalarlo.",
+      "tutorial.body": "Cada función, en la app real: qué hace cada interruptor, qué cambia al activarlo o desactivarlo, y por qué está ahí.",
+      "tutorial.fallback": "Descargar el vídeo del tutorial",
+      "tutorial.read_guide": "¿Prefieres leer? Abre la guía completa \u2192",
       "nav.guide": "Guía de uso",
       "hero.eyebrow": "Protección gratuita para toda la familia",
       "hero.h1": "Protege a tus hijos y a tu familia — de sitios web y aplicaciones dañinos.",
@@ -1040,6 +1101,13 @@
       "nav.oss": "مفتوح المصدر",
       "nav.help": "مساعدة",
       "nav.download": "تنزيل",
+      "nav.tutorial": "شرح",
+      "hero.watch_cta": "شاهد الشرح",
+      "tutorial.eyebrow": "شاهد أولاً \u00b7 دقيقتان و50 ثانية",
+      "tutorial.h2": "شاهد ما يفعله بالضبط، قبل أن تثبّته.",
+      "tutorial.body": "كل ميزة في التطبيق الحقيقي: ماذا يفعل كل مفتاح، وما الذي يتغيّر عند تشغيله أو إيقافه، ولماذا هو موجود.",
+      "tutorial.fallback": "نزّل فيديو الشرح",
+      "tutorial.read_guide": "تفضّل القراءة؟ افتح الدليل الكامل \u2192",
       "nav.guide": "دليل الاستخدام",
       "hero.eyebrow": "حماية مجانية لجميع أفراد الأسرة",
       "hero.h1": "احمِ أطفالك وعائلتك — من المواقع والتطبيقات الضارة.",
