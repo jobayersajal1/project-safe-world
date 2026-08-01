@@ -182,24 +182,27 @@
       </svg>
       <span>Safe World</span>
     </a>
-    <a class="btn btn-accent" href="../#download">Download</a>
+    <select id="lang" aria-label="Language">
+      <option value="en">English</option>
+      <option value="bn">বাংলা</option>
+      <option value="es">Español</option>
+      <option value="ar">العربية</option>
+    </select>
+    <a class="btn btn-accent" href="../#download" data-i18n="g.dl">Download</a>
   </div>
 </header>
 
 <div class="wrap hero">
-  <span class="eyebrow">User guide · Android</span>
-  <h1>Every switch in Safe World, and what it actually does.</h1>
-  <p>
-    Each section below shows the real screen, what changes when you turn something on or off, and
-    why the feature exists. Open the ones you need — you don't have to read it in order.
-  </p>
+  <span class="eyebrow" data-i18n="g.eye1">User guide · Android</span>
+  <h1 data-i18n="g.h11">Every switch in Safe World, and what it actually does.</h1>
+  <p data-i18n="g.hero_sub">Each section below shows the real screen, what changes when you turn something on or off, and why the feature exists. Open the ones you need — you don't have to read it in order.</p>
 
   <div class="toolbar">
-    <button type="button" data-all="open">Expand all</button>
-    <button type="button" data-all="close">Collapse all</button>
+    <button type="button" data-all="open" data-i18n="g.btn1">Expand all</button>
+    <button type="button" data-all="close" data-i18n="g.btn2">Collapse all</button>
   </div>
 
-  <div class="note">
+  <div class="note" data-i18n-html="g.note1">
     <strong>One rule explains every prompt in this app:</strong> making protection
     <em>stronger</em> is always free — turning a category on, adding a site, blocking an app.
     Making it <em>weaker</em> costs your PIN. That's the whole design, and it's why there's no
@@ -211,12 +214,9 @@
 <div class="wrap" id="video">
   <section class="tutorial">
     <div class="tutorial-head">
-      <span class="eyebrow">Watch first · 3 min 33 s</span>
-      <h2>The whole app, narrated.</h2>
-      <p>
-        Every feature below, in order, with the real screens and a spoken explanation of what each
-        switch does and why. If you only have four minutes, watch this.
-      </p>
+      <span class="eyebrow" data-i18n="g.eye2">Watch first · 3 min 33 s</span>
+      <h2 data-i18n="g.h21">The whole app, narrated.</h2>
+      <p data-i18n="g.tut_sub">Every feature below, in order, with the real screens and a spoken explanation of what each switch does and why. If you only have four minutes, watch this.</p>
     </div>
     <video controls preload="none" playsinline poster="video/poster.jpg">
       <source src="video/safe-world-tutorial.mp4" type="video/mp4">
@@ -229,9 +229,9 @@
 <main class="wrap">
 
   <details class="step" open>
-    <summary><span class="num">1</span> First run: choose a PIN and save your recovery code</summary>
+    <summary data-i18n-html="g1.sum1"><span class="num">1</span> First run: choose a PIN and save your recovery code</summary>
     <div class="step-body">
-      <p class="lede">
+      <p class="lede" data-i18n="g1.lede1">
         Safe World asks for a PIN before anything else, so protection is never switched on with
         nothing guarding it. Immediately after, it shows a recovery code — the only way back in if
         you forget the PIN.
@@ -239,240 +239,240 @@
       <div class="shots">
         <figure>
           <img src="img/00-first-run-set-pin.png" alt="Choose a PIN screen with PIN and Confirm PIN fields" loading="lazy">
-          <figcaption><b>Choose a PIN.</b> At least 4 digits. You'll need it to turn protection off or unblock anything later.</figcaption>
+          <figcaption data-i18n-html="g1.cap1"><b>Choose a PIN.</b> At least 4 digits. You'll need it to turn protection off or unblock anything later.</figcaption>
         </figure>
         <figure>
           <img src="img/22-recovery-code.png" alt="Save your recovery code screen showing a 20-character code" loading="lazy">
-          <figcaption><b>Save your recovery code.</b> Shown once and never again — it's stored scrambled, so nobody can look it up. Write it down.</figcaption>
+          <figcaption data-i18n-html="g1.cap2"><b>Save your recovery code.</b> Shown once and never again — it's stored scrambled, so nobody can look it up. Write it down.</figcaption>
         </figure>
       </div>
       <dl class="facts">
-        <div class="fact"><dt>Purpose</dt><dd>Stops a moment of weakness from undoing your own setup. The PIN is friction you chose while thinking clearly.</dd></div>
-        <div class="fact"><dt>If you forget</dt><dd>Tap <b>Forgot your PIN?</b> on any prompt and enter the recovery code. That code is then used up, and a fresh one is issued.</dd></div>
-        <div class="fact"><dt>Lost both?</dt><dd>Only clearing the app's data resets it — which also wipes every setting and the uninstall friction.</dd></div>
+        <div class="fact"><dt data-i18n="g1.dt1">Purpose</dt><dd data-i18n="g1.dd1">Stops a moment of weakness from undoing your own setup. The PIN is friction you chose while thinking clearly.</dd></div>
+        <div class="fact"><dt data-i18n="g1.dt2">If you forget</dt><dd data-i18n-html="g1.dd2">Tap <b>Forgot your PIN?</b> on any prompt and enter the recovery code. That code is then used up, and a fresh one is issued.</dd></div>
+        <div class="fact"><dt data-i18n="g1.dt3">Lost both?</dt><dd data-i18n="g1.dd3">Only clearing the app's data resets it — which also wipes every setting and the uninstall friction.</dd></div>
       </dl>
     </div>
   </details>
 
   <details class="step">
-    <summary><span class="num">2</span> Turn protection on</summary>
+    <summary data-i18n-html="g2.sum1"><span class="num">2</span> Turn protection on</summary>
     <div class="step-body">
-      <p class="lede">
+      <p class="lede" data-i18n="g2.lede1">
         The single switch that starts and stops all website blocking. Android will ask once for VPN
         permission — that "VPN" runs entirely on your phone and connects to no server.
       </p>
       <div class="shots">
         <figure>
           <img src="img/01-home-protection-off.png" alt="Home screen with Protection switch off" loading="lazy">
-          <figcaption><span class="pill off">OFF</span> The card is grey and says plainly: <b>nothing is being blocked</b>.</figcaption>
+          <figcaption data-i18n-html="g2.cap1"><span class="pill off">OFF</span> The card is grey and says plainly: <b>nothing is being blocked</b>.</figcaption>
         </figure>
         <figure>
           <img src="img/02-home-protection-on.png" alt="Home screen with Protection on showing 4.4 million blocked" loading="lazy">
-          <figcaption><span class="pill on">ON</span> Turns purple and states the exact count — <b>4,430,965 sites</b>, updated automatically.</figcaption>
+          <figcaption data-i18n-html="g2.cap2"><span class="pill on">ON</span> Turns purple and states the exact count — <b>4,430,965 sites</b>, updated automatically.</figcaption>
         </figure>
       </div>
       <dl class="facts">
-        <div class="fact"><dt>Turning on</dt><dd>Free — one tap.</dd></div>
-        <div class="fact"><dt>Turning off</dt><dd><b>Asks for your PIN.</b></dd></div>
-        <div class="fact"><dt>Purpose</dt><dd>The card deliberately never claims protection while the switch is off. An app that says "4.4 million blocked" above a dead switch is the exact lie this one refuses to tell.</dd></div>
+        <div class="fact"><dt data-i18n="g2.dt1">Turning on</dt><dd data-i18n="g2.dd1">Free — one tap.</dd></div>
+        <div class="fact"><dt data-i18n="g2.dt2">Turning off</dt><dd data-i18n-html="g2.dd2"><b>Asks for your PIN.</b></dd></div>
+        <div class="fact"><dt data-i18n="g2.dt3">Purpose</dt><dd data-i18n="g2.dd3">The card deliberately never claims protection while the switch is off. An app that says "4.4 million blocked" above a dead switch is the exact lie this one refuses to tell.</dd></div>
       </dl>
     </div>
   </details>
 
   <details class="step">
-    <summary><span class="num">3</span> See it working: bad site blocked, normal site fine</summary>
+    <summary data-i18n-html="g3.sum1"><span class="num">3</span> See it working: bad site blocked, normal site fine</summary>
     <div class="step-body">
-      <p class="lede">
+      <p class="lede" data-i18n="g3.lede1">
         Blocking happens at the lookup stage, so a blocked site never loads at all — you get the
         browser's own "can't be reached" page, and none of its content is ever fetched.
       </p>
       <div class="shots">
         <figure>
           <img src="img/30-wikipedia-works.png" alt="Wikipedia article loading normally with protection on" loading="lazy">
-          <figcaption><b>Wikipedia loads normally.</b> Ordinary browsing is untouched — this is not a whitelist.</figcaption>
+          <figcaption data-i18n-html="g3.cap1"><b>Wikipedia loads normally.</b> Ordinary browsing is untouched — this is not a whitelist.</figcaption>
         </figure>
         <figure>
           <img src="img/31-blocked-site.png" alt="Browser showing site cannot be reached for a blocked real-money card game site" loading="lazy">
-          <figcaption><b>A real-money card-game site is refused</b> — <code>DNS_PROBE_FINISHED_NXDOMAIN</code>. Nothing from the site is downloaded or shown.</figcaption>
+          <figcaption data-i18n-html="g3.cap2"><b>A real-money card-game site is refused</b> — <code>DNS_PROBE_FINISHED_NXDOMAIN</code>. Nothing from the site is downloaded or shown.</figcaption>
         </figure>
       </div>
       <dl class="facts">
-        <div class="fact"><dt>Why it looks like an error</dt><dd>Because it is one, on purpose: the phone is told the address doesn't exist. That's cheaper and more private than intercepting pages.</dd></div>
-        <div class="fact"><dt>Covers</dt><dd>Every app and browser on the phone, not just Chrome.</dd></div>
-        <div class="fact"><dt>Limits</dt><dd>Sites reached by raw IP, or apps using their own encrypted lookups, can slip past. <b>Block apps</b> (section 6) closes that.</dd></div>
+        <div class="fact"><dt data-i18n="g3.dt1">Why it looks like an error</dt><dd data-i18n="g3.dd1">Because it is one, on purpose: the phone is told the address doesn't exist. That's cheaper and more private than intercepting pages.</dd></div>
+        <div class="fact"><dt data-i18n="g3.dt2">Covers</dt><dd data-i18n="g3.dd2">Every app and browser on the phone, not just Chrome.</dd></div>
+        <div class="fact"><dt data-i18n="g3.dt3">Limits</dt><dd data-i18n-html="g3.dd3">Sites reached by raw IP, or apps using their own encrypted lookups, can slip past. <b>Block apps</b> (section 6) closes that.</dd></div>
       </dl>
     </div>
   </details>
 
   <details class="step">
-    <summary><span class="num">4</span> Block more: social media, entertainment, games</summary>
+    <summary data-i18n-html="g4.sum1"><span class="num">4</span> Block more: social media, entertainment, games</summary>
     <div class="step-body">
-      <p class="lede">
+      <p class="lede" data-i18n-html="g4.lede1">
         Three optional categories, all off by default. These are the ones you add because you want
         them — so switching one <em>on</em> never asks for anything.
       </p>
       <div class="shots">
         <figure>
           <img src="img/33-social-toggled-on.png" alt="Social media websites toggle switched on" loading="lazy">
-          <figcaption><span class="pill on">ON</span> The blocked count jumps immediately, and a matching "also block the apps" row appears.</figcaption>
+          <figcaption data-i18n-html="g4.cap1"><span class="pill on">ON</span> The blocked count jumps immediately, and a matching "also block the apps" row appears.</figcaption>
         </figure>
         <figure>
           <img src="img/32-facebook-before.png" alt="Facebook login page loading before the toggle" loading="lazy">
-          <figcaption><b>Before:</b> with the switch off, Facebook opens normally.</figcaption>
+          <figcaption data-i18n-html="g4.cap2"><b>Before:</b> with the switch off, Facebook opens normally.</figcaption>
         </figure>
         <figure>
           <img src="img/34-facebook-after.png" alt="Facebook refusing to load after the toggle" loading="lazy">
-          <figcaption><b>After:</b> same phone, same browser, switch on — refused.</figcaption>
+          <figcaption data-i18n-html="g4.cap3"><b>After:</b> same phone, same browser, switch on — refused.</figcaption>
         </figure>
       </div>
       <dl class="facts">
-        <div class="fact"><dt>Turning on</dt><dd>Free.</dd></div>
-        <div class="fact"><dt>Turning off</dt><dd><b>Asks for your PIN.</b></dd></div>
-        <div class="fact"><dt>Honest warning</dt><dd>The Facebook &amp; Instagram app row says out loud that it also blocks WhatsApp and Messenger — they run on the same servers, and there is no way to separate them.</dd></div>
+        <div class="fact"><dt data-i18n="g4.dt1">Turning on</dt><dd data-i18n="g4.dd1">Free.</dd></div>
+        <div class="fact"><dt data-i18n="g4.dt2">Turning off</dt><dd data-i18n-html="g4.dd2"><b>Asks for your PIN.</b></dd></div>
+        <div class="fact"><dt data-i18n="g4.dt3">Honest warning</dt><dd data-i18n="g4.dd3">The Facebook &amp; Instagram app row says out loud that it also blocks WhatsApp and Messenger — they run on the same servers, and there is no way to separate them.</dd></div>
       </dl>
     </div>
   </details>
 
   <details class="step">
-    <summary><span class="num">5</span> Add your own websites</summary>
+    <summary data-i18n-html="g5.sum1"><span class="num">5</span> Add your own websites</summary>
     <div class="step-body">
-      <p class="lede">Anything the categories don't cover, blocked by name.</p>
+      <p class="lede" data-i18n="g5.lede1">Anything the categories don't cover, blocked by name.</p>
       <div class="shots">
         <figure>
           <img src="img/08-add-websites.png" alt="Add websites field with comma-separated domain entry and Save button" loading="lazy">
-          <figcaption><b>Type domains separated by commas.</b> Subdomains are included automatically — <code>example.com</code> also covers <code>shop.example.com</code>.</figcaption>
+          <figcaption data-i18n-html="g5.cap1"><b>Type domains separated by commas.</b> Subdomains are included automatically — <code>example.com</code> also covers <code>shop.example.com</code>.</figcaption>
         </figure>
       </div>
       <dl class="facts">
-        <div class="fact"><dt>Adding</dt><dd>Free — saving a list that keeps everything it had goes straight through.</dd></div>
-        <div class="fact"><dt>Removing</dt><dd><b>Asks for your PIN</b>, because saving a shorter list is a weakening.</dd></div>
+        <div class="fact"><dt data-i18n="g5.dt1">Adding</dt><dd data-i18n="g5.dd1">Free — saving a list that keeps everything it had goes straight through.</dd></div>
+        <div class="fact"><dt data-i18n="g5.dt2">Removing</dt><dd data-i18n-html="g5.dd2"><b>Asks for your PIN</b>, because saving a shorter list is a weakening.</dd></div>
       </dl>
     </div>
   </details>
 
   <details class="step">
-    <summary><span class="num">6</span> Block apps, not just their websites</summary>
+    <summary data-i18n-html="g6.sum1"><span class="num">6</span> Block apps, not just their websites</summary>
     <div class="step-body">
-      <p class="lede">
+      <p class="lede" data-i18n="g6.lede1">
         Some apps never make ordinary web lookups, so blocking their website does nothing. This
         stops the apps themselves from reaching the internet.
       </p>
       <div class="shots">
         <figure>
           <img src="img/09-block-apps.png" alt="Block apps section listing social media, entertainment and games and betting apps" loading="lazy">
-          <figcaption><b>Ready-made groups</b> — social media, entertainment, and games &amp; betting (Free Fire, PUBG, Ludo, Teen Patti, Dream11), plus <b>Choose apps</b> to pick your own.</figcaption>
+          <figcaption data-i18n-html="g6.cap1"><b>Ready-made groups</b> — social media, entertainment, and games &amp; betting (Free Fire, PUBG, Ludo, Teen Patti, Dream11), plus <b>Choose apps</b> to pick your own.</figcaption>
         </figure>
       </div>
       <dl class="facts">
-        <div class="fact"><dt>The trade-off</dt><dd>Safe World must check <em>every</em> connection the phone makes, not just web lookups. That uses more battery, and the app asks before turning it on.</dd></div>
-        <div class="fact"><dt>Still private</dt><dd>All checking happens on the phone. Nothing is sent anywhere.</dd></div>
-        <div class="fact"><dt>Never blocked</dt><dd>Messaging apps, so a blocked phone can still reach family.</dd></div>
-        <div class="fact"><dt>Unblocking</dt><dd><b>Asks for your PIN.</b></dd></div>
+        <div class="fact"><dt data-i18n="g6.dt1">The trade-off</dt><dd data-i18n-html="g6.dd1">Safe World must check <em>every</em> connection the phone makes, not just web lookups. That uses more battery, and the app asks before turning it on.</dd></div>
+        <div class="fact"><dt data-i18n="g6.dt2">Still private</dt><dd data-i18n="g6.dd2">All checking happens on the phone. Nothing is sent anywhere.</dd></div>
+        <div class="fact"><dt data-i18n="g6.dt3">Never blocked</dt><dd data-i18n="g6.dd3">Messaging apps, so a blocked phone can still reach family.</dd></div>
+        <div class="fact"><dt data-i18n="g6.dt4">Unblocking</dt><dd data-i18n-html="g6.dd4"><b>Asks for your PIN.</b></dd></div>
       </dl>
     </div>
   </details>
 
   <details class="step">
-    <summary><span class="num">7</span> Make protection stick (always-on VPN)</summary>
+    <summary data-i18n-html="g7.sum1"><span class="num">7</span> Make protection stick (always-on VPN)</summary>
     <div class="step-body">
-      <p class="lede">
+      <p class="lede" data-i18n="g7.lede1">
         Android allows only one VPN at a time — so installing any other VPN app silently switches
         Safe World off. This is the only way to prevent that, and only you can turn it on.
       </p>
       <div class="shots">
         <figure>
           <img src="img/13-always-on-vpn.png" alt="Make protection stick section explaining always-on VPN, plus uninstall protection below" loading="lazy">
-          <figcaption><b>Open VPN settings</b>, tap the gear next to Safe World, then turn on <b>both</b> switches: <em>Always-on VPN</em> and <em>Block connections without VPN</em>.</figcaption>
+          <figcaption data-i18n-html="g7.cap1"><b>Open VPN settings</b>, tap the gear next to Safe World, then turn on <b>both</b> switches: <em>Always-on VPN</em> and <em>Block connections without VPN</em>.</figcaption>
         </figure>
       </div>
       <dl class="facts">
-        <div class="fact"><dt>What it does</dt><dd>Android itself starts Safe World, and refuses to pass any traffic while it isn't running.</dd></div>
-        <div class="fact"><dt>Why it's outside the app</dt><dd>Android deliberately won't let an app grant this to itself — it has to be you, in system settings.</dd></div>
-        <div class="fact"><dt>If it happens anyway</dt><dd>Safe World notices, warns you it stopped filtering, and names the other VPN as the likely cause.</dd></div>
+        <div class="fact"><dt data-i18n="g7.dt1">What it does</dt><dd data-i18n="g7.dd1">Android itself starts Safe World, and refuses to pass any traffic while it isn't running.</dd></div>
+        <div class="fact"><dt data-i18n="g7.dt2">Why it's outside the app</dt><dd data-i18n="g7.dd2">Android deliberately won't let an app grant this to itself — it has to be you, in system settings.</dd></div>
+        <div class="fact"><dt data-i18n="g7.dt3">If it happens anyway</dt><dd data-i18n="g7.dd3">Safe World notices, warns you it stopped filtering, and names the other VPN as the likely cause.</dd></div>
       </dl>
     </div>
   </details>
 
   <details class="step">
-    <summary><span class="num">8</span> Uninstall protection</summary>
+    <summary data-i18n-html="g8.sum1"><span class="num">8</span> Uninstall protection</summary>
     <div class="step-body">
-      <p class="lede">Makes Safe World harder to delete in a moment of temptation.</p>
+      <p class="lede" data-i18n="g8.lede1">Makes Safe World harder to delete in a moment of temptation.</p>
       <div class="shots">
         <figure>
           <img src="img/14-device-admin-prompt.png" alt="Android Activate device admin app prompt for Safe World" loading="lazy">
-          <figcaption><b>Android's own confirmation.</b> Note what it says: Safe World asks for <em>no other permission</em> — it cannot lock, wipe, or monitor the device.</figcaption>
+          <figcaption data-i18n-html="g8.cap1"><b>Android's own confirmation.</b> Note what it says: Safe World asks for <em>no other permission</em> — it cannot lock, wipe, or monitor the device.</figcaption>
         </figure>
       </div>
       <dl class="facts">
-        <div class="fact"><dt>What it does</dt><dd>Registers as a device admin, so Android refuses to uninstall the app while it's on.</dd></div>
-        <div class="fact"><dt>Honest limit</dt><dd>It is <b>friction, not a lock</b> — the app itself says so. It can still be removed from Android's settings.</dd></div>
-        <div class="fact"><dt>Turning off</dt><dd><b>Asks for your PIN</b>, and you're warned if it ever gets switched off without you.</dd></div>
+        <div class="fact"><dt data-i18n="g8.dt1">What it does</dt><dd data-i18n="g8.dd1">Registers as a device admin, so Android refuses to uninstall the app while it's on.</dd></div>
+        <div class="fact"><dt data-i18n="g8.dt2">Honest limit</dt><dd data-i18n-html="g8.dd2">It is <b>friction, not a lock</b> — the app itself says so. It can still be removed from Android's settings.</dd></div>
+        <div class="fact"><dt data-i18n="g8.dt3">Turning off</dt><dd data-i18n-html="g8.dd3"><b>Asks for your PIN</b>, and you're warned if it ever gets switched off without you.</dd></div>
       </dl>
     </div>
   </details>
 
   <details class="step">
-    <summary><span class="num">9</span> What the PIN actually gates</summary>
+    <summary data-i18n-html="g9.sum1"><span class="num">9</span> What the PIN actually gates</summary>
     <div class="step-body">
-      <p class="lede">
+      <p class="lede" data-i18n="g9.lede1">
         The same prompt appears everywhere something would reduce protection — and nowhere else.
       </p>
       <div class="shots">
         <figure>
           <img src="img/20-pin-prompt.png" alt="Turn off protection PIN prompt with Forgot your PIN link" loading="lazy">
-          <figcaption><b>Every weakening funnels through this one dialog</b>, so no screen can accidentally skip the gate.</figcaption>
+          <figcaption data-i18n-html="g9.cap1"><b>Every weakening funnels through this one dialog</b>, so no screen can accidentally skip the gate.</figcaption>
         </figure>
       </div>
       <dl class="facts">
-        <div class="fact"><dt>Asks for PIN</dt><dd>Turning protection off · turning a category off · unblocking apps · removing sites you added · changing what's always allowed · disabling uninstall protection.</dd></div>
-        <div class="fact"><dt>Never asks</dt><dd>Anything that blocks <em>more</em>.</dd></div>
-        <div class="fact"><dt>Wrong guesses</dt><dd>Too many attempts locks the prompt for a while. The recovery code is exempt — being locked out is exactly when you'd need it.</dd></div>
+        <div class="fact"><dt data-i18n="g9.dt1">Asks for PIN</dt><dd data-i18n="g9.dd1">Turning protection off · turning a category off · unblocking apps · removing sites you added · changing what's always allowed · disabling uninstall protection.</dd></div>
+        <div class="fact"><dt data-i18n="g9.dt2">Never asks</dt><dd data-i18n-html="g9.dd2">Anything that blocks <em>more</em>.</dd></div>
+        <div class="fact"><dt data-i18n="g9.dt3">Wrong guesses</dt><dd data-i18n="g9.dd3">Too many attempts locks the prompt for a while. The recovery code is exempt — being locked out is exactly when you'd need it.</dd></div>
       </dl>
     </div>
   </details>
 
   <details class="step">
-    <summary><span class="num">10</span> Settings: language, PIN, always-allow, updates</summary>
+    <summary data-i18n-html="g10.sum1"><span class="num">10</span> Settings: language, PIN, always-allow, updates</summary>
     <div class="step-body">
-      <p class="lede">The second tab. Everything here is housekeeping rather than blocking.</p>
+      <p class="lede" data-i18n="g10.lede1">The second tab. Everything here is housekeeping rather than blocking.</p>
       <div class="shots">
         <figure>
           <img src="img/15-settings-top.png" alt="Settings screen showing language options and PIN section" loading="lazy">
-          <figcaption><b>Language</b> (English, বাংলা, Español, العربية, or follow the phone) and <b>Change PIN</b> / <b>new recovery code</b>.</figcaption>
+          <figcaption data-i18n-html="g10.cap1"><b>Language</b> (English, বাংলা, Español, العربية, or follow the phone) and <b>Change PIN</b> / <b>new recovery code</b>.</figcaption>
         </figure>
         <figure>
           <img src="img/16-settings-mid.png" alt="Always allow list and rate the app section" loading="lazy">
-          <figcaption><b>Always allow</b> — one domain per line. This <em>wins over everything</em>, including the categories, so it's PIN-gated.</figcaption>
+          <figcaption data-i18n-html="g10.cap2"><b>Always allow</b> — one domain per line. This <em>wins over everything</em>, including the categories, so it's PIN-gated.</figcaption>
         </figure>
         <figure>
           <img src="img/17-settings-bottom.png" alt="App version section showing an available update" loading="lazy">
-          <figcaption><b>App version.</b> Checks for a newer build and installs it, with Android asking permission first.</figcaption>
+          <figcaption data-i18n-html="g10.cap3"><b>App version.</b> Checks for a newer build and installs it, with Android asking permission first.</figcaption>
         </figure>
       </div>
     </div>
   </details>
 
   <details class="step">
-    <summary><span class="num">11</span> Optional: download the extra lists</summary>
+    <summary data-i18n-html="g11.sum1"><span class="num">11</span> Optional: download the extra lists</summary>
     <div class="step-body">
-      <p class="lede">
+      <p class="lede" data-i18n="g11.lede1">
         Offered once, on first run. Some blocklists can't legally be bundled inside the app, so your
         device fetches them from the people who maintain them.
       </p>
       <div class="shots">
         <figure>
           <img src="img/23-extra-lists-offer.png" alt="Block even more sites offer screen" loading="lazy">
-          <figcaption><b>About 927 thousand more sites, ~18 MB</b>, downloaded over Wi-Fi when possible. <b>Not now</b> is a real answer — the app works fully without them.</figcaption>
+          <figcaption data-i18n-html="g11.cap1"><b>About 927 thousand more sites, ~18 MB</b>, downloaded over Wi-Fi when possible. <b>Not now</b> is a real answer — the app works fully without them.</figcaption>
         </figure>
       </div>
       <dl class="facts">
-        <div class="fact"><dt>Bundled lists</dt><dd>Work offline, forever, with no network call at all.</dd></div>
-        <div class="fact"><dt>What's sent</dt><dd>Nothing about you. Your device downloads a list; it never uploads what you browse.</dd></div>
+        <div class="fact"><dt data-i18n="g11.dt1">Bundled lists</dt><dd data-i18n="g11.dd1">Work offline, forever, with no network call at all.</dd></div>
+        <div class="fact"><dt data-i18n="g11.dt2">What's sent</dt><dd data-i18n="g11.dd2">Nothing about you. Your device downloads a list; it never uploads what you browse.</dd></div>
       </dl>
     </div>
   </details>
 
-  <div class="note">
+  <div class="note" data-i18n-html="g11.note1">
     <strong>Screenshots were taken on an Android 15 device running Safe World 0.4.1.</strong>
     Wording and counts move as the lists grow, so your numbers will differ. Stuck, or something
     blocked that shouldn't be? <a href="../#help">Get in touch</a>.
@@ -487,6 +487,484 @@
 <script>
 (function () {
   "use strict";
+
+  var translations = {
+  "en": {
+    "g.h11": "Every switch in Safe World, and what it actually does.",
+    "g.h21": "The whole app, narrated.",
+    "g.eye1": "User guide · Android",
+    "g.eye2": "Watch first · 3 min 33 s",
+    "g.note1": "<strong>One rule explains every prompt in this app:</strong> making protection <em>stronger</em> is always free — turning a category on, adding a site, blocking an app. Making it <em>weaker</em> costs your PIN. That's the whole design, and it's why there's no switch at all for the scam, real-money-gaming, and sensitive-content lists: installing Safe World is the decision to block those.",
+    "g.btn1": "Expand all",
+    "g.btn2": "Collapse all",
+    "g1.sum1": "<span class=\"num\">1</span> First run: choose a PIN and save your recovery code",
+    "g1.lede1": "Safe World asks for a PIN before anything else, so protection is never switched on with nothing guarding it. Immediately after, it shows a recovery code — the only way back in if you forget the PIN.",
+    "g1.cap1": "<b>Choose a PIN.</b> At least 4 digits. You'll need it to turn protection off or unblock anything later.",
+    "g1.cap2": "<b>Save your recovery code.</b> Shown once and never again — it's stored scrambled, so nobody can look it up. Write it down.",
+    "g1.dt1": "Purpose",
+    "g1.dt2": "If you forget",
+    "g1.dt3": "Lost both?",
+    "g1.dd1": "Stops a moment of weakness from undoing your own setup. The PIN is friction you chose while thinking clearly.",
+    "g1.dd2": "Tap <b>Forgot your PIN?</b> on any prompt and enter the recovery code. That code is then used up, and a fresh one is issued.",
+    "g1.dd3": "Only clearing the app's data resets it — which also wipes every setting and the uninstall friction.",
+    "g2.sum1": "<span class=\"num\">2</span> Turn protection on",
+    "g2.lede1": "The single switch that starts and stops all website blocking. Android will ask once for VPN permission — that \"VPN\" runs entirely on your phone and connects to no server.",
+    "g2.cap1": "<span class=\"pill off\">OFF</span> The card is grey and says plainly: <b>nothing is being blocked</b>.",
+    "g2.cap2": "<span class=\"pill on\">ON</span> Turns purple and states the exact count — <b>4,430,965 sites</b>, updated automatically.",
+    "g2.dt1": "Turning on",
+    "g2.dt2": "Turning off",
+    "g2.dt3": "Purpose",
+    "g2.dd1": "Free — one tap.",
+    "g2.dd2": "<b>Asks for your PIN.</b>",
+    "g2.dd3": "The card deliberately never claims protection while the switch is off. An app that says \"4.4 million blocked\" above a dead switch is the exact lie this one refuses to tell.",
+    "g3.sum1": "<span class=\"num\">3</span> See it working: bad site blocked, normal site fine",
+    "g3.lede1": "Blocking happens at the lookup stage, so a blocked site never loads at all — you get the browser's own \"can't be reached\" page, and none of its content is ever fetched.",
+    "g3.cap1": "<b>Wikipedia loads normally.</b> Ordinary browsing is untouched — this is not a whitelist.",
+    "g3.cap2": "<b>A real-money card-game site is refused</b> — <code>DNS_PROBE_FINISHED_NXDOMAIN</code>. Nothing from the site is downloaded or shown.",
+    "g3.dt1": "Why it looks like an error",
+    "g3.dt2": "Covers",
+    "g3.dt3": "Limits",
+    "g3.dd1": "Because it is one, on purpose: the phone is told the address doesn't exist. That's cheaper and more private than intercepting pages.",
+    "g3.dd2": "Every app and browser on the phone, not just Chrome.",
+    "g3.dd3": "Sites reached by raw IP, or apps using their own encrypted lookups, can slip past. <b>Block apps</b> (section 6) closes that.",
+    "g4.sum1": "<span class=\"num\">4</span> Block more: social media, entertainment, games",
+    "g4.lede1": "Three optional categories, all off by default. These are the ones you add because you want them — so switching one <em>on</em> never asks for anything.",
+    "g4.cap1": "<span class=\"pill on\">ON</span> The blocked count jumps immediately, and a matching \"also block the apps\" row appears.",
+    "g4.cap2": "<b>Before:</b> with the switch off, Facebook opens normally.",
+    "g4.cap3": "<b>After:</b> same phone, same browser, switch on — refused.",
+    "g4.dt1": "Turning on",
+    "g4.dt2": "Turning off",
+    "g4.dt3": "Honest warning",
+    "g4.dd1": "Free.",
+    "g4.dd2": "<b>Asks for your PIN.</b>",
+    "g4.dd3": "The Facebook &amp; Instagram app row says out loud that it also blocks WhatsApp and Messenger — they run on the same servers, and there is no way to separate them.",
+    "g5.sum1": "<span class=\"num\">5</span> Add your own websites",
+    "g5.lede1": "Anything the categories don't cover, blocked by name.",
+    "g5.cap1": "<b>Type domains separated by commas.</b> Subdomains are included automatically — <code>example.com</code> also covers <code>shop.example.com</code>.",
+    "g5.dt1": "Adding",
+    "g5.dt2": "Removing",
+    "g5.dd1": "Free — saving a list that keeps everything it had goes straight through.",
+    "g5.dd2": "<b>Asks for your PIN</b>, because saving a shorter list is a weakening.",
+    "g6.sum1": "<span class=\"num\">6</span> Block apps, not just their websites",
+    "g6.lede1": "Some apps never make ordinary web lookups, so blocking their website does nothing. This stops the apps themselves from reaching the internet.",
+    "g6.cap1": "<b>Ready-made groups</b> — social media, entertainment, and games &amp; betting (Free Fire, PUBG, Ludo, Teen Patti, Dream11), plus <b>Choose apps</b> to pick your own.",
+    "g6.dt1": "The trade-off",
+    "g6.dt2": "Still private",
+    "g6.dt3": "Never blocked",
+    "g6.dt4": "Unblocking",
+    "g6.dd1": "Safe World must check <em>every</em> connection the phone makes, not just web lookups. That uses more battery, and the app asks before turning it on.",
+    "g6.dd2": "All checking happens on the phone. Nothing is sent anywhere.",
+    "g6.dd3": "Messaging apps, so a blocked phone can still reach family.",
+    "g6.dd4": "<b>Asks for your PIN.</b>",
+    "g7.sum1": "<span class=\"num\">7</span> Make protection stick (always-on VPN)",
+    "g7.lede1": "Android allows only one VPN at a time — so installing any other VPN app silently switches Safe World off. This is the only way to prevent that, and only you can turn it on.",
+    "g7.cap1": "<b>Open VPN settings</b>, tap the gear next to Safe World, then turn on <b>both</b> switches: <em>Always-on VPN</em> and <em>Block connections without VPN</em>.",
+    "g7.dt1": "What it does",
+    "g7.dt2": "Why it's outside the app",
+    "g7.dt3": "If it happens anyway",
+    "g7.dd1": "Android itself starts Safe World, and refuses to pass any traffic while it isn't running.",
+    "g7.dd2": "Android deliberately won't let an app grant this to itself — it has to be you, in system settings.",
+    "g7.dd3": "Safe World notices, warns you it stopped filtering, and names the other VPN as the likely cause.",
+    "g8.sum1": "<span class=\"num\">8</span> Uninstall protection",
+    "g8.lede1": "Makes Safe World harder to delete in a moment of temptation.",
+    "g8.cap1": "<b>Android's own confirmation.</b> Note what it says: Safe World asks for <em>no other permission</em> — it cannot lock, wipe, or monitor the device.",
+    "g8.dt1": "What it does",
+    "g8.dt2": "Honest limit",
+    "g8.dt3": "Turning off",
+    "g8.dd1": "Registers as a device admin, so Android refuses to uninstall the app while it's on.",
+    "g8.dd2": "It is <b>friction, not a lock</b> — the app itself says so. It can still be removed from Android's settings.",
+    "g8.dd3": "<b>Asks for your PIN</b>, and you're warned if it ever gets switched off without you.",
+    "g9.sum1": "<span class=\"num\">9</span> What the PIN actually gates",
+    "g9.lede1": "The same prompt appears everywhere something would reduce protection — and nowhere else.",
+    "g9.cap1": "<b>Every weakening funnels through this one dialog</b>, so no screen can accidentally skip the gate.",
+    "g9.dt1": "Asks for PIN",
+    "g9.dt2": "Never asks",
+    "g9.dt3": "Wrong guesses",
+    "g9.dd1": "Turning protection off · turning a category off · unblocking apps · removing sites you added · changing what's always allowed · disabling uninstall protection.",
+    "g9.dd2": "Anything that blocks <em>more</em>.",
+    "g9.dd3": "Too many attempts locks the prompt for a while. The recovery code is exempt — being locked out is exactly when you'd need it.",
+    "g10.sum1": "<span class=\"num\">10</span> Settings: language, PIN, always-allow, updates",
+    "g10.lede1": "The second tab. Everything here is housekeeping rather than blocking.",
+    "g10.cap1": "<b>Language</b> (English, বাংলা, Español, العربية, or follow the phone) and <b>Change PIN</b> / <b>new recovery code</b>.",
+    "g10.cap2": "<b>Always allow</b> — one domain per line. This <em>wins over everything</em>, including the categories, so it's PIN-gated.",
+    "g10.cap3": "<b>App version.</b> Checks for a newer build and installs it, with Android asking permission first.",
+    "g11.sum1": "<span class=\"num\">11</span> Optional: download the extra lists",
+    "g11.lede1": "Offered once, on first run. Some blocklists can't legally be bundled inside the app, so your device fetches them from the people who maintain them.",
+    "g11.cap1": "<b>About 927 thousand more sites, ~18 MB</b>, downloaded over Wi-Fi when possible. <b>Not now</b> is a real answer — the app works fully without them.",
+    "g11.dt1": "Bundled lists",
+    "g11.dt2": "What's sent",
+    "g11.dd1": "Work offline, forever, with no network call at all.",
+    "g11.dd2": "Nothing about you. Your device downloads a list; it never uploads what you browse.",
+    "g11.note1": "<strong>Screenshots were taken on an Android 15 device running Safe World 0.4.1.</strong> Wording and counts move as the lists grow, so your numbers will differ. Stuck, or something blocked that shouldn't be? <a href=\"../#help\">Get in touch</a>.",
+    "g.hero_sub": "Each section below shows the real screen, what changes when you turn something on or off, and why the feature exists. Open the ones you need — you don't have to read it in order.",
+    "g.tut_sub": "Every feature below, in order, with the real screens and a spoken explanation of what each switch does and why. If you only have four minutes, watch this.",
+    "g.dl": "Download"
+  },
+  "bn": {
+    "g.h11": "Safe World-এর প্রতিটি সুইচ, এবং সেটি আসলে কী করে।",
+    "g.h21": "পুরো অ্যাপ, বর্ণনাসহ।",
+    "g.eye1": "ব্যবহার নির্দেশিকা · Android",
+    "g.eye2": "আগে দেখুন · ৩ মিনিট ৩৩ সেকেন্ড",
+    "g.note1": "<strong>একটি নিয়মেই এই অ্যাপের প্রতিটি প্রম্পট ব্যাখ্যা হয়ে যায়:</strong> সুরক্ষা <em>আরও শক্ত</em> করা সবসময় বিনামূল্যে — একটি ক্যাটাগরি চালু করা, একটি সাইট যোগ করা, একটি অ্যাপ ব্লক করা। <em>দুর্বল</em> করতে গেলে আপনার PIN লাগে। এটাই পুরো নকশা, আর এ কারণেই স্ক্যাম, রিয়েল-মানি গেমিং এবং স্পর্শকাতর কনটেন্ট তালিকার জন্য কোনো সুইচই নেই: Safe World ইনস্টল করাই সেগুলো ব্লক করার সিদ্ধান্ত।",
+    "g.btn1": "সব খুলুন",
+    "g.btn2": "সব বন্ধ করুন",
+    "g.hero_sub": "নিচের প্রতিটি অংশে আসল স্ক্রিন দেখানো হয়েছে, কিছু চালু বা বন্ধ করলে কী বদলায়, এবং ফিচারটি কেন আছে। যেগুলো দরকার শুধু সেগুলোই খুলুন — ক্রম অনুযায়ী পড়ার দরকার নেই।",
+    "g.tut_sub": "নিচের প্রতিটি ফিচার, ক্রম অনুযায়ী, আসল স্ক্রিন এবং প্রতিটি সুইচ কী করে ও কেন করে তার মুখে বলা ব্যাখ্যাসহ। হাতে মাত্র চার মিনিট থাকলে এটিই দেখুন।",
+    "g1.sum1": "<span class=\"num\">1</span> প্রথম চালু: একটি PIN বাছুন এবং রিকভারি কোড সংরক্ষণ করুন",
+    "g1.lede1": "Safe World সবার আগে একটি PIN চায়, যাতে সুরক্ষা কখনো পাহারাবিহীন অবস্থায় চালু না হয়। ঠিক তার পরেই একটি রিকভারি কোড দেখায় — PIN ভুলে গেলে ফিরে আসার একমাত্র পথ।",
+    "g1.cap1": "<b>একটি PIN বাছুন।</b> কমপক্ষে ৪ সংখ্যা। সুরক্ষা বন্ধ করতে বা পরে কিছু আনব্লক করতে এটি লাগবে।",
+    "g1.cap2": "<b>রিকভারি কোড সংরক্ষণ করুন।</b> একবারই দেখানো হয়, আর কখনো নয় — এটি এলোমেলো করে সংরক্ষিত, তাই কেউ দেখে নিতে পারে না। লিখে রাখুন।",
+    "g1.dt1": "উদ্দেশ্য",
+    "g1.dt2": "ভুলে গেলে",
+    "g1.dt3": "দুটোই হারালে?",
+    "g1.dd1": "দুর্বল মুহূর্তে নিজের সেটআপ নিজেই ভেঙে ফেলা ঠেকায়। PIN হলো সেই বাধা যা আপনি স্পষ্ট মাথায় থাকতে বেছে নিয়েছিলেন।",
+    "g1.dd2": "যেকোনো প্রম্পটে <b>PIN ভুলে গেছেন?</b> চাপুন এবং রিকভারি কোড দিন। সেই কোডটি তখন ব্যবহৃত হয়ে যায়, এবং একটি নতুন কোড দেওয়া হয়।",
+    "g1.dd3": "শুধু অ্যাপের ডেটা মুছলেই এটি রিসেট হয় — যা প্রতিটি সেটিং এবং আনইনস্টল বাধাও মুছে দেয়।",
+    "g2.sum1": "<span class=\"num\">2</span> সুরক্ষা চালু করুন",
+    "g2.lede1": "একটিমাত্র সুইচ যা সব ওয়েবসাইট ব্লকিং চালু ও বন্ধ করে। Android একবার VPN অনুমতি চাইবে — সেই \"VPN\" পুরোপুরি আপনার ফোনেই চলে এবং কোনো সার্ভারে সংযোগ করে না।",
+    "g2.cap1": "<span class=\"pill off\">OFF</span> কার্ডটি ধূসর এবং স্পষ্ট করে বলে: <b>কিছুই ব্লক করা হচ্ছে না</b>।",
+    "g2.cap2": "<span class=\"pill on\">ON</span> বেগুনি হয়ে যায় এবং সঠিক সংখ্যা জানায় — <b>৪,৪৩০,৯৬৫টি সাইট</b>, স্বয়ংক্রিয়ভাবে হালনাগাদ।",
+    "g2.dt1": "চালু করা",
+    "g2.dt2": "বন্ধ করা",
+    "g2.dt3": "উদ্দেশ্য",
+    "g2.dd1": "বিনামূল্যে — এক চাপ।",
+    "g2.dd2": "<b>আপনার PIN চায়।</b>",
+    "g2.dd3": "সুইচ বন্ধ থাকা অবস্থায় কার্ডটি ইচ্ছাকৃতভাবে কখনোই সুরক্ষার দাবি করে না। যে অ্যাপ একটি মৃত সুইচের উপরে \"৪.৪ মিলিয়ন ব্লক করা\" লেখে, সেটাই ঠিক সেই মিথ্যা যা এই অ্যাপ বলতে অস্বীকার করে।",
+    "g3.sum1": "<span class=\"num\">3</span> কাজ করতে দেখুন: খারাপ সাইট ব্লক, স্বাভাবিক সাইট ঠিক",
+    "g3.lede1": "ব্লকিং হয় লুকআপ পর্যায়ে, তাই ব্লক করা সাইট কখনো লোডই হয় না — আপনি ব্রাউজারের নিজস্ব \"পৌঁছানো যাচ্ছে না\" পাতা দেখেন, এবং সাইটের কোনো কনটেন্টই আনা হয় না।",
+    "g3.cap1": "<b>Wikipedia স্বাভাবিকভাবেই খোলে।</b> সাধারণ ব্রাউজিংয়ে হাত দেওয়া হয় না — এটি হোয়াইটলিস্ট নয়।",
+    "g3.cap2": "<b>একটি রিয়েল-মানি তাসের গেমের সাইট প্রত্যাখ্যাত</b> — <code>DNS_PROBE_FINISHED_NXDOMAIN</code>। সাইট থেকে কিছুই ডাউনলোড বা প্রদর্শিত হয় না।",
+    "g3.dt1": "কেন এটি ত্রুটির মতো দেখায়",
+    "g3.dt2": "যা কভার করে",
+    "g3.dt3": "সীমাবদ্ধতা",
+    "g3.dd1": "কারণ এটি ইচ্ছাকৃতভাবেই একটি ত্রুটি: ফোনকে বলা হয় ঠিকানাটি নেই। পাতা আটকানোর চেয়ে এটি হালকা এবং বেশি গোপনীয়।",
+    "g3.dd2": "ফোনের প্রতিটি অ্যাপ ও ব্রাউজার, শুধু Chrome নয়।",
+    "g3.dd3": "সরাসরি IP দিয়ে পৌঁছানো সাইট, বা নিজস্ব এনক্রিপ্ট করা লুকআপ ব্যবহার করা অ্যাপ ফসকে যেতে পারে। <b>অ্যাপ ব্লক</b> (অংশ ৬) সেটি বন্ধ করে।",
+    "g4.sum1": "<span class=\"num\">4</span> আরও ব্লক করুন: সোশ্যাল মিডিয়া, বিনোদন, গেমস",
+    "g4.lede1": "তিনটি ঐচ্ছিক ক্যাটাগরি, সবই ডিফল্টে বন্ধ। এগুলো আপনি যোগ করেন কারণ আপনি চান — তাই একটি <em>চালু</em> করতে কখনোই কিছু চাওয়া হয় না।",
+    "g4.cap1": "<span class=\"pill on\">ON</span> ব্লক করা সংখ্যা সাথে সাথে বাড়ে, এবং \"অ্যাপগুলোও ব্লক করুন\" নামে মিল রেখে একটি সারি আসে।",
+    "g4.cap2": "<b>আগে:</b> সুইচ বন্ধ থাকলে Facebook স্বাভাবিকভাবেই খোলে।",
+    "g4.cap3": "<b>পরে:</b> একই ফোন, একই ব্রাউজার, সুইচ চালু — প্রত্যাখ্যাত।",
+    "g4.dt1": "চালু করা",
+    "g4.dt2": "বন্ধ করা",
+    "g4.dt3": "সৎ সতর্কবার্তা",
+    "g4.dd1": "বিনামূল্যে।",
+    "g4.dd2": "<b>আপনার PIN চায়।</b>",
+    "g4.dd3": "Facebook ও Instagram অ্যাপের সারিটি স্পষ্ট করেই বলে যে এটি WhatsApp ও Messenger-ও ব্লক করে — সেগুলো একই সার্ভারে চলে, আলাদা করার কোনো উপায় নেই।",
+    "g5.sum1": "<span class=\"num\">5</span> নিজের ওয়েবসাইট যোগ করুন",
+    "g5.lede1": "ক্যাটাগরিতে যা পড়ে না, নাম ধরে ব্লক করুন।",
+    "g5.cap1": "<b>কমা দিয়ে আলাদা করে ডোমেইন লিখুন।</b> সাবডোমেইন স্বয়ংক্রিয়ভাবে অন্তর্ভুক্ত — <code>example.com</code> লিখলে <code>shop.example.com</code>-ও পড়ে।",
+    "g5.dt1": "যোগ করা",
+    "g5.dt2": "সরানো",
+    "g5.dd1": "বিনামূল্যে — আগের সবকিছু রেখে তালিকা সংরক্ষণ করলে সরাসরি হয়ে যায়।",
+    "g5.dd2": "<b>আপনার PIN চায়</b>, কারণ ছোট তালিকা সংরক্ষণ করা মানে দুর্বল করা।",
+    "g6.sum1": "<span class=\"num\">6</span> শুধু ওয়েবসাইট নয়, অ্যাপও ব্লক করুন",
+    "g6.lede1": "কিছু অ্যাপ কখনো সাধারণ ওয়েব লুকআপ করে না, তাই তাদের ওয়েবসাইট ব্লক করে কিছুই হয় না। এটি অ্যাপগুলোকেই ইন্টারনেটে পৌঁছাতে বাধা দেয়।",
+    "g6.cap1": "<b>আগে থেকে তৈরি গ্রুপ</b> — সোশ্যাল মিডিয়া, বিনোদন, এবং গেমস ও বেটিং (Free Fire, PUBG, Ludo, Teen Patti, Dream11), সাথে নিজের পছন্দ বাছতে <b>অ্যাপ বাছাই</b>।",
+    "g6.dt1": "যে মূল্য দিতে হয়",
+    "g6.dt2": "তবুও গোপনীয়",
+    "g6.dt3": "কখনো ব্লক হয় না",
+    "g6.dt4": "আনব্লক করা",
+    "g6.dd1": "Safe World-কে ফোনের <em>প্রতিটি</em> সংযোগ পরীক্ষা করতে হয়, শুধু ওয়েব লুকআপ নয়। এতে ব্যাটারি বেশি খরচ হয়, আর অ্যাপ চালু করার আগে জিজ্ঞেস করে।",
+    "g6.dd2": "সব পরীক্ষা ফোনেই হয়। কোথাও কিছু পাঠানো হয় না।",
+    "g6.dd3": "মেসেজিং অ্যাপ, যাতে ব্লক করা ফোন থেকেও পরিবারের সাথে যোগাযোগ করা যায়।",
+    "g6.dd4": "<b>আপনার PIN চায়।</b>",
+    "g7.sum1": "<span class=\"num\">7</span> সুরক্ষা টিকিয়ে রাখুন (always-on VPN)",
+    "g7.lede1": "Android একসাথে মাত্র একটি VPN চলতে দেয় — তাই অন্য কোনো VPN অ্যাপ ইনস্টল করলেই Safe World চুপচাপ বন্ধ হয়ে যায়। এটি ঠেকানোর একমাত্র উপায় এটাই, আর কেবল আপনিই এটি চালু করতে পারেন।",
+    "g7.cap1": "<b>VPN সেটিংস খুলুন</b>, Safe World-এর পাশের গিয়ারে চাপুন, তারপর <b>দুটি</b> সুইচই চালু করুন: <em>Always-on VPN</em> এবং <em>Block connections without VPN</em>।",
+    "g7.dt1": "এটি কী করে",
+    "g7.dt2": "কেন এটি অ্যাপের বাইরে",
+    "g7.dt3": "তবুও ঘটে গেলে",
+    "g7.dd1": "Android নিজেই Safe World চালু করে, এবং এটি না চললে কোনো ট্রাফিক যেতে দেয় না।",
+    "g7.dd2": "Android ইচ্ছাকৃতভাবে কোনো অ্যাপকে নিজেকে এই অনুমতি দিতে দেয় না — এটি আপনাকেই সিস্টেম সেটিংসে গিয়ে করতে হবে।",
+    "g7.dd3": "Safe World টের পায়, ফিল্টার করা বন্ধ হয়েছে বলে সতর্ক করে, এবং সম্ভাব্য কারণ হিসেবে অন্য VPN-টির নাম বলে।",
+    "g8.sum1": "<span class=\"num\">8</span> আনইনস্টল সুরক্ষা",
+    "g8.lede1": "প্রলোভনের মুহূর্তে Safe World মুছে ফেলা কঠিন করে তোলে।",
+    "g8.cap1": "<b>Android-এর নিজের নিশ্চিতকরণ।</b> লক্ষ্য করুন এটি কী বলে: Safe World <em>আর কোনো অনুমতি</em> চায় না — এটি ডিভাইস লক, মুছে ফেলা বা নজরদারি করতে পারে না।",
+    "g8.dt1": "এটি কী করে",
+    "g8.dt2": "সৎ সীমা",
+    "g8.dt3": "বন্ধ করা",
+    "g8.dd1": "ডিভাইস অ্যাডমিন হিসেবে নিবন্ধিত হয়, তাই এটি চালু থাকা অবস্থায় Android অ্যাপটি আনইনস্টল করতে অস্বীকার করে।",
+    "g8.dd2": "এটি <b>বাধা, তালা নয়</b> — অ্যাপ নিজেই তা বলে। Android-এর সেটিংস থেকে এখনো সরানো যায়।",
+    "g8.dd3": "<b>আপনার PIN চায়</b>, এবং আপনাকে ছাড়া কখনো বন্ধ হয়ে গেলে আপনি সতর্কবার্তা পান।",
+    "g9.sum1": "<span class=\"num\">9</span> PIN আসলে কী কী আটকায়",
+    "g9.lede1": "যেখানেই কিছু সুরক্ষা কমাবে সেখানেই একই প্রম্পট আসে — আর অন্য কোথাও নয়।",
+    "g9.cap1": "<b>প্রতিটি দুর্বল করার পদক্ষেপ এই একটিমাত্র ডায়ালগ দিয়েই যায়</b>, তাই কোনো স্ক্রিন ভুল করেও গেটটি এড়াতে পারে না।",
+    "g9.dt1": "PIN চায়",
+    "g9.dt2": "কখনো চায় না",
+    "g9.dt3": "ভুল চেষ্টা",
+    "g9.dd1": "সুরক্ষা বন্ধ করা · একটি ক্যাটাগরি বন্ধ করা · অ্যাপ আনব্লক করা · যোগ করা সাইট সরানো · সবসময় অনুমোদিত তালিকা বদলানো · আনইনস্টল সুরক্ষা বন্ধ করা।",
+    "g9.dd2": "যা কিছু <em>আরও বেশি</em> ব্লক করে।",
+    "g9.dd3": "বেশি ভুল চেষ্টা করলে প্রম্পট কিছুক্ষণের জন্য আটকে যায়। রিকভারি কোড এর বাইরে — আটকে যাওয়াই তো ঠিক সেই সময় যখন এটি দরকার হয়।",
+    "g10.sum1": "<span class=\"num\">10</span> সেটিংস: ভাষা, PIN, সবসময় অনুমোদিত, আপডেট",
+    "g10.lede1": "দ্বিতীয় ট্যাব। এখানকার সবকিছুই রক্ষণাবেক্ষণ, ব্লকিং নয়।",
+    "g10.cap1": "<b>ভাষা</b> (English, বাংলা, Español, العربية, অথবা ফোন অনুসরণ) এবং <b>PIN বদলান</b> / <b>নতুন রিকভারি কোড</b>।",
+    "g10.cap2": "<b>সবসময় অনুমতি দিন</b> — প্রতি লাইনে একটি ডোমেইন। এটি ক্যাটাগরিসহ <em>সবকিছুর উপরে জেতে</em>, তাই এটিও PIN দিয়ে সুরক্ষিত।",
+    "g10.cap3": "<b>অ্যাপ সংস্করণ।</b> নতুন সংস্করণ আছে কিনা দেখে এবং ইনস্টল করে, Android আগে অনুমতি চায়।",
+    "g11.sum1": "<span class=\"num\">11</span> ঐচ্ছিক: অতিরিক্ত তালিকা ডাউনলোড করুন",
+    "g11.lede1": "প্রথম চালুর সময় একবারই দেওয়া হয়। কিছু ব্লকলিস্ট আইনগতভাবে অ্যাপের ভেতরে দেওয়া যায় না, তাই আপনার ডিভাইস সেগুলো যারা রক্ষণাবেক্ষণ করে তাদের কাছ থেকে নিয়ে আসে।",
+    "g11.cap1": "<b>প্রায় ৯২৭ হাজার আরও সাইট, ~১৮ MB</b>, সম্ভব হলে Wi-Fi দিয়ে ডাউনলোড হয়। <b>এখন নয়</b> একটি বৈধ উত্তর — এগুলো ছাড়াও অ্যাপ পুরোপুরি কাজ করে।",
+    "g11.dt1": "বান্ডিল করা তালিকা",
+    "g11.dt2": "কী পাঠানো হয়",
+    "g11.dd1": "চিরকাল অফলাইনে কাজ করে, কোনো নেটওয়ার্ক কল ছাড়াই।",
+    "g11.dd2": "আপনার সম্পর্কে কিছুই না। আপনার ডিভাইস একটি তালিকা ডাউনলোড করে; আপনি কী ব্রাউজ করেন তা কখনো আপলোড করে না।",
+    "g11.note1": "<strong>স্ক্রিনশটগুলো Android 15 ডিভাইসে Safe World 0.4.1 চালিয়ে নেওয়া।</strong> তালিকা বাড়ার সাথে সাথে শব্দ ও সংখ্যা বদলায়, তাই আপনার সংখ্যা আলাদা হবে। আটকে গেছেন, নাকি এমন কিছু ব্লক হয়েছে যা হওয়ার কথা নয়? <a href=\"../#help\">যোগাযোগ করুন</a>।",
+    "g.dl": "ডাউনলোড"
+  },
+  "es": {
+    "g.h11": "Cada interruptor de Safe World, y lo que hace en realidad.",
+    "g.h21": "Toda la app, narrada.",
+    "g.eye1": "Guía de uso · Android",
+    "g.eye2": "Mira primero · 3 min 33 s",
+    "g.note1": "<strong>Una sola regla explica cada aviso de esta app:</strong> reforzar la protección es siempre gratis — activar una categoría, añadir un sitio, bloquear una app. Debilitarla cuesta tu PIN. Ese es todo el diseño, y por eso no hay ningún interruptor para las listas de estafas, juegos de dinero real y contenido sensible: instalar Safe World es la decisión de bloquearlas.",
+    "g.btn1": "Expandir todo",
+    "g.btn2": "Contraer todo",
+    "g.hero_sub": "Cada sección de abajo muestra la pantalla real, qué cambia al activar o desactivar algo, y por qué existe esa función. Abre las que necesites — no hace falta leerlo en orden.",
+    "g.tut_sub": "Todas las funciones, en orden, con las pantallas reales y una explicación hablada de qué hace cada interruptor y por qué. Si solo tienes cuatro minutos, mira esto.",
+    "g1.sum1": "<span class=\"num\">1</span> Primer inicio: elige un PIN y guarda tu código de recuperación",
+    "g1.lede1": "Safe World pide un PIN antes que nada, para que la protección nunca se active sin nada que la resguarde. Justo después muestra un código de recuperación — la única forma de volver a entrar si olvidas el PIN.",
+    "g1.cap1": "<b>Elige un PIN.</b> Al menos 4 dígitos. Lo necesitarás para desactivar la protección o desbloquear algo más adelante.",
+    "g1.cap2": "<b>Guarda tu código de recuperación.</b> Se muestra una sola vez y nunca más — se guarda cifrado, así que nadie puede consultarlo. Anótalo.",
+    "g1.dt1": "Propósito",
+    "g1.dt2": "Si lo olvidas",
+    "g1.dt3": "¿Perdiste ambos?",
+    "g1.dd1": "Evita que un momento de debilidad deshaga tu propia configuración. El PIN es una fricción que elegiste mientras pensabas con claridad.",
+    "g1.dd2": "Toca <b>¿Olvidaste tu PIN?</b> en cualquier aviso e introduce el código de recuperación. Ese código se consume y se emite uno nuevo.",
+    "g1.dd3": "Solo borrar los datos de la app lo reinicia — lo que también elimina cada ajuste y la protección contra desinstalación.",
+    "g2.sum1": "<span class=\"num\">2</span> Activa la protección",
+    "g2.lede1": "El único interruptor que inicia y detiene todo el bloqueo de sitios web. Android pedirá permiso de VPN una vez — esa \"VPN\" funciona por completo en tu teléfono y no se conecta a ningún servidor.",
+    "g2.cap1": "<span class=\"pill off\">OFF</span> La tarjeta es gris y lo dice claramente: <b>no se está bloqueando nada</b>.",
+    "g2.cap2": "<span class=\"pill on\">ON</span> Se vuelve morada e indica la cifra exacta — <b>4.430.965 sitios</b>, actualizados automáticamente.",
+    "g2.dt1": "Al activarla",
+    "g2.dt2": "Al desactivarla",
+    "g2.dt3": "Propósito",
+    "g2.dd1": "Gratis — un toque.",
+    "g2.dd2": "<b>Pide tu PIN.</b>",
+    "g2.dd3": "La tarjeta nunca afirma que hay protección mientras el interruptor está apagado. Una app que dice \"4,4 millones bloqueados\" sobre un interruptor muerto es exactamente la mentira que esta se niega a contar.",
+    "g3.sum1": "<span class=\"num\">3</span> Míralo funcionar: sitio dañino bloqueado, sitio normal intacto",
+    "g3.lede1": "El bloqueo ocurre en la fase de búsqueda, así que un sitio bloqueado nunca llega a cargarse — ves la página de \"no se puede acceder\" del propio navegador, y no se descarga nada de su contenido.",
+    "g3.cap1": "<b>Wikipedia carga con normalidad.</b> La navegación corriente no se toca — esto no es una lista blanca.",
+    "g3.cap2": "<b>Un sitio de juego de cartas con dinero real es rechazado</b> — <code>DNS_PROBE_FINISHED_NXDOMAIN</code>. No se descarga ni se muestra nada del sitio.",
+    "g3.dt1": "Por qué parece un error",
+    "g3.dt2": "Cubre",
+    "g3.dt3": "Límites",
+    "g3.dd1": "Porque lo es, a propósito: se le dice al teléfono que la dirección no existe. Eso es más liviano y más privado que interceptar páginas.",
+    "g3.dd2": "Todas las apps y navegadores del teléfono, no solo Chrome.",
+    "g3.dd3": "Los sitios alcanzados por IP directa, o las apps que usan sus propias búsquedas cifradas, pueden escaparse. <b>Bloquear apps</b> (sección 6) cierra eso.",
+    "g4.sum1": "<span class=\"num\">4</span> Bloquea más: redes sociales, entretenimiento, juegos",
+    "g4.lede1": "Tres categorías opcionales, todas desactivadas por defecto. Son las que añades porque tú quieres — así que activar una <em>nunca</em> pide nada.",
+    "g4.cap1": "<span class=\"pill on\">ON</span> La cifra de bloqueados sube al instante, y aparece una fila para \"bloquear también las apps\".",
+    "g4.cap2": "<b>Antes:</b> con el interruptor apagado, Facebook abre con normalidad.",
+    "g4.cap3": "<b>Después:</b> mismo teléfono, mismo navegador, interruptor activado — rechazado.",
+    "g4.dt1": "Al activarla",
+    "g4.dt2": "Al desactivarla",
+    "g4.dt3": "Aviso honesto",
+    "g4.dd1": "Gratis.",
+    "g4.dd2": "<b>Pide tu PIN.</b>",
+    "g4.dd3": "La fila de las apps de Facebook e Instagram dice abiertamente que también bloquea WhatsApp y Messenger — funcionan en los mismos servidores y no hay forma de separarlos.",
+    "g5.sum1": "<span class=\"num\">5</span> Añade tus propios sitios web",
+    "g5.lede1": "Todo lo que las categorías no cubren, bloqueado por nombre.",
+    "g5.cap1": "<b>Escribe los dominios separados por comas.</b> Los subdominios se incluyen automáticamente — <code>example.com</code> también cubre <code>shop.example.com</code>.",
+    "g5.dt1": "Añadir",
+    "g5.dt2": "Quitar",
+    "g5.dd1": "Gratis — guardar una lista que conserva todo lo que tenía pasa directamente.",
+    "g5.dd2": "<b>Pide tu PIN</b>, porque guardar una lista más corta es un debilitamiento.",
+    "g6.sum1": "<span class=\"num\">6</span> Bloquea apps, no solo sus sitios web",
+    "g6.lede1": "Algunas apps nunca hacen búsquedas web corrientes, así que bloquear su sitio no sirve de nada. Esto impide que las apps mismas lleguen a internet.",
+    "g6.cap1": "<b>Grupos ya preparados</b> — redes sociales, entretenimiento, y juegos y apuestas (Free Fire, PUBG, Ludo, Teen Patti, Dream11), más <b>Elegir apps</b> para escoger las tuyas.",
+    "g6.dt1": "La contrapartida",
+    "g6.dt2": "Sigue siendo privado",
+    "g6.dt3": "Nunca se bloquean",
+    "g6.dt4": "Desbloquear",
+    "g6.dd1": "Safe World debe revisar <em>cada</em> conexión que hace el teléfono, no solo las búsquedas web. Eso consume más batería, y la app pregunta antes de activarlo.",
+    "g6.dd2": "Toda la comprobación ocurre en el teléfono. No se envía nada a ningún sitio.",
+    "g6.dd3": "Las apps de mensajería, para que un teléfono bloqueado siga pudiendo contactar con la familia.",
+    "g6.dd4": "<b>Pide tu PIN.</b>",
+    "g7.sum1": "<span class=\"num\">7</span> Haz que la protección aguante (VPN siempre activa)",
+    "g7.lede1": "Android solo permite una VPN a la vez — así que instalar cualquier otra app de VPN apaga Safe World en silencio. Esta es la única forma de evitarlo, y solo tú puedes activarla.",
+    "g7.cap1": "<b>Abre los ajustes de VPN</b>, toca el engranaje junto a Safe World y activa <b>los dos</b> interruptores: <em>VPN siempre activa</em> y <em>Bloquear conexiones sin VPN</em>.",
+    "g7.dt1": "Qué hace",
+    "g7.dt2": "Por qué está fuera de la app",
+    "g7.dt3": "Si ocurre igualmente",
+    "g7.dd1": "Android mismo inicia Safe World, y se niega a dejar pasar tráfico mientras no esté funcionando.",
+    "g7.dd2": "Android deliberadamente no deja que una app se conceda esto a sí misma — tienes que ser tú, en los ajustes del sistema.",
+    "g7.dd3": "Safe World lo detecta, te avisa de que dejó de filtrar, y señala la otra VPN como causa probable.",
+    "g8.sum1": "<span class=\"num\">8</span> Protección contra desinstalación",
+    "g8.lede1": "Hace que Safe World sea más difícil de borrar en un momento de tentación.",
+    "g8.cap1": "<b>La propia confirmación de Android.</b> Fíjate en lo que dice: Safe World no pide <em>ningún otro permiso</em> — no puede bloquear, borrar ni supervisar el dispositivo.",
+    "g8.dt1": "Qué hace",
+    "g8.dt2": "Límite honesto",
+    "g8.dt3": "Al desactivarla",
+    "g8.dd1": "Se registra como administrador del dispositivo, así que Android se niega a desinstalar la app mientras esté activo.",
+    "g8.dd2": "Es <b>fricción, no un candado</b> — la propia app lo dice. Todavía se puede quitar desde los ajustes de Android.",
+    "g8.dd3": "<b>Pide tu PIN</b>, y se te avisa si alguna vez se desactiva sin ti.",
+    "g9.sum1": "<span class=\"num\">9</span> Qué protege realmente el PIN",
+    "g9.lede1": "El mismo aviso aparece en todo lo que reduciría la protección — y en nada más.",
+    "g9.cap1": "<b>Todo debilitamiento pasa por este único diálogo</b>, así que ninguna pantalla puede saltarse la barrera por accidente.",
+    "g9.dt1": "Pide PIN",
+    "g9.dt2": "Nunca pide",
+    "g9.dt3": "Intentos fallidos",
+    "g9.dd1": "Desactivar la protección · desactivar una categoría · desbloquear apps · quitar sitios que añadiste · cambiar lo siempre permitido · desactivar la protección contra desinstalación.",
+    "g9.dd2": "Cualquier cosa que bloquee <em>más</em>.",
+    "g9.dd3": "Demasiados intentos bloquean el aviso un rato. El código de recuperación queda exento — estar bloqueado fuera es justo cuando lo necesitarías.",
+    "g10.sum1": "<span class=\"num\">10</span> Ajustes: idioma, PIN, siempre permitido, actualizaciones",
+    "g10.lede1": "La segunda pestaña. Todo lo de aquí es mantenimiento, no bloqueo.",
+    "g10.cap1": "<b>Idioma</b> (English, বাংলা, Español, العربية, o seguir el teléfono) y <b>Cambiar PIN</b> / <b>nuevo código de recuperación</b>.",
+    "g10.cap2": "<b>Siempre permitir</b> — un dominio por línea. Esto <em>gana sobre todo lo demás</em>, incluidas las categorías, así que está protegido por PIN.",
+    "g10.cap3": "<b>Versión de la app.</b> Busca una versión más reciente y la instala, con Android pidiendo permiso primero.",
+    "g11.sum1": "<span class=\"num\">11</span> Opcional: descarga las listas extra",
+    "g11.lede1": "Se ofrece una vez, en el primer inicio. Algunas listas de bloqueo no pueden incluirse legalmente dentro de la app, así que tu dispositivo las obtiene de quienes las mantienen.",
+    "g11.cap1": "<b>Unos 927 mil sitios más, ~18 MB</b>, descargados por Wi-Fi cuando sea posible. <b>Ahora no</b> es una respuesta válida — la app funciona por completo sin ellas.",
+    "g11.dt1": "Listas incluidas",
+    "g11.dt2": "Qué se envía",
+    "g11.dd1": "Funcionan sin conexión, para siempre, sin ninguna llamada de red.",
+    "g11.dd2": "Nada sobre ti. Tu dispositivo descarga una lista; nunca sube lo que navegas.",
+    "g11.note1": "<strong>Las capturas se tomaron en un dispositivo con Android 15 y Safe World 0.4.1.</strong> Los textos y las cifras cambian a medida que crecen las listas, así que tus números serán distintos. ¿Atascado, o algo bloqueado que no debería estarlo? <a href=\"../#help\">Ponte en contacto</a>.",
+    "g.dl": "Descargar"
+  },
+  "ar": {
+    "g.h11": "كل مفتاح في Safe World، وما يفعله فعلياً.",
+    "g.h21": "التطبيق كاملاً، مع شرح صوتي.",
+    "g.eye1": "دليل الاستخدام · Android",
+    "g.eye2": "شاهد أولاً · 3 دقائق و33 ثانية",
+    "g.note1": "<strong>قاعدة واحدة تفسّر كل رسالة في هذا التطبيق:</strong> جعل الحماية <em>أقوى</em> مجاني دائماً — تفعيل فئة، إضافة موقع، حظر تطبيق. أما إضعافها فيكلّفك رمز PIN. هذا هو التصميم كله، ولهذا لا يوجد أي مفتاح لقوائم الاحتيال والألعاب بالمال الحقيقي والمحتوى الحساس: تثبيت Safe World هو نفسه قرار حظرها.",
+    "g.btn1": "توسيع الكل",
+    "g.btn2": "طيّ الكل",
+    "g.hero_sub": "يعرض كل قسم أدناه الشاشة الحقيقية، وما الذي يتغيّر عند تشغيل شيء أو إيقافه، ولماذا توجد هذه الميزة. افتح ما تحتاجه فقط — لا داعي لقراءته بالترتيب.",
+    "g.tut_sub": "كل ميزة أدناه، بالترتيب، مع الشاشات الحقيقية وشرح منطوق لما يفعله كل مفتاح ولماذا. إن لم يكن لديك سوى أربع دقائق، فشاهد هذا.",
+    "g1.sum1": "<span class=\"num\">1</span> أول تشغيل: اختر رمز PIN واحفظ رمز الاسترجاع",
+    "g1.lede1": "يطلب Safe World رمز PIN قبل أي شيء آخر، حتى لا تُفعَّل الحماية أبداً دون ما يحرسها. وبعده مباشرة يعرض رمز استرجاع — وهو طريقك الوحيد للعودة إن نسيت الرمز.",
+    "g1.cap1": "<b>اختر رمز PIN.</b> أربعة أرقام على الأقل. ستحتاجه لإيقاف الحماية أو لإلغاء حظر أي شيء لاحقاً.",
+    "g1.cap2": "<b>احفظ رمز الاسترجاع.</b> يُعرض مرة واحدة فقط ولا يُعرض ثانية — فهو مخزَّن مشفَّراً، فلا يستطيع أحد الاطلاع عليه. دوّنه.",
+    "g1.dt1": "الغرض",
+    "g1.dt2": "إن نسيته",
+    "g1.dt3": "فقدت كليهما؟",
+    "g1.dd1": "يمنع لحظة ضعف من نقض إعدادك الذي وضعته بنفسك. رمز PIN هو عائق اخترته وأنت تفكّر بوضوح.",
+    "g1.dd2": "اضغط <b>نسيت رمزك؟</b> في أي رسالة وأدخل رمز الاسترجاع. عندها يُستهلك ذلك الرمز ويُصدر رمز جديد.",
+    "g1.dd3": "مسح بيانات التطبيق وحده هو ما يعيد ضبطه — وهو يمسح أيضاً كل الإعدادات وحماية إلغاء التثبيت.",
+    "g2.sum1": "<span class=\"num\">2</span> شغّل الحماية",
+    "g2.lede1": "المفتاح الوحيد الذي يبدأ ويوقف حظر المواقع كله. سيطلب Android إذن VPN مرة واحدة — وهذه \"الـ VPN\" تعمل بالكامل على هاتفك ولا تتصل بأي خادم.",
+    "g2.cap1": "<span class=\"pill off\">OFF</span> البطاقة رمادية وتقول بوضوح: <b>لا يُحظر أي شيء</b>.",
+    "g2.cap2": "<span class=\"pill on\">ON</span> تتحول إلى البنفسجي وتذكر العدد الدقيق — <b>4,430,965 موقعاً</b>، تُحدَّث تلقائياً.",
+    "g2.dt1": "عند التشغيل",
+    "g2.dt2": "عند الإيقاف",
+    "g2.dt3": "الغرض",
+    "g2.dd1": "مجاني — ضغطة واحدة.",
+    "g2.dd2": "<b>يطلب رمز PIN.</b>",
+    "g2.dd3": "لا تدّعي البطاقة أبداً وجود حماية والمفتاح مُطفأ، وهذا مقصود. تطبيق يكتب \"4.4 مليون محظور\" فوق مفتاح ميت هو بالضبط الكذبة التي يرفض هذا التطبيق قولها.",
+    "g3.sum1": "<span class=\"num\">3</span> شاهده يعمل: موقع ضار محظور، وموقع عادي سليم",
+    "g3.lede1": "يحدث الحظر في مرحلة الاستعلام، فالموقع المحظور لا يُحمَّل أصلاً — تظهر لك صفحة \"تعذّر الوصول\" الخاصة بالمتصفح نفسه، ولا يُجلب أي شيء من محتواه.",
+    "g3.cap1": "<b>ويكيبيديا تفتح بشكل طبيعي.</b> التصفح العادي لا يُمسّ — هذه ليست قائمة سماح.",
+    "g3.cap2": "<b>موقع لعبة ورق بالمال الحقيقي مرفوض</b> — <code>DNS_PROBE_FINISHED_NXDOMAIN</code>. لا يُحمَّل ولا يُعرض شيء من الموقع.",
+    "g3.dt1": "لماذا يبدو كخطأ",
+    "g3.dt2": "يشمل",
+    "g3.dt3": "الحدود",
+    "g3.dd1": "لأنه خطأ فعلاً، عن قصد: يُقال للهاتف إن العنوان غير موجود. وهذا أخف وأكثر خصوصية من اعتراض الصفحات.",
+    "g3.dd2": "كل تطبيق ومتصفح على الهاتف، وليس Chrome وحده.",
+    "g3.dd3": "المواقع التي يُوصل إليها بعنوان IP مباشر، أو التطبيقات التي تستخدم استعلاماتها المشفّرة، قد تفلت. <b>حظر التطبيقات</b> (القسم 6) يسدّ ذلك.",
+    "g4.sum1": "<span class=\"num\">4</span> احظر المزيد: التواصل الاجتماعي، الترفيه، الألعاب",
+    "g4.lede1": "ثلاث فئات اختيارية، جميعها مُطفأة افتراضياً. هذه تضيفها لأنك تريدها — لذا فإن تشغيل أي منها <em>لا</em> يطلب شيئاً أبداً.",
+    "g4.cap1": "<span class=\"pill on\">ON</span> يقفز عدد المحظورات فوراً، ويظهر صف مقابل لـ \"احظر التطبيقات أيضاً\".",
+    "g4.cap2": "<b>قبل:</b> والمفتاح مُطفأ، يفتح Facebook بشكل طبيعي.",
+    "g4.cap3": "<b>بعد:</b> نفس الهاتف، نفس المتصفح، والمفتاح مُشغَّل — مرفوض.",
+    "g4.dt1": "عند التشغيل",
+    "g4.dt2": "عند الإيقاف",
+    "g4.dt3": "تحذير صريح",
+    "g4.dd1": "مجاني.",
+    "g4.dd2": "<b>يطلب رمز PIN.</b>",
+    "g4.dd3": "صف تطبيقَي Facebook وInstagram يقول صراحةً إنه يحظر WhatsApp وMessenger أيضاً — فهي تعمل على الخوادم نفسها، ولا سبيل للفصل بينها.",
+    "g5.sum1": "<span class=\"num\">5</span> أضف مواقعك الخاصة",
+    "g5.lede1": "كل ما لا تغطيه الفئات، يُحظر بالاسم.",
+    "g5.cap1": "<b>اكتب النطاقات مفصولة بفواصل.</b> النطاقات الفرعية مشمولة تلقائياً — <code>example.com</code> تشمل أيضاً <code>shop.example.com</code>.",
+    "g5.dt1": "الإضافة",
+    "g5.dt2": "الإزالة",
+    "g5.dd1": "مجانية — حفظ قائمة تحتفظ بكل ما كان فيها يمرّ مباشرة.",
+    "g5.dd2": "<b>تطلب رمز PIN</b>، لأن حفظ قائمة أقصر هو إضعاف.",
+    "g6.sum1": "<span class=\"num\">6</span> احظر التطبيقات، لا مواقعها فحسب",
+    "g6.lede1": "بعض التطبيقات لا تجري استعلامات ويب عادية إطلاقاً، فحظر موقعها لا يفيد شيئاً. هذا يمنع التطبيقات نفسها من الوصول إلى الإنترنت.",
+    "g6.cap1": "<b>مجموعات جاهزة</b> — التواصل الاجتماعي، الترفيه، والألعاب والمراهنات (Free Fire وPUBG وLudo وTeen Patti وDream11)، إضافة إلى <b>اختيار التطبيقات</b> لتحديد ما تريد.",
+    "g6.dt1": "المقابل",
+    "g6.dt2": "يبقى خاصاً",
+    "g6.dt3": "لا تُحظر أبداً",
+    "g6.dt4": "إلغاء الحظر",
+    "g6.dd1": "على Safe World فحص <em>كل</em> اتصال يجريه الهاتف، لا استعلامات الويب فقط. وهذا يستهلك بطارية أكثر، ويسألك التطبيق قبل تفعيله.",
+    "g6.dd2": "كل الفحص يجري على الهاتف. لا يُرسل شيء إلى أي مكان.",
+    "g6.dd3": "تطبيقات المراسلة، حتى يبقى الهاتف المحظور قادراً على التواصل مع العائلة.",
+    "g6.dd4": "<b>يطلب رمز PIN.</b>",
+    "g7.sum1": "<span class=\"num\">7</span> ثبّت الحماية (VPN دائمة التشغيل)",
+    "g7.lede1": "يسمح Android بتشغيل VPN واحدة فقط في الوقت نفسه — فتثبيت أي تطبيق VPN آخر يوقف Safe World بصمت. هذه هي الطريقة الوحيدة لمنع ذلك، وأنت وحدك من يستطيع تفعيلها.",
+    "g7.cap1": "<b>افتح إعدادات VPN</b>، واضغط على الترس بجانب Safe World، ثم شغّل <b>كلا</b> المفتاحين: <em>VPN دائمة التشغيل</em> و<em>حظر الاتصالات بدون VPN</em>.",
+    "g7.dt1": "ماذا تفعل",
+    "g7.dt2": "لماذا هي خارج التطبيق",
+    "g7.dt3": "إن حدث ذلك رغم كل شيء",
+    "g7.dd1": "يشغّل Android نفسه Safe World، ويرفض تمرير أي حركة بيانات ما دام متوقفاً.",
+    "g7.dd2": "يرفض Android عمداً أن يمنح أي تطبيق هذا الإذن لنفسه — لا بد أن تفعله أنت من إعدادات النظام.",
+    "g7.dd3": "ينتبه Safe World وينبّهك إلى أن التصفية توقفت، ويسمّي الـ VPN الأخرى كسبب مرجّح.",
+    "g8.sum1": "<span class=\"num\">8</span> حماية من إلغاء التثبيت",
+    "g8.lede1": "تجعل حذف Safe World أصعب في لحظة إغراء.",
+    "g8.cap1": "<b>تأكيد Android نفسه.</b> لاحظ ما يقوله: لا يطلب Safe World <em>أي إذن آخر</em> — فهو لا يستطيع قفل الجهاز ولا مسحه ولا مراقبته.",
+    "g8.dt1": "ماذا تفعل",
+    "g8.dt2": "حدّ صريح",
+    "g8.dt3": "عند الإيقاف",
+    "g8.dd1": "يسجّل نفسه كمشرف جهاز، فيرفض Android إلغاء تثبيت التطبيق ما دامت مفعّلة.",
+    "g8.dd2": "إنها <b>عائق، لا قفل</b> — والتطبيق نفسه يقول ذلك. ولا يزال بالإمكان إزالته من إعدادات Android.",
+    "g8.dd3": "<b>تطلب رمز PIN</b>، وتُنبَّه إن أُوقفت يوماً دون علمك.",
+    "g9.sum1": "<span class=\"num\">9</span> ما الذي يحرسه رمز PIN فعلياً",
+    "g9.lede1": "تظهر الرسالة نفسها في كل ما من شأنه أن يقلّل الحماية — ولا تظهر في غير ذلك.",
+    "g9.cap1": "<b>كل إضعاف يمرّ عبر هذا الحوار الواحد</b>، فلا تستطيع أي شاشة تخطّي البوابة عن طريق الخطأ.",
+    "g9.dt1": "يطلب رمز PIN",
+    "g9.dt2": "لا يطلب أبداً",
+    "g9.dt3": "المحاولات الخاطئة",
+    "g9.dd1": "إيقاف الحماية · إيقاف فئة · إلغاء حظر تطبيقات · إزالة مواقع أضفتها · تغيير قائمة المسموح دائماً · تعطيل حماية إلغاء التثبيت.",
+    "g9.dd2": "أي شيء يحظر <em>أكثر</em>.",
+    "g9.dd3": "كثرة المحاولات تقفل الرسالة لبعض الوقت. ورمز الاسترجاع مستثنى — فالقفل خارجاً هو تحديداً الوقت الذي تحتاجه فيه.",
+    "g10.sum1": "<span class=\"num\">10</span> الإعدادات: اللغة، رمز PIN، المسموح دائماً، التحديثات",
+    "g10.lede1": "التبويب الثاني. كل ما فيه تنظيم، لا حظر.",
+    "g10.cap1": "<b>اللغة</b> (English وবাংলা وEspañol والعربية، أو اتباع لغة الهاتف) و<b>تغيير رمز PIN</b> / <b>رمز استرجاع جديد</b>.",
+    "g10.cap2": "<b>السماح دائماً</b> — نطاق واحد في كل سطر. هذه <em>تتغلّب على كل شيء</em>، بما في ذلك الفئات، لذا فهي محمية برمز PIN.",
+    "g10.cap3": "<b>إصدار التطبيق.</b> يبحث عن إصدار أحدث ويثبّته، مع طلب Android للإذن أولاً.",
+    "g11.sum1": "<span class=\"num\">11</span> اختياري: نزّل القوائم الإضافية",
+    "g11.lede1": "يُعرض مرة واحدة عند أول تشغيل. بعض قوائم الحظر لا يمكن قانونياً تضمينها داخل التطبيق، فيجلبها جهازك من القائمين على صيانتها.",
+    "g11.cap1": "<b>نحو 927 ألف موقع إضافي، ~18 ميغابايت</b>، تُنزَّل عبر Wi-Fi متى أمكن. و<b>ليس الآن</b> إجابة مقبولة — فالتطبيق يعمل بالكامل بدونها.",
+    "g11.dt1": "القوائم المدمجة",
+    "g11.dt2": "ما الذي يُرسل",
+    "g11.dd1": "تعمل دون اتصال، إلى الأبد، دون أي طلب شبكة إطلاقاً.",
+    "g11.dd2": "لا شيء عنك. جهازك ينزّل قائمة؛ ولا يرفع أبداً ما تتصفحه.",
+    "g11.note1": "<strong>أُخذت لقطات الشاشة على جهاز Android 15 يعمل عليه Safe World 0.4.1.</strong> تتغيّر الصياغة والأعداد مع نمو القوائم، لذا ستختلف أرقامك. هل تعثّرت، أو حُظر شيء ما كان ينبغي حظره؟ <a href=\"../#help\">تواصل معنا</a>.",
+    "g.dl": "تنزيل"
+  }
+};
+  var rtl = ["ar"];
+
+  function applyLang(lang) {
+    var dict = translations[lang] || translations.en;
+    document.querySelectorAll("[data-i18n]").forEach(function (el) {
+      var v = dict[el.getAttribute("data-i18n")];
+      if (v !== undefined) el.textContent = v;
+    });
+    // Strings carrying <b>/<code>/<span> keep their markup. These are authored
+    // here, never user input, so innerHTML is safe and preserves the emphasis.
+    document.querySelectorAll("[data-i18n-html]").forEach(function (el) {
+      var v = dict[el.getAttribute("data-i18n-html")];
+      if (v !== undefined) el.innerHTML = v;
+    });
+    document.documentElement.lang = lang;
+    document.documentElement.dir = rtl.indexOf(lang) !== -1 ? "rtl" : "ltr";
+    try { localStorage.setItem("sw-lang", lang); } catch (e) {}
+    var sel = document.getElementById("lang");
+    if (sel) sel.value = lang;
+  }
+
+  var sel = document.getElementById("lang");
+  sel.addEventListener("change", function () { applyLang(sel.value); });
+
+  // ?lang=bn wins, so a localised guide link can be shared directly; otherwise
+  // the same storage key as the main site, so a choice made there carries here.
+  var q = (location.search.match(/[?&]lang=([a-z]{2})/) || [])[1];
+  var saved = null;
+  try { saved = localStorage.getItem("sw-lang"); } catch (e) {}
+  var nav = (navigator.language || "en").slice(0, 2);
+  applyLang((translations[q] && q) || saved || (translations[nav] ? nav : "en"));
   var steps = document.querySelectorAll("details.step");
   document.querySelectorAll("[data-all]").forEach(function (btn) {
     btn.addEventListener("click", function () {
