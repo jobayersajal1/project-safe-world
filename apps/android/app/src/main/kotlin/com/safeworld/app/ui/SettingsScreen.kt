@@ -18,12 +18,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -114,6 +116,41 @@ fun SettingsScreen(
                         )
                     }
                 }
+            }
+        }
+
+        Text(stringResource(R.string.settings_theme), style = MaterialTheme.typography.titleSmall)
+        Card {
+            // A plain switch rather than a System/Light/Dark picker. Until it is touched the app
+            // follows the phone; touching it is what says "I want it this way regardless", and the
+            // switch then shows what is actually on screen. A third "System" option would be a
+            // state most people never choose and one more thing to explain.
+            val darkPreference by store.darkTheme.collectAsStateWithLifecycle()
+            val systemDark = isSystemInDarkTheme()
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(Modifier.weight(1f)) {
+                    Text(
+                        stringResource(R.string.settings_dark_theme),
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                    Text(
+                        stringResource(
+                            if (darkPreference == null) R.string.settings_theme_following
+                            else R.string.settings_theme_chosen,
+                        ),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                Switch(
+                    checked = darkPreference ?: systemDark,
+                    onCheckedChange = { store.setDarkTheme(it) },
+                )
             }
         }
 

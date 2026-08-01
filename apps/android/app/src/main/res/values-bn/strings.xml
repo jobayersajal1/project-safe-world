@@ -199,4 +199,8 @@
     <string name="blocked_headline_off">%1$sটি ওয়েবসাইট ব্লক করতে উপরে সুরক্ষা চালু করুন</string>
     <string name="blocked_headline_detail">%1$sটি পরিচিত সাইট ব্লক করা হয়েছে, স্বয়ংক্রিয়ভাবে হালনাগাদ হয়</string>
     <string name="blocked_more_hint">নিচে আরও ক্ষতিকর অ্যাপ ও ওয়েবসাইট ব্লক করুন</string>
+    <string name="settings_theme">চেহারা</string>
+    <string name="settings_dark_theme">ডার্ক থিম</string>
+    <string name="settings_theme_following">আপনি না বাছা পর্যন্ত ফোনের সেটিং অনুসরণ করছে</string>
+    <string name="settings_theme_chosen">আপনার পছন্দ, সব ফোনেই</string>
 </resources>

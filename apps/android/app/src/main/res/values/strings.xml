@@ -220,4 +220,8 @@
     <string name="blocked_headline_off">Turn on protection above to block %1$s websites</string>
     <string name="blocked_headline_detail">Blocked %1$s known sites, kept up to date automatically</string>
     <string name="blocked_more_hint">Block more harmful apps and websites below</string>
+    <string name="settings_theme">Appearance</string>
+    <string name="settings_dark_theme">Dark theme</string>
+    <string name="settings_theme_following">Following your phone until you choose</string>
+    <string name="settings_theme_chosen">Your choice, on every phone</string>
 </resources>

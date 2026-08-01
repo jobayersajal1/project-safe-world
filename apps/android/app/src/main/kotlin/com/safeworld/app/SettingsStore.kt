@@ -475,6 +475,31 @@ class SettingsStore private constructor(context: Context) {
     /** BCP-47 tag, or "" for "follow the system". See [LocaleHelper]. */
     val language: StateFlow<String> = _language.asStateFlow()
 
+    // MARK: Theme
+    //
+    // Kept beside the language for the same reason: which theme this phone
+    // shows has nothing to do with what gets blocked, so it stays out of the
+    // cross-platform `Settings` shape.
+
+    /**
+     * Whether to force dark, force light, or follow the system.
+     *
+     * **Null means follow the system**, and that is the default. A phone that
+     * flips to dark at sunset should take the app with it; someone who wants it
+     * one way regardless says so, and then it stays said. When the system
+     * expresses no preference at all, `isSystemInDarkTheme()` reports false and
+     * Android's own default applies — the app does not second-guess it.
+     */
+    private val _darkTheme = MutableStateFlow(
+        if (prefs.contains(KEY_DARK_THEME)) prefs.getBoolean(KEY_DARK_THEME, true) else null,
+    )
+    val darkTheme: StateFlow<Boolean?> = _darkTheme.asStateFlow()
+
+    fun setDarkTheme(dark: Boolean) {
+        prefs.edit().putBoolean(KEY_DARK_THEME, dark).apply()
+        _darkTheme.value = dark
+    }
+
     fun setLanguage(tag: String) {
         prefs.edit().putString(KEY_LANGUAGE, tag).apply()
         _language.value = tag
@@ -508,6 +533,8 @@ class SettingsStore private constructor(context: Context) {
         /** Also read directly by [LocaleHelper], before this store exists. */
         const val PREFS_NAME = "safe_world"
         const val KEY_LANGUAGE = "language"
+
+        private const val KEY_DARK_THEME = "darkTheme"
 
         private const val KEY_SETTINGS = "settings"
         private const val KEY_STATS = "stats"
