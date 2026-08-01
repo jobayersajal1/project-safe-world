@@ -69,6 +69,21 @@ private val LightColors = lightColorScheme(
     onError = Color(0xFFFFFFFF),
     errorContainer = Color(0xFFF6DDD7),
     onErrorContainer = Color(0xFF3B0D07),
+    // The container roles are what `Card`, `NavigationBar` and every elevated surface actually
+    // read — *not* `surfaceVariant`. Leaving them unset is why the first cut of this theme still
+    // had lavender cards sitting on warm paper: Material fell back to its baseline purple ramp
+    // underneath a palette that had been changed everywhere else.
+    surfaceContainerLowest = Color(0xFFFFFFFF),
+    surfaceContainerLow = Color(0xFFF5F1E8),
+    surfaceContainer = Color(0xFFF0EBE0),
+    surfaceContainerHigh = Color(0xFFEAE4D7),
+    surfaceContainerHighest = Color(0xFFE4DDCE),
+    surfaceDim = Color(0xFFDFD8C9),
+    surfaceBright = Color(0xFFF9F6F0),
+    inverseSurface = Color(0xFF34302A),
+    inverseOnSurface = Color(0xFFF5F1E8),
+    inversePrimary = Color(0xFFE4C48D),
+    scrim = Color(0xFF000000),
 )
 
 private val DarkColors = darkColorScheme(
@@ -96,6 +111,17 @@ private val DarkColors = darkColorScheme(
     onError = Color(0xFF5C1A11),
     errorContainer = Color(0xFF7A2C20),
     onErrorContainer = Color(0xFFFFDAD3),
+    surfaceContainerLowest = Color(0xFF100E0A),
+    surfaceContainerLow = Color(0xFF1E1A14),
+    surfaceContainer = Color(0xFF231F18),
+    surfaceContainerHigh = Color(0xFF2E2921),
+    surfaceContainerHighest = Color(0xFF39332B),
+    surfaceDim = Color(0xFF16130E),
+    surfaceBright = Color(0xFF3D372E),
+    inverseSurface = Color(0xFFEAE2D6),
+    inverseOnSurface = Color(0xFF34302A),
+    inversePrimary = Color(0xFF8A6A34),
+    scrim = Color(0xFF000000),
 )
 
 /**
