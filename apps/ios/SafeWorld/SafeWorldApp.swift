@@ -22,6 +22,10 @@ struct SafeWorldApp: App {
                 .environmentObject(store)
                 .environmentObject(pins)
                 .environmentObject(gate)
+                // Brass, matching the Android theme and the website. SwiftUI's default is
+                // system blue, which is every other app on the phone — and cold, where this
+                // one is trying to reassure rather than alert.
+                .tint(Brand.accent)
         }
         .onChange(of: scenePhase) { newPhase in
             if newPhase == .active { store.refreshRemoteIfDue() }

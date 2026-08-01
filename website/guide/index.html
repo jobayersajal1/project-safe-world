@@ -220,6 +220,10 @@
     </div>
     <video controls preload="none" playsinline poster="video/poster.jpg">
       <source src="video/safe-world-tutorial.mp4" type="video/mp4">
+          <track kind="subtitles" src="video/tutorial.en.vtt" srclang="en" label="English" default>
+          <track kind="subtitles" src="video/tutorial.bn.vtt" srclang="bn" label="বাংলা">
+          <track kind="subtitles" src="video/tutorial.es.vtt" srclang="es" label="Español">
+          <track kind="subtitles" src="video/tutorial.ar.vtt" srclang="ar" label="العربية">
       Your browser can't play embedded video —
       <a href="video/safe-world-tutorial.mp4">download the tutorial instead</a>.
     </video>
@@ -238,11 +242,11 @@
       </p>
       <div class="shots">
         <figure>
-          <img src="img/00-first-run-set-pin.png" alt="Choose a PIN screen with PIN and Confirm PIN fields" loading="lazy">
+          <img src="img/00-first-run-set-pin.png" alt="Choose a PIN screen with PIN and Confirm PIN fields" loading="lazy" data-loc>
           <figcaption data-i18n-html="g1.cap1"><b>Choose a PIN.</b> At least 4 digits. You'll need it to turn protection off or unblock anything later.</figcaption>
         </figure>
         <figure>
-          <img src="img/22-recovery-code.png" alt="Save your recovery code screen showing a 20-character code" loading="lazy">
+          <img src="img/22-recovery-code.png" alt="Save your recovery code screen showing a 20-character code" loading="lazy" data-loc>
           <figcaption data-i18n-html="g1.cap2"><b>Save your recovery code.</b> Shown once and never again — it's stored scrambled, so nobody can look it up. Write it down.</figcaption>
         </figure>
       </div>
@@ -263,11 +267,11 @@
       </p>
       <div class="shots">
         <figure>
-          <img src="img/01-home-protection-off.png" alt="Home screen with Protection switch off" loading="lazy">
+          <img src="img/01-home-protection-off.png" alt="Home screen with Protection switch off" loading="lazy" data-loc>
           <figcaption data-i18n-html="g2.cap1"><span class="pill off">OFF</span> The card is grey and says plainly: <b>nothing is being blocked</b>.</figcaption>
         </figure>
         <figure>
-          <img src="img/02-home-protection-on.png" alt="Home screen with Protection on showing 4.4 million blocked" loading="lazy">
+          <img src="img/02-home-protection-on.png" alt="Home screen with Protection on showing 4.4 million blocked" loading="lazy" data-loc>
           <figcaption data-i18n-html="g2.cap2"><span class="pill on">ON</span> Turns purple and states the exact count — <b>4,430,965 sites</b>, updated automatically.</figcaption>
         </figure>
       </div>
@@ -313,7 +317,7 @@
       </p>
       <div class="shots">
         <figure>
-          <img src="img/33-social-toggled-on.png" alt="Social media websites toggle switched on" loading="lazy">
+          <img src="img/33-social-toggled-on.png" alt="Social media websites toggle switched on" loading="lazy" data-loc>
           <figcaption data-i18n-html="g4.cap1"><span class="pill on">ON</span> The blocked count jumps immediately, and a matching "also block the apps" row appears.</figcaption>
         </figure>
         <figure>
@@ -339,7 +343,7 @@
       <p class="lede" data-i18n="g5.lede1">Anything the categories don't cover, blocked by name.</p>
       <div class="shots">
         <figure>
-          <img src="img/08-add-websites.png" alt="Add websites field with comma-separated domain entry and Save button" loading="lazy">
+          <img src="img/08-add-websites.png" alt="Add websites field with comma-separated domain entry and Save button" loading="lazy" data-loc>
           <figcaption data-i18n-html="g5.cap1"><b>Type domains separated by commas.</b> Subdomains are included automatically — <code>example.com</code> also covers <code>shop.example.com</code>.</figcaption>
         </figure>
       </div>
@@ -359,7 +363,7 @@
       </p>
       <div class="shots">
         <figure>
-          <img src="img/09-block-apps.png" alt="Block apps section listing social media, entertainment and games and betting apps" loading="lazy">
+          <img src="img/09-block-apps.png" alt="Block apps section listing social media, entertainment and games and betting apps" loading="lazy" data-loc>
           <figcaption data-i18n-html="g6.cap1"><b>Ready-made groups</b> — social media, entertainment, and games &amp; betting (Free Fire, PUBG, Ludo, Teen Patti, Dream11), plus <b>Choose apps</b> to pick your own.</figcaption>
         </figure>
       </div>
@@ -381,7 +385,7 @@
       </p>
       <div class="shots">
         <figure>
-          <img src="img/13-always-on-vpn.png" alt="Make protection stick section explaining always-on VPN, plus uninstall protection below" loading="lazy">
+          <img src="img/13-always-on-vpn.png" alt="Make protection stick section explaining always-on VPN, plus uninstall protection below" loading="lazy" data-loc>
           <figcaption data-i18n-html="g7.cap1"><b>Open VPN settings</b>, tap the gear next to Safe World, then turn on <b>both</b> switches: <em>Always-on VPN</em> and <em>Block connections without VPN</em>.</figcaption>
         </figure>
       </div>
@@ -399,7 +403,7 @@
       <p class="lede" data-i18n="g8.lede1">Makes Safe World harder to delete in a moment of temptation.</p>
       <div class="shots">
         <figure>
-          <img src="img/14-device-admin-prompt.png" alt="Android Activate device admin app prompt for Safe World" loading="lazy">
+          <img src="img/14-device-admin-prompt.png" alt="Android Activate device admin app prompt for Safe World" loading="lazy" data-loc>
           <figcaption data-i18n-html="g8.cap1"><b>Android's own confirmation.</b> Note what it says: Safe World asks for <em>no other permission</em> — it cannot lock, wipe, or monitor the device.</figcaption>
         </figure>
       </div>
@@ -419,7 +423,7 @@
       </p>
       <div class="shots">
         <figure>
-          <img src="img/20-pin-prompt.png" alt="Turn off protection PIN prompt with Forgot your PIN link" loading="lazy">
+          <img src="img/20-pin-prompt.png" alt="Turn off protection PIN prompt with Forgot your PIN link" loading="lazy" data-loc>
           <figcaption data-i18n-html="g9.cap1"><b>Every weakening funnels through this one dialog</b>, so no screen can accidentally skip the gate.</figcaption>
         </figure>
       </div>
@@ -437,15 +441,15 @@
       <p class="lede" data-i18n="g10.lede1">The second tab. Everything here is housekeeping rather than blocking.</p>
       <div class="shots">
         <figure>
-          <img src="img/15-settings-top.png" alt="Settings screen showing language options and PIN section" loading="lazy">
+          <img src="img/15-settings-top.png" alt="Settings screen showing language options and PIN section" loading="lazy" data-loc>
           <figcaption data-i18n-html="g10.cap1"><b>Language</b> (English, বাংলা, Español, العربية, or follow the phone) and <b>Change PIN</b> / <b>new recovery code</b>.</figcaption>
         </figure>
         <figure>
-          <img src="img/16-settings-mid.png" alt="Always allow list and rate the app section" loading="lazy">
+          <img src="img/16-settings-mid.png" alt="Always allow list and rate the app section" loading="lazy" data-loc>
           <figcaption data-i18n-html="g10.cap2"><b>Always allow</b> — one domain per line. This <em>wins over everything</em>, including the categories, so it's PIN-gated.</figcaption>
         </figure>
         <figure>
-          <img src="img/17-settings-bottom.png" alt="App version section showing an available update" loading="lazy">
+          <img src="img/17-settings-bottom.png" alt="App version section showing an available update" loading="lazy" data-loc>
           <figcaption data-i18n-html="g10.cap3"><b>App version.</b> Checks for a newer build and installs it, with Android asking permission first.</figcaption>
         </figure>
       </div>
@@ -461,7 +465,7 @@
       </p>
       <div class="shots">
         <figure>
-          <img src="img/23-extra-lists-offer.png" alt="Block even more sites offer screen" loading="lazy">
+          <img src="img/23-extra-lists-offer.png" alt="Block even more sites offer screen" loading="lazy" data-loc>
           <figcaption data-i18n-html="g11.cap1"><b>About 927 thousand more sites, ~18 MB</b>, downloaded over Wi-Fi when possible. <b>Not now</b> is a real answer — the app works fully without them.</figcaption>
         </figure>
       </div>
@@ -947,6 +951,21 @@
     document.querySelectorAll("[data-i18n-html]").forEach(function (el) {
       var v = dict[el.getAttribute("data-i18n-html")];
       if (v !== undefined) el.innerHTML = v;
+    });
+    // Screens of the app itself exist in every language; the browser shots
+    // (Wikipedia, Facebook, Chrome's error page) are third-party and stay as-is.
+    document.querySelectorAll("img[data-loc]").forEach(function (img) {
+      var file = img.getAttribute("src").split("/").pop();
+      img.src = lang === "en" ? "img/" + file : "img/" + lang + "/" + file;
+    });
+
+    // The narration is English only, so surface the matching subtitle track and
+    // switch it on automatically whenever the page is in another language.
+    document.querySelectorAll("video").forEach(function (v) {
+      var tt = v.textTracks;
+      for (var i = 0; i < tt.length; i++) {
+        tt[i].mode = (tt[i].language === lang && lang !== "en") ? "showing" : "disabled";
+      }
     });
     document.documentElement.lang = lang;
     document.documentElement.dir = rtl.indexOf(lang) !== -1 ? "rtl" : "ltr";

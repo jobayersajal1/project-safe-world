@@ -11,6 +11,7 @@
 		0E716AA0D0B008B8FD7C7587 /* SafeWorldCore in Frameworks */ = {isa = PBXBuildFile; productRef = 536DD97AFB4B13C79FEDD36E /* SafeWorldCore */; };
 		12885848E460804ABAE6EF03 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2430922C36E9B43E3F5235D /* SettingsStore.swift */; };
 		1425531E1F858527A99F103F /* blockerList.json in Resources */ = {isa = PBXBuildFile; fileRef = 3EBBC75F37013962EC7F0821 /* blockerList.json */; };
+		177BCBB5877184266336619B /* Brand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6C74602FCB3D949B4D25F0 /* Brand.swift */; };
 		178C421895CC48C9EAC21521 /* PinStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7135D56A17CF762FD7EC8CE0 /* PinStore.swift */; };
 		1806B910C8005E974BBF5A40 /* SafeWorldApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888922C535B0B08BFF28D2B0 /* SafeWorldApp.swift */; };
 		1A1136A6B075FC325B413E0E /* CountFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B99E8E78D3EC58CFD0B84B /* CountFormat.swift */; };
@@ -81,6 +82,7 @@
 		53EFA2470BC17495A3A21312 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		5802E650C1A5840112BE70F9 /* SafeWorldTunnel.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = SafeWorldTunnel.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		62B99E8E78D3EC58CFD0B84B /* CountFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountFormat.swift; sourceTree = "<group>"; };
+		6C6C74602FCB3D949B4D25F0 /* Brand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Brand.swift; sourceTree = "<group>"; };
 		7135D56A17CF762FD7EC8CE0 /* PinStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinStore.swift; sourceTree = "<group>"; };
 		7BE836801A19619F4AE0F4F6 /* SafeWorldCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SafeWorldCore; path = SafeWorldCore; sourceTree = SOURCE_ROOT; };
 		863B9431E0AC3458B7A8034E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -146,6 +148,7 @@
 			isa = PBXGroup;
 			children = (
 				863B9431E0AC3458B7A8034E /* Assets.xcassets */,
+				6C6C74602FCB3D949B4D25F0 /* Brand.swift */,
 				F6A6533E351B8748B879804F /* ContentBlockerSync.swift */,
 				62B99E8E78D3EC58CFD0B84B /* CountFormat.swift */,
 				92613E5F7D7C1F1B45177ED5 /* Info.plist */,
@@ -362,6 +365,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1E4D618E37199075A18AB258 /* AppBlockSection.swift in Sources */,
+				177BCBB5877184266336619B /* Brand.swift in Sources */,
 				D0C998984D21D36F1AB5804B /* ContentBlockerSync.swift in Sources */,
 				1A1136A6B075FC325B413E0E /* CountFormat.swift in Sources */,
 				3B7555576DB3C61D6F3BBC08 /* HomeView.swift in Sources */,
@@ -488,7 +492,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				MARKETING_VERSION = 0.4.1;
+				MARKETING_VERSION = 0.4.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -554,7 +558,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				MARKETING_VERSION = 0.4.1;
+				MARKETING_VERSION = 0.4.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;

@@ -10,58 +10,58 @@
 <style>
   :root {
     color-scheme: dark;
-    --bg: #12161c;
-    --bg-raised: #1a2029;
-    --bg-sunken: #0d1015;
-    --ink: #edebe4;
-    --ink-dim: #9ba3ae;
-    --accent: #e3a542;
-    --accent-ink: #241704;
-    --cloud: #6f92b8;
-    --line: #262d38;
-    --ok: #5fae94;
-    --danger: #c9584a;
-    --shadow: rgba(0, 0, 0, 0.35);
+    --bg: #14110d;
+    --bg-raised: #1d1913;
+    --bg-sunken: #0d0b08;
+    --ink: #eae2d6;
+    --ink-dim: #a79c8c;
+    --accent: #d8b478;
+    --accent-ink: #2c1f06;
+    --cloud: #9aa98d;
+    --line: #2b251c;
+    --ok: #9fb88c;
+    --danger: #d19183;
+    --shadow: rgba(0, 0, 0, 0.4);
 
     --font-display: "Iowan Old Style", "Palatino Linotype", Georgia, "Noto Serif", serif;
     --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
     --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Noto Sans Mono", monospace;
 
     --measure: 42rem;
-    --radius: 14px;
+    --radius: 20px;
   }
 
   :root[data-theme="light"] {
     color-scheme: light;
-    --bg: #eef1f4;
-    --bg-raised: #ffffff;
-    --bg-sunken: #e3e8ed;
-    --ink: #1b222c;
-    --ink-dim: #566072;
-    --accent: #b5731a;
+    --bg: #f4efe6;
+    --bg-raised: #fdfbf7;
+    --bg-sunken: #eae3d6;
+    --ink: #221d16;
+    --ink-dim: #6a6153;
+    --accent: #8a6a34;
     --accent-ink: #ffffff;
-    --cloud: #3a6089;
-    --line: #d7dee6;
-    --ok: #2f7a5e;
-    --danger: #b23f30;
-    --shadow: rgba(30, 40, 55, 0.1);
+    --cloud: #5c6b52;
+    --line: #e0d7c7;
+    --ok: #4f6b43;
+    --danger: #9b4034;
+    --shadow: rgba(60, 48, 30, 0.09);
   }
 
   @media (prefers-color-scheme: light) {
     :root:not([data-theme="dark"]) {
       color-scheme: light;
-      --bg: #eef1f4;
-      --bg-raised: #ffffff;
-      --bg-sunken: #e3e8ed;
-      --ink: #1b222c;
-      --ink-dim: #566072;
-      --accent: #b5731a;
+      --bg: #f4efe6;
+      --bg-raised: #fdfbf7;
+      --bg-sunken: #eae3d6;
+      --ink: #221d16;
+      --ink-dim: #6a6153;
+      --accent: #8a6a34;
       --accent-ink: #ffffff;
-      --cloud: #3a6089;
-      --line: #d7dee6;
-      --ok: #2f7a5e;
-      --danger: #b23f30;
-      --shadow: rgba(30, 40, 55, 0.1);
+      --cloud: #5c6b52;
+      --line: #e0d7c7;
+      --ok: #4f6b43;
+      --danger: #9b4034;
+      --shadow: rgba(60, 48, 30, 0.09);
     }
   }
 
@@ -74,11 +74,12 @@
     background: var(--bg);
     color: var(--ink);
     font-family: var(--font-body);
-    line-height: 1.55;
+    line-height: 1.65;
     -webkit-font-smoothing: antialiased;
   }
 
-  h1, h2, h3 { font-family: var(--font-display); font-weight: 600; text-wrap: balance; margin: 0; }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 600; text-wrap: balance; margin: 0;
+               letter-spacing: -0.015em; line-height: 1.2; }
   p { margin: 0; }
   a { color: inherit; }
 
@@ -518,6 +519,10 @@
       <div class="video-wrap reveal">
         <video controls preload="none" playsinline poster="guide/video/poster.jpg">
           <source src="guide/video/safe-world-tutorial.mp4" type="video/mp4">
+          <track kind="subtitles" src="guide/video/tutorial.en.vtt" srclang="en" label="English" default>
+          <track kind="subtitles" src="guide/video/tutorial.bn.vtt" srclang="bn" label="বাংলা">
+          <track kind="subtitles" src="guide/video/tutorial.es.vtt" srclang="es" label="Español">
+          <track kind="subtitles" src="guide/video/tutorial.ar.vtt" srclang="ar" label="العربية">
           <a href="guide/video/safe-world-tutorial.mp4" data-i18n="tutorial.fallback">Download the tutorial video</a>
         </video>
         <p class="video-note">
@@ -1209,6 +1214,15 @@
     document.querySelectorAll("[data-i18n]").forEach(function (el) {
       var key = el.getAttribute("data-i18n");
       if (dict[key] !== undefined) el.textContent = dict[key];
+    });
+
+    // The narration is English only, so surface the matching subtitle track and
+    // switch it on automatically whenever the page is in another language.
+    document.querySelectorAll("video").forEach(function (v) {
+      var tt = v.textTracks;
+      for (var i = 0; i < tt.length; i++) {
+        tt[i].mode = (tt[i].language === lang && lang !== "en") ? "showing" : "disabled";
+      }
     });
     document.documentElement.lang = lang;
     document.documentElement.dir = rtlLangs.indexOf(lang) !== -1 ? "rtl" : "ltr";
