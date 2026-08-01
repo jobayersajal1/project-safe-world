@@ -129,29 +129,23 @@ Three DNS bypasses remain, and only one is addressable:
 
 ### Blocking an app outright, regardless of DNS
 
-`ServiceRanges` routes a service's own IP prefixes into the tunnel and drops every packet destined
-for them. Because it never looks past the IPv4 header it covers TCP, UDP and QUIC alike, and because
-it never involves a name it is immune to DNS-over-HTTPS, Private DNS, and addresses the app already
-knows. Verified from the device by raw TCP connect, with no DNS in the path: `31.13.71.36` went from
-CONNECTED to BLOCKED while GitHub stayed reachable, and `ip route get` confirms Meta's prefixes
-resolve to `tun0` while everything else stays on `eth0`.
+Blocked apps are dropped by the **UID that owns the packet**, not by any name they look up. Because
+that decision never involves a domain it is immune to DNS-over-HTTPS, Private DNS, and addresses the
+app already knows; because it never looks past the IP header it covers TCP, UDP and QUIC alike. It
+needs `TunnelMode.FullTunnel`, since a packet can only be dropped by us if it is routed through us.
 
-Three things about this are deliberate and should not be "fixed" later:
+**This replaced IP-range blocking, which is gone.** That mechanism routed an operator's published
+prefixes into the tunnel and dropped everything destined for them. It worked, and it could not be
+made correct: addresses are shared, so Meta's ranges carry WhatsApp and Messenger, and blocking
+Facebook and Instagram meant taking away the two apps people use to reach their family. YouTube and
+Twitch could not be done at all — YouTube shares Google's edge with Search, Gmail and Play, Twitch
+runs on AWS — and the prefixes went stale as operators added ranges.
 
-- **It blocks by address, so it blocks everything on that address.** Meta's ranges carry WhatsApp and
-  Messenger. The toggle says so before it is switched on; taking WhatsApp away silently would be
-  indefensible.
-- **YouTube and Twitch are deliberately absent.** YouTube shares Google's edge with Search, Gmail and
-  Play, and Twitch runs on AWS. Blocking those prefixes takes the phone off the internet. They stay
-  DNS-only, and `ServiceRangesTest` asserts that no shipped prefix covers Google or AWS — a typo
-  there would brick a device.
-- **Ranges go stale.** A new prefix means that traffic is missed until the list is updated, which
-  degrades to the DNS blocking already in place rather than failing loudly.
-
-Changing which services are blocked rebuilds the tunnel via `ACTION_REFRESH`, because routes are
-fixed at `establish()`. It re-establishes in place and never touches `settings.enabled` — doing this
-by toggling protection off and on left protection off, so switching a *stronger* block on turned
-blocking off entirely.
+Blocking by UID has none of those problems: it hits the app that was named and nothing else, which
+is why the messaging apps in `AppGroups` can be excluded and *stay* excluded. Changing the selection
+rebuilds the tunnel via `ACTION_REFRESH`, because routes are fixed at `establish()`. It
+re-establishes in place and never touches `settings.enabled` — doing this by toggling protection off
+and on left protection off, so switching a *stronger* block on turned blocking off entirely.
 
 The remaining case — cutting off an app that shares infrastructure with something essential — needs
 per-UID filtering, which means routing `0.0.0.0/0` and writing a userspace TCP/UDP forwarder for all

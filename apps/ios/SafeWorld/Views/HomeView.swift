@@ -217,8 +217,7 @@ struct HomeView: View {
                 .disabled(!store.settings.enabled)
 
             // Labelled in the row rather than by the section header, which now covers both this
-            // and the apps editor above — two unlabelled text boxes one under the other is not a
-            // form anyone can read.
+            // and the app picker above.
             VStack(alignment: .leading, spacing: 6) {
                 Text(L("add_websites_label"))
 

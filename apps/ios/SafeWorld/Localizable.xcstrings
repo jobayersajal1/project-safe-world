@@ -624,35 +624,6 @@
         }
       }
     },
-    "appblock_picked_help": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "One app ID per line, e.g. com.burbn.instagram. iOS does not let an app see what else is installed, so these have to be typed."
-          }
-        },
-        "bn": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "প্রতি লাইনে একটি অ্যাপ আইডি, যেমন com.burbn.instagram। iOS কোনো অ্যাপকে অন্য কী কী ইনস্টল আছে দেখতে দেয় না, তাই এগুলো লিখে দিতে হয়।"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Un ID de app por línea, p. ej. com.burbn.instagram. iOS no deja que una app vea qué más hay instalado, así que hay que escribirlos."
-          }
-        },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "معرّف تطبيق واحد في كل سطر، مثل com.burbn.instagram. لا يسمح iOS لأي تطبيق برؤية ما هو مثبّت، لذا يجب كتابتها."
-          }
-        }
-      }
-    },
     "appblock_remove_pin_title": {
       "extractionState": "manual",
       "localizations": {

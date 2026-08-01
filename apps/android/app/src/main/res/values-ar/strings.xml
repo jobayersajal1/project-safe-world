@@ -173,13 +173,6 @@
     <string name="private_dns_title">خاصية DNS الخاص تمنع عمل Safe World</string>
     <string name="private_dns_body">يرسل هاتفك طلبات المواقع مشفّرة إلى مزوّد آخر، حيث لا يستطيع Safe World فحصها. لن يعمل الحظر حتى تضبط DNS الخاص على إيقاف أو تلقائي.</string>
     <string name="private_dns_action">افتح إعدادات الشبكة</string>
-    <string name="fullblock_meta">احظر أيضًا تطبيقَي Facebook وInstagram</string>
-    <string name="fullblock_netflix">احظر أيضًا تطبيق Netflix</string>
-    <string name="fullblock_generic">احظر التطبيق نفسه أيضًا</string>
-    <string name="fullblock_description">يحظر اتصالات التطبيق نفسه، وليس موقعه فقط — ويعمل حتى إن تجنّب التطبيق عمليات البحث المعتادة.</string>
-    <string name="fullblock_description_collateral">يحظر اتصالات التطبيق نفسه، وليس موقعه فقط. وهذا يحظر أيضًا %1$s لأنها تعمل على الخوادم نفسها.</string>
-    <string name="fullblock_off_pin_title">إيقاف حظر التطبيق؟</string>
-    <string name="fullblock_off_pin_message">أدخل رمز PIN للسماح لهذا التطبيق بالاتصال مجددًا.</string>
 
     <string name="appblock_choose_label">اختيار تطبيقات لحظرها</string>
     <string name="appblock_choose_summary">%1$s مختارة، منها %2$s على هذا الهاتف</string>

@@ -12,7 +12,6 @@ import com.safeworld.core.FuseDomainSet
 import com.safeworld.core.HashedDomainSet
 import com.safeworld.core.UnionDomainSet
 import com.safeworld.core.Matcher
-import com.safeworld.core.ServiceRanges
 import com.safeworld.core.Settings
 import com.safeworld.app.security.PinAttempt
 import com.safeworld.app.security.PinHasher
@@ -178,34 +177,6 @@ class SettingsStore private constructor(context: Context) {
         subscriptionSets = sets
         blocklists = mergeBlocklists(_remoteDomains.value)
         _blocklistRevision.value += 1
-    }
-
-    /**
-     * Services the user has asked to block completely, not just by domain.
-     *
-     * Gated on both the per-service opt-in *and* its category being on, so turning Social media off
-     * stops the address blocking too rather than leaving an invisible rule behind.
-     */
-    fun fullyBlockedServices(): List<ServiceRanges.Service> {
-        val enabled = prefs.getStringSet(KEY_FULL_BLOCK, emptySet()).orEmpty()
-        val settings = _settings.value
-        return ServiceRanges.ALL.filter {
-            it.id in enabled && settings.categories[it.category] == true
-        }
-    }
-
-    fun isFullyBlocked(id: String): Boolean =
-        prefs.getStringSet(KEY_FULL_BLOCK, emptySet()).orEmpty().contains(id)
-
-    /**
-     * Address-level blocking only takes effect when the tunnel is rebuilt, because the routes are
-     * fixed at `establish()`. Callers restart it; this only records the choice.
-     */
-    fun setFullyBlocked(id: String, on: Boolean) {
-        val next = prefs.getStringSet(KEY_FULL_BLOCK, emptySet()).orEmpty().toMutableSet()
-        if (on) next.add(id) else next.remove(id)
-        prefs.edit().putStringSet(KEY_FULL_BLOCK, next).apply()
-        _settings.value = _settings.value.copy()
     }
 
     // MARK: App blocking
@@ -539,7 +510,6 @@ class SettingsStore private constructor(context: Context) {
         private const val KEY_SETTINGS = "settings"
         private const val KEY_STATS = "stats"
         private const val KEY_REMOTE_DOMAINS = "remoteDomains"
-        private const val KEY_FULL_BLOCK = "fullyBlockedServices"
         private const val KEY_BLOCKED_APP_GROUPS = "blockedAppGroups"
         private const val KEY_BLOCKED_PACKAGES = "blockedPackages"
         private const val KEY_FULL_TUNNEL_ACK = "fullTunnelAcknowledged"

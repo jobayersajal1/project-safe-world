@@ -181,13 +181,6 @@
     <string name="private_dns_title">Private DNS is blocking Safe World</string>
     <string name="private_dns_body">Your phone is sending web lookups encrypted to another provider, where Safe World can\'t check them. Blocking will not work until Private DNS is set to Off or Automatic.</string>
     <string name="private_dns_action">Open network settings</string>
-    <string name="fullblock_meta">Also block the Facebook &amp; Instagram apps</string>
-    <string name="fullblock_netflix">Also block the Netflix app</string>
-    <string name="fullblock_generic">Also block the app itself</string>
-    <string name="fullblock_description">Blocks the app\'s own connections, not just its website — works even if the app avoids normal web lookups.</string>
-    <string name="fullblock_description_collateral">Blocks the app\'s own connections, not just its website. This also blocks %1$s, which run on the same servers.</string>
-    <string name="fullblock_off_pin_title">Stop blocking the app?</string>
-    <string name="fullblock_off_pin_message">Enter your PIN to let this app connect again.</string>
 
     <!--
         App blocking. Deliberately never says "we route all your traffic" without also saying

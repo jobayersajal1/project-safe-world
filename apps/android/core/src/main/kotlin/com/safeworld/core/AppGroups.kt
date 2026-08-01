@@ -9,10 +9,11 @@ package com.safeworld.core
  * to resolve what you typed, so websites are covered. The Facebook app, the YouTube app and Free
  * Fire are not.
  *
- * [ServiceRanges] answers this for two services by dropping their published address ranges, and
- * that is as far as address blocking goes: YouTube shares Google's edge with Search, Gmail and Play,
- * so dropping those prefixes would take the phone off the internet. The only rule that survives
- * every evasion is "this UID sends nothing", and that is what this file feeds.
+ * This used to be answered by dropping the operator's published IP ranges, which worked and cost
+ * too much: addresses are shared, so blocking Meta's prefixes took WhatsApp and Messenger with
+ * them, and YouTube shares Google's edge with Search, Gmail and Play. The only rule that survives
+ * every evasion *and* hits only what was asked for is "this UID sends nothing", which is what this
+ * file feeds. The range list is gone; this replaced it.
  *
  * **These are package names, not domains.** Nothing here is list data, so this file is ordinary
  * source and carries none of the constraints described in the repo's `.gitignore`.
@@ -59,10 +60,12 @@ object AppGroups {
      *
      * WhatsApp, Messenger, Signal and Telegram are how people reach their family and their job.
      * Someone asking to block social media is asking to stop scrolling, not to become
-     * uncontactable, and taking those away silently would be the app overreaching. `ServiceRanges`
-     * already warns that Meta's *address* ranges carry WhatsApp and Messenger whether we like it or
-     * not; that is a limit of address blocking, not a licence to do the same here where we have the
-     * precision to be correct.
+     * uncontactable, and taking those away silently would be the app overreaching.
+     *
+     * This is the whole reason the IP-range blocking that used to sit beside this was deleted:
+     * Meta's addresses carry WhatsApp and Messenger, so that mechanism could not block Facebook
+     * and Instagram without taking the messengers too. Blocking by UID can, so the Facebook and
+     * Instagram apps go dark while WhatsApp and Messenger keep working.
      */
     val ALL: List<AppEntry> = listOf(
         // MARK: Social

@@ -46,7 +46,6 @@ import com.safeworld.core.AppGroups.AppGroup
 import com.safeworld.core.Categories
 import com.safeworld.core.CategoryId
 import com.safeworld.core.Matcher
-import com.safeworld.core.ServiceRanges
 
 /**
  * Status, how much is covered, what else can be added, and the two pieces of
@@ -145,7 +144,8 @@ fun HomeScreen(
         Text(stringResource(R.string.block_more_title), style = MaterialTheme.typography.titleSmall)
         Card {
             Column(Modifier.padding(vertical = 8.dp)) {
-                for (category in subjectOrder()) {
+                val subjects = subjectOrder()
+                subjects.forEachIndexed { index, category ->
                     SubjectRow(
                         store = store,
                         settings = settings,
@@ -154,10 +154,9 @@ fun HomeScreen(
                         requestPin = requestPin,
                         withConsent = ::withConsent,
                     )
-                    HorizontalDivider()
+                    // Between rows only — a divider under the last one just underlines the card.
+                    if (index < subjects.lastIndex) HorizontalDivider()
                 }
-
-                FullBlockRows(store = store, settings = settings, requestPin = requestPin)
             }
         }
 
@@ -648,70 +647,5 @@ private fun PrivateDnsWarning() {
                 Text(stringResource(R.string.private_dns_action))
             }
         }
-    }
-}
-
-/**
- * Per-service "block the app itself, not just its site".
- *
- * Only shown for a service whose category is already on, because that is the thing it strengthens —
- * offering it while Social media is off would be offering to block nothing.
- *
- * The label says what it costs. Blocking by address means blocking everything the operator runs on
- * those addresses, and Meta's carry WhatsApp and Messenger. Someone who needs WhatsApp must find that
- * out here rather than by losing it.
- *
- * Changing this rebuilds the tunnel: routes are fixed when `establish()` is called, so a new range
- * cannot take effect until it is established again.
- */
-@Composable
-private fun FullBlockRows(
-    store: SettingsStore,
-    settings: com.safeworld.core.Settings,
-    requestPin: RequestPin,
-) {
-    val context = LocalContext.current
-    val offTitle = stringResource(R.string.fullblock_off_pin_title)
-    val offMessage = stringResource(R.string.fullblock_off_pin_message)
-
-    for (service in ServiceRanges.ALL) {
-        if (settings.categories[service.category] != true) continue
-
-        val label = stringResource(
-            when (service.id) {
-                "meta" -> R.string.fullblock_meta
-                "netflix" -> R.string.fullblock_netflix
-                else -> R.string.fullblock_generic
-            },
-        )
-        val description = if (service.alsoBlocks.isEmpty()) {
-            stringResource(R.string.fullblock_description)
-        } else {
-            stringResource(
-                R.string.fullblock_description_collateral,
-                service.alsoBlocks.joinToString(", "),
-            )
-        }
-
-        var checked by remember(service.id, settings) {
-            mutableStateOf(store.isFullyBlocked(service.id))
-        }
-
-        ToggleRow(
-            label = label,
-            description = description,
-            checked = checked,
-            onCheckedChange = { on ->
-                val apply = {
-                    store.setFullyBlocked(service.id, on)
-                    checked = on
-                    // Rebuilds the tunnel with the new routes without touching whether protection
-                    // is on. Toggling protection off and on to achieve this left it off.
-                    SafeWorldVpnService.refresh(context)
-                }
-                if (on) apply() else requestPin(offTitle, offMessage, apply)
-            },
-        )
-        HorizontalDivider()
     }
 }

@@ -23,7 +23,6 @@ import com.safeworld.app.R
 import com.safeworld.app.SettingsStore
 import com.safeworld.app.SubscriptionStore
 import com.safeworld.core.Matcher
-import com.safeworld.core.ServiceRanges
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.flow.StateFlow
@@ -70,15 +69,6 @@ class SafeWorldVpnService : VpnService() {
     }
 
     private lateinit var store: SettingsStore
-
-    /**
-     * Address ranges to drop outright, rebuilt whenever settings change.
-     *
-     * Empty unless the user has switched on full blocking for a service, so the packet loop pays
-     * nothing for a feature that is off.
-     */
-    @Volatile
-    private var blockedRanges: ServiceRanges.Matcher = ServiceRanges.Matcher.EMPTY
 
     /**
      * UIDs to blackhole, resolved at [start] and refreshed by `ACTION_REFRESH`.
@@ -238,19 +228,6 @@ class SafeWorldVpnService : VpnService() {
                 builder.addAddress(TUN_ADDRESS_V6, TUN_PREFIX_LENGTH_V6)
                 builder.addRoute("::", 0)
             }.onFailure { Log.w(TAG, "no IPv6 on this tunnel", it) }
-        }
-
-        // Services the user chose to block outright. Their prefixes are routed in so the packets
-        // arrive here to be dropped; without the route they would never enter the tunnel at all.
-        val services = SettingsStore.get(this).fullyBlockedServices()
-        val cidrs = services.flatMap { it.cidrs }
-        blockedRanges = ServiceRanges.Matcher(cidrs)
-        for (cidr in cidrs) {
-            val slash = cidr.indexOf('/')
-            if (slash <= 0) continue
-            val prefix = cidr.substring(0, slash)
-            val length = cidr.substring(slash + 1).toIntOrNull() ?: continue
-            runCatching { builder.addRoute(prefix, length) }
         }
 
         // Keep our own remote-list fetches out of the tunnel we just created.
@@ -416,23 +393,6 @@ class SafeWorldVpnService : VpnService() {
     }
 
     private fun handlePacket(buffer: ByteArray, length: Int, output: FileOutputStream) {
-        // Address-level blocking, before anything DNS-shaped is looked for.
-        //
-        // This is the only rule here that a native app cannot get around. Everything else in this
-        // service works by reading the question out of a DNS packet, which an app avoids simply by
-        // not asking us — DNS-over-HTTPS, Private DNS, or an address it already knows. These packets
-        // are on their way to the service's own addresses, so dropping them ends the connection
-        // whatever the app did to find it.
-        //
-        // Applies to every protocol, TCP and QUIC included, because it never looks past the IPv4
-        // header. Dropping means writing nothing: the app sees a connection that goes nowhere.
-        val ranges = blockedRanges
-        if (ranges.size > 0 && length >= IPV4_HEADER_MIN && (buffer[0].toInt() shr 4 and 0xF) == 4) {
-            if (ranges.contains(ServiceRanges.Matcher.addressAt(buffer, IPV4_DESTINATION_OFFSET))) {
-                return
-            }
-        }
-
         val datagram = Ipv4Udp.parse(buffer, length) ?: return
         if (datagram.destinationPort != DNS_PORT) return
 
@@ -654,8 +614,6 @@ class SafeWorldVpnService : VpnService() {
         private const val IPV4_HOST_PREFIX_LENGTH = 32
         private const val MTU = 1500
         private const val DNS_PORT = 53
-        private const val IPV4_HEADER_MIN = 20
-        private const val IPV4_DESTINATION_OFFSET = 16
         private const val MAX_DNS_RESPONSE = 4096
         private const val UPSTREAM_TIMEOUT_MS = 5_000
         private const val FORWARDER_THREADS = 4
