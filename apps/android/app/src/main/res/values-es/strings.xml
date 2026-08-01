@@ -201,6 +201,5 @@
     <string name="blocked_more_hint">Bloquea más apps y webs dañinas abajo</string>
     <string name="settings_theme">Apariencia</string>
     <string name="settings_dark_theme">Tema oscuro</string>
-    <string name="settings_theme_following">Sigue tu teléfono hasta que elijas</string>
-    <string name="settings_theme_chosen">Tu elección, en cualquier teléfono</string>
+    <string name="settings_theme_description">Más cómodo para la vista de noche</string>
 </resources>

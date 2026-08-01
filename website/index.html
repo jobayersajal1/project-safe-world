@@ -11,40 +11,21 @@
   // Runs before the stylesheet, so a stored preference is on the element before first paint —
   // otherwise the page flashes the system theme for a frame on every load.
   //
-  // No stored preference means *follow the system*, which the CSS already does on its own; the
-  // attribute is only ever set when the user has explicitly chosen. The default when the system
-  // expresses no preference is dark, because :root is the dark block.
+  // No stored preference means light, which is what :root already is — so the attribute is only
+  // ever set to opt *into* dark.
   try {
-    var t = localStorage.getItem("sw-theme");
-    if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+    if (localStorage.getItem("sw-theme") === "dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+    }
   } catch (e) {}
 </script>
 
 <style>
+  /* Light is the default, deliberately. The system preference is *not* consulted: a visitor
+     landing here for the first time should see the same page as everyone else, and the toggle is
+     how anyone who wants dark says so. Following the system would mean the site looked different
+     to different people with no way to know which they got. */
   :root {
-    color-scheme: dark;
-    --bg: #14110d;
-    --bg-raised: #1d1913;
-    --bg-sunken: #0d0b08;
-    --ink: #eae2d6;
-    --ink-dim: #a79c8c;
-    --accent: #d8b478;
-    --accent-ink: #2c1f06;
-    --cloud: #9aa98d;
-    --line: #2b251c;
-    --ok: #9fb88c;
-    --danger: #d19183;
-    --shadow: rgba(0, 0, 0, 0.4);
-
-    --font-display: "Iowan Old Style", "Palatino Linotype", Georgia, "Noto Serif", serif;
-    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
-    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Noto Sans Mono", monospace;
-
-    --measure: 42rem;
-    --radius: 20px;
-  }
-
-  :root[data-theme="light"] {
     color-scheme: light;
     --bg: #f4efe6;
     --bg-raised: #fdfbf7;
@@ -58,24 +39,29 @@
     --ok: #4f6b43;
     --danger: #9b4034;
     --shadow: rgba(60, 48, 30, 0.09);
+
+    --font-display: "Iowan Old Style", "Palatino Linotype", Georgia, "Noto Serif", serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Noto Sans Mono", monospace;
+
+    --measure: 42rem;
+    --radius: 20px;
   }
 
-  @media (prefers-color-scheme: light) {
-    :root:not([data-theme="dark"]) {
-      color-scheme: light;
-      --bg: #f4efe6;
-      --bg-raised: #fdfbf7;
-      --bg-sunken: #eae3d6;
-      --ink: #221d16;
-      --ink-dim: #6a6153;
-      --accent: #8a6a34;
-      --accent-ink: #ffffff;
-      --cloud: #5c6b52;
-      --line: #e0d7c7;
-      --ok: #4f6b43;
-      --danger: #9b4034;
-      --shadow: rgba(60, 48, 30, 0.09);
-    }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #14110d;
+    --bg-raised: #1d1913;
+    --bg-sunken: #0d0b08;
+    --ink: #eae2d6;
+    --ink-dim: #a79c8c;
+    --accent: #d8b478;
+    --accent-ink: #2c1f06;
+    --cloud: #9aa98d;
+    --line: #2b251c;
+    --ok: #9fb88c;
+    --danger: #d19183;
+    --shadow: rgba(0, 0, 0, 0.4);
   }
 
   * { box-sizing: border-box; }
@@ -1281,30 +1267,24 @@
   var browserLang = (navigator.language || "en").slice(0, 2);
   applyLang(saved || (translations[browserLang] ? browserLang : "en"));
 
-  var themeMedia = window.matchMedia("(prefers-color-scheme: dark)");
-
-  // The button shows the theme you would switch *to*. Clicking always stores an explicit choice —
-  // there is no third "system" state to cycle through, because a toggle that silently lands back
-  // on "whatever the phone says" is the kind of control people press twice and give up on.
+  // Dark is opt-in: the attribute is present or it is not, and nothing here asks the system.
   var themeButton = document.getElementById("theme");
   function currentlyDark() {
-    var chosen = document.documentElement.getAttribute("data-theme");
-    if (chosen) return chosen === "dark";
-    return themeMedia.matches || !window.matchMedia("(prefers-color-scheme: light)").matches;
+    return document.documentElement.getAttribute("data-theme") === "dark";
   }
   function paintThemeButton() {
+    // The button offers the theme you would switch *to*.
     themeButton.setAttribute("data-shows", currentlyDark() ? "sun" : "moon");
   }
   themeButton.addEventListener("click", function () {
     var next = currentlyDark() ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", next);
+    if (next === "dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+    }
     try { localStorage.setItem("sw-theme", next); } catch (e) {}
     paintThemeButton();
-  });
-  // Follows the system live while no explicit choice has been made — someone whose phone flips to
-  // dark at sunset should see the page and the button change with it.
-  themeMedia.addEventListener("change", function () {
-    if (!document.documentElement.getAttribute("data-theme")) paintThemeButton();
   });
   paintThemeButton();
 

@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
@@ -121,12 +120,7 @@ fun SettingsScreen(
 
         Text(stringResource(R.string.settings_theme), style = MaterialTheme.typography.titleSmall)
         Card {
-            // A plain switch rather than a System/Light/Dark picker. Until it is touched the app
-            // follows the phone; touching it is what says "I want it this way regardless", and the
-            // switch then shows what is actually on screen. A third "System" option would be a
-            // state most people never choose and one more thing to explain.
             val darkPreference by store.darkTheme.collectAsStateWithLifecycle()
-            val systemDark = isSystemInDarkTheme()
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -139,16 +133,13 @@ fun SettingsScreen(
                         style = MaterialTheme.typography.bodyLarge,
                     )
                     Text(
-                        stringResource(
-                            if (darkPreference == null) R.string.settings_theme_following
-                            else R.string.settings_theme_chosen,
-                        ),
+                        stringResource(R.string.settings_theme_description),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
                 Switch(
-                    checked = darkPreference ?: systemDark,
+                    checked = darkPreference,
                     onCheckedChange = { store.setDarkTheme(it) },
                 )
             }

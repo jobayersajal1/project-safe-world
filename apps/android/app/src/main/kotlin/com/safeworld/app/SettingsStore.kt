@@ -482,18 +482,17 @@ class SettingsStore private constructor(context: Context) {
     // cross-platform `Settings` shape.
 
     /**
-     * Whether to force dark, force light, or follow the system.
+     * Whether to show the dark theme. **Off by default, and the system is not
+     * consulted.**
      *
-     * **Null means follow the system**, and that is the default. A phone that
-     * flips to dark at sunset should take the app with it; someone who wants it
-     * one way regardless says so, and then it stays said. When the system
-     * expresses no preference at all, `isSystemInDarkTheme()` reports false and
-     * Android's own default applies — the app does not second-guess it.
+     * Following the phone sounds thoughtful and reads badly here: two people
+     * opening the same app would see different things with no way to know
+     * which, and a parent checking a child's phone would find an app that does
+     * not look like the one on theirs. Light is what it is; dark is what you
+     * ask for, and having asked, it stays asked.
      */
-    private val _darkTheme = MutableStateFlow(
-        if (prefs.contains(KEY_DARK_THEME)) prefs.getBoolean(KEY_DARK_THEME, true) else null,
-    )
-    val darkTheme: StateFlow<Boolean?> = _darkTheme.asStateFlow()
+    private val _darkTheme = MutableStateFlow(prefs.getBoolean(KEY_DARK_THEME, false))
+    val darkTheme: StateFlow<Boolean> = _darkTheme.asStateFlow()
 
     fun setDarkTheme(dark: Boolean) {
         prefs.edit().putBoolean(KEY_DARK_THEME, dark).apply()

@@ -9,7 +9,6 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.compose.foundation.isSystemInDarkTheme
 import com.safeworld.app.ui.theme.SafeWorldTheme
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -102,9 +101,9 @@ class MainActivity : ComponentActivity() {
         observeLanguageChanges()
 
         setContent {
-            // Null means follow the system, which is the default — see `SettingsStore.darkTheme`.
+            // Light unless the user asked for dark — see `SettingsStore.darkTheme`.
             val darkPreference by store.darkTheme.collectAsStateWithLifecycle()
-            SafeWorldTheme(darkTheme = darkPreference ?: isSystemInDarkTheme()) {
+            SafeWorldTheme(darkTheme = darkPreference) {
                 SafeWorldApp(
                     store = store,
                     subscriptions = subscriptions,

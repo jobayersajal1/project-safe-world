@@ -209,6 +209,5 @@
     <string name="blocked_more_hint">احظر المزيد من التطبيقات والمواقع الضارة بالأسفل</string>
     <string name="settings_theme">المظهر</string>
     <string name="settings_dark_theme">الوضع الداكن</string>
-    <string name="settings_theme_following">يتبع هاتفك حتى تختار</string>
-    <string name="settings_theme_chosen">اختيارك، على كل هاتف</string>
+    <string name="settings_theme_description">أرفق بالعينين ليلًا</string>
 </resources>
