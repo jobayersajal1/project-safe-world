@@ -229,11 +229,12 @@ class SettingsStore private constructor(context: Context) {
     /**
      * Which app groups are switched on.
      *
-     * **Independent of the categories with the same names.** Blocking social
-     * *websites* and stopping the Facebook *app* from reaching the network are
-     * different decisions: the first is a DNS rule that costs nothing, the
-     * second routes every packet on the device through us. Tying them together
-     * would mean someone who wanted one had to accept the other.
+     * **Set alongside the category with the same name**, by the one switch that
+     * owns both — see `AppGroups.AppGroup`. Still stored separately rather than
+     * derived from `Settings.categories`, because this is what puts the device
+     * on the full tunnel: `TunnelMode.perAppSwitchesOn` reads these, so the
+     * expensive path stays keyed on an explicit fact that survives whatever the
+     * UI does with it.
      */
     fun blockedAppGroups(): Set<AppGroup> =
         prefs.getStringSet(KEY_BLOCKED_APP_GROUPS, emptySet())

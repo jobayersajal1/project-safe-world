@@ -19,18 +19,19 @@ struct HomeView: View {
     @EnvironmentObject private var gate: PinGate
     @StateObject private var tunnel = TunnelManager()
 
+    private let apps = BlockedAppStore()
+
     @State private var blockText = ""
+    @State private var showingConsent = false
+    @State private var pendingConsent: (() -> Void)?
 
     var body: some View {
         NavigationStack {
             Form {
                 protectionSection
                 blockedCountSection
-                optionalCategoriesSection
-                addWebsitesSection
-                // Its own section rather than more rows above: everything above is a Safari
-                // content-blocker rule and costs nothing, this needs the packet tunnel.
-                AppBlockSection(store: store, gate: gate)
+                subjectsSection
+                blockFurtherSection
                 safariSection
                 tunnelSection
 
@@ -42,6 +43,19 @@ struct HomeView: View {
             }
             .navigationTitle("Safe World")
             .onAppear { blockText = store.settings.customBlock.joined(separator: ", ") }
+            // Owned here rather than by the app rows, because two things now lead to the packet
+            // tunnel — the subject rows and the picked-apps editor — and one dialog answered once
+            // is the point.
+            .alert(L("appblock_consent_title"), isPresented: $showingConsent) {
+                Button(L("appblock_consent_cancel"), role: .cancel) { pendingConsent = nil }
+                Button(L("appblock_consent_accept")) {
+                    apps.fullTunnelAcknowledged = true
+                    pendingConsent?()
+                    pendingConsent = nil
+                }
+            } message: {
+                Text(L("appblock_consent_body"))
+            }
         }
     }
 
@@ -117,21 +131,31 @@ struct HomeView: View {
         }
     }
 
-    // MARK: Opt-in categories
+    // MARK: One subject, one switch
 
-    private var optionalCategoriesSection: some View {
+    /// Each row owns the websites **and** the apps for its subject.
+    ///
+    /// **These used to be two rows and are deliberately one.** Somebody who wants
+    /// social media gone does not want it gone in Safari and alive in the
+    /// Instagram app; splitting it meant five switches to express one intention,
+    /// and a half-set state that looked like protection.
+    ///
+    /// Games first — it is the one people come looking for.
+    private var subjectsSection: some View {
         Section(L("block_more_title")) {
-            ForEach(Categories.optional, id: \.id) { category in
+            ForEach(subjectOrder, id: \.id) { category in
+                let group = AppGroups.Group.allCases.first { $0.category == category.id }
                 let label = L("category_\(category.id.rawValue)_label")
+
                 Toggle(isOn: Binding(
-                    get: { store.settings.categories[category.id] ?? false },
-                    set: { on in
-                        gate.apply(
-                            to: store,
-                            title: L("category_off_pin_title", label),
-                            message: L("category_off_pin_message")
-                        ) { $0.categories[category.id] = on }
-                    }
+                    get: {
+                        // On only when both halves are. A row reading "on" while the app half was
+                        // off would claim to block Instagram on a phone where Instagram still
+                        // worked — the one thing this app must never say.
+                        (store.settings.categories[category.id] ?? false)
+                            && (group == nil || apps.enabledGroups.contains(group!))
+                    },
+                    set: { on in setSubject(category.id, group: group, on: on, label: label) }
                 )) {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(label)
@@ -145,24 +169,75 @@ struct HomeView: View {
         }
     }
 
-    // MARK: The user's own list
+    private var subjectOrder: [CategoryMeta] {
+        let preferred: [CategoryId] = [.games, .social, .entertainment]
+        return Categories.optional.sorted {
+            (preferred.firstIndex(of: $0.id) ?? preferred.count)
+                < (preferred.firstIndex(of: $1.id) ?? preferred.count)
+        }
+    }
 
+    /// Sets both halves together. Turning on costs the consent dialog once (the app half needs the
+    /// packet tunnel); turning off costs the PIN, like every other weakening on this screen.
+    private func setSubject(_ id: CategoryId, group: AppGroups.Group?, on: Bool, label: String) {
+        let apply = {
+            store.update { $0.categories[id] = on }
+            if let group { apps.setGroup(group, blocked: on) }
+        }
+        if on {
+            withConsent(needed: group != nil, apply)
+        } else {
+            gate.requiringPin(
+                title: L("category_off_pin_title", L("category_\(id.rawValue)_subject")),
+                message: L("category_off_pin_message"),
+                action: apply
+            )
+        }
+    }
+
+    /// Shown once, before the first thing that needs the packet tunnel.
+    private func withConsent(needed: Bool, _ apply: @escaping () -> Void) {
+        if !needed || apps.fullTunnelAcknowledged {
+            apply()
+        } else {
+            pendingConsent = apply
+            showingConsent = true
+        }
+    }
+
+    // MARK: Going further
+
+    /// What the three rows above don't cover: a specific app, or a site nobody has listed.
+    ///
     /// The block list lives here, not in Settings — it is the same `customBlock`
     /// either way, and two editors for one list is how they end up disagreeing.
-    private var addWebsitesSection: some View {
+    private var blockFurtherSection: some View {
         Section {
-            TextEditor(text: $blockText)
-                .frame(minHeight: 80)
-                .font(.system(.body, design: .monospaced))
+            PickedAppsEditor(apps: apps, gate: gate, withConsent: { withConsent(needed: true, $0) })
+                .disabled(!store.settings.enabled)
 
-            Button(L("add_websites_save"), action: saveBlockList)
-        } header: {
-            Text(L("add_websites_label"))
-        } footer: {
-            VStack(alignment: .leading, spacing: 4) {
+            // Labelled in the row rather than by the section header, which now covers both this
+            // and the apps editor above — two unlabelled text boxes one under the other is not a
+            // form anyone can read.
+            VStack(alignment: .leading, spacing: 6) {
+                Text(L("add_websites_label"))
+
+                TextEditor(text: $blockText)
+                    .frame(minHeight: 80)
+                    .font(.system(.body, design: .monospaced))
+
                 Text(L("add_websites_help"))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
                 Text(Language.plural("add_websites_count", store.settings.customBlock.count))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                Button(L("add_websites_save"), action: saveBlockList)
             }
+        } header: {
+            Text(L("block_further_title"))
         }
     }
 

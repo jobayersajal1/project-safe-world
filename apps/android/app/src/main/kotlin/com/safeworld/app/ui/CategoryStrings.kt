@@ -2,7 +2,6 @@ package com.safeworld.app.ui
 
 import androidx.annotation.StringRes
 import com.safeworld.app.R
-import com.safeworld.core.AppGroups.AppGroup
 import com.safeworld.core.CategoryId
 
 /**
@@ -34,29 +33,21 @@ fun descriptionResFor(id: CategoryId): Int? = when (id) {
 }
 
 /**
- * The app groups' labels, kept beside the categories' for the same reason: `:core` is a plain JVM
- * module and cannot hold Android resources.
+ * The bare noun — "social media", not "Block social media".
  *
- * These read "…apps" where the category above reads the bare noun, because the two rows sit near
- * each other and the whole point is that they are different switches.
+ * The row labels lead with the verb because that is what the switch does; the PIN prompt supplies
+ * its own ("Stop blocking %1$s?") and interpolating the label there produced *"Stop blocking Block
+ * social media?"*. Two forms because two sentences need them, rather than one form bent to fit
+ * both.
  */
 @StringRes
-fun appGroupLabelFor(group: AppGroup): Int = when (group) {
-    AppGroup.SOCIAL -> R.string.appblock_social_label
-    AppGroup.ENTERTAINMENT -> R.string.appblock_entertainment_label
-    AppGroup.GAMES -> R.string.appblock_games_label
+fun subjectResFor(id: CategoryId): Int? = when (id) {
+    CategoryId.SOCIAL -> R.string.category_list4_subject
+    CategoryId.ENTERTAINMENT -> R.string.category_list5_subject
+    CategoryId.GAMES -> R.string.category_list6_subject
+    else -> null
 }
 
-@StringRes
-fun appGroupDescriptionFor(group: AppGroup): Int = when (group) {
-    AppGroup.SOCIAL -> R.string.appblock_social_description
-    AppGroup.ENTERTAINMENT -> R.string.appblock_entertainment_description
-    AppGroup.GAMES -> R.string.appblock_games_description
-}
-
-@StringRes
-fun appGroupOffPinTitleFor(group: AppGroup): Int = when (group) {
-    AppGroup.SOCIAL -> R.string.appblock_social_off_pin_title
-    AppGroup.ENTERTAINMENT -> R.string.appblock_entertainment_off_pin_title
-    AppGroup.GAMES -> R.string.appblock_games_off_pin_title
-}
+// The app groups had their own labels here, back when they were their own switches. They share a
+// row with the category now — one subject, one switch, one set of words — so the strings above are
+// written to cover both halves and there is nothing separate left to name.

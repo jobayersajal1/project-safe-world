@@ -175,13 +175,25 @@ standard blocklist category the way porn and gambling are, and `blocklistproject
 is the only feed any of the usual maintainers publish for it. It covers storefronts, launchers and
 browser-game portals. Treat its size as expected rather than as a build that went wrong.
 
-**Categories block websites. App groups block apps. They are deliberately separate switches** —
-see `apps/android/core/.../AppGroups.kt`. `AppGroup.category` names the category covering the same
-subject so the UI can pair the rows, but it does **not** turn the group on: blocking facebook.com
-in a browser is a DNS rule that costs nothing, while stopping the Facebook app routes every packet
-on the device through us (`TunnelMode.FullTunnel`). Deriving one from the other would move someone
-onto the expensive tunnel with a switch that never mentioned it, so `TunnelMode.perAppSwitchesOn`
-takes the enabled groups and never reads `Settings.categories`.
+**One subject, one switch — the websites and the apps together.** A row named "Block social media"
+sets both `Settings.categories[.social]` and `AppGroup.SOCIAL`; `AppGroup.category` is what pairs
+them. They were two switches once, on the reasoning that the domain half is a DNS rule costing
+nothing while the app half routes every packet on the device through us (`TunnelMode.FullTunnel`).
+What that produced was five switches to express one intention, and a half-set state that read as
+protection while the Instagram app still worked. The cost is real, so it is stated once by the
+consent dialog rather than implied by an extra row — and **the dialog is owned by the screen**
+(`HomeScreen`/`HomeView`), not by either control, because both the subject rows and the app picker
+lead to the tunnel and one answer should cover both.
+
+Two invariants hold this together. The group stays a **separate stored value**, never derived:
+`TunnelMode.perAppSwitchesOn` reads the enabled groups and never `Settings.categories`, so what
+puts a device on the expensive tunnel is an explicit fact. And a row is **on only when both halves
+are** — an install left half-on by an older build shows off and self-heals on one tap, because a
+row reading "on" over a working Instagram app is the one thing this product must never say.
+
+The three rows are ordered games, social, entertainment (`subjectOrder`), written out rather than
+taken from `Categories.optional` so the order is a UI decision. Anything the rows can't reach —
+one specific app, a site nobody lists — lives under "Want to block further?".
 
 **iOS and Android are the same product; only the enforcement mechanism differs.** Both have the
 PIN, the recovery code, the four languages, the help section, and the blocked-count home screen —

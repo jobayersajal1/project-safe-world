@@ -27,11 +27,16 @@ object AppGroups {
 
     /**
      * @param id stable identifier, used as the persisted key.
-     * @param category the domain category covering the *same* subject, for the UI to pair them up.
-     *   **It does not turn this group on** — each group has its own switch, because blocking
-     *   facebook.com in a browser and stopping the Facebook app from reaching the network are
-     *   different decisions with different costs. The first is free; the second routes every packet
-     *   on the device through us. Someone may well want one without the other.
+     * @param category the domain category covering the *same* subject. **The UI turns the two on
+     *   together** — one switch per subject, both halves. They were separate switches once, on the
+     *   grounds that the domain half is free while this half routes every packet on the device
+     *   through us; what that produced was five switches to express one intention, and a half-set
+     *   state that looked like protection while the Instagram app still worked. The cost is real,
+     *   so it is now stated once by the consent dialog instead of implied by an extra row.
+     *
+     *   This stays a distinct switch in storage — `TunnelMode.perAppSwitchesOn` reads the enabled
+     *   groups and never `Settings.categories` — so what drives the expensive tunnel is still an
+     *   explicit fact rather than something derived.
      */
     enum class AppGroup(val id: String, val category: CategoryId) {
         SOCIAL("apps_social", CategoryId.SOCIAL),

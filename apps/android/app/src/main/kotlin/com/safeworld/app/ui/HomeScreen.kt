@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -41,7 +42,9 @@ import com.safeworld.app.R
 import com.safeworld.app.SettingsStore
 import com.safeworld.app.SubscriptionStore
 import com.safeworld.app.vpn.SafeWorldVpnService
+import com.safeworld.core.AppGroups.AppGroup
 import com.safeworld.core.Categories
+import com.safeworld.core.CategoryId
 import com.safeworld.core.Matcher
 import com.safeworld.core.ServiceRanges
 
@@ -86,6 +89,22 @@ fun HomeScreen(
         store.blockedDomainCount(settings)
     }
 
+    val appBlockRevision by store.appBlockRevision.collectAsStateWithLifecycle()
+    val enabledGroups = remember(appBlockRevision) { store.blockedAppGroups() }
+
+    // Hoisted to the screen because two things now lead to the full tunnel — the three subject
+    // rows and the app picker — and one dialog answered once is the point. Kept as the pending
+    // action rather than a boolean so whatever asked for consent is what runs on accept.
+    var confirming by remember { mutableStateOf<(() -> Unit)?>(null) }
+
+    /**
+     * Turning any app blocking on is where the full tunnel starts, so the warning goes here rather
+     * than on each switch. Shown once — after that the user has made the trade knowingly.
+     */
+    fun withConsent(apply: () -> Unit) {
+        if (store.fullTunnelAcknowledged) apply() else confirming = apply
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -126,40 +145,45 @@ fun HomeScreen(
         Text(stringResource(R.string.block_more_title), style = MaterialTheme.typography.titleSmall)
         Card {
             Column(Modifier.padding(vertical = 8.dp)) {
-                for (category in Categories.optional) {
-                    val label = labelResFor(category.id)?.let { stringResource(it) }
-                        ?: category.label
-                    val description = descriptionResFor(category.id)?.let { stringResource(it) }
-                        ?: category.description
-                    val offTitle = stringResource(R.string.category_off_pin_title, label)
-                    val offMessage = stringResource(R.string.category_off_pin_message)
-
-                    ToggleRow(
-                        label = label,
-                        description = description,
-                        checked = settings.categories[category.id] == true,
-                        onCheckedChange = { on ->
-                            val apply = {
-                                store.update {
-                                    it.copy(categories = it.categories + (category.id to on))
-                                }
-                            }
-                            if (on) apply() else requestPin(offTitle, offMessage, apply)
-                        },
+                for (category in subjectOrder()) {
+                    SubjectRow(
+                        store = store,
+                        settings = settings,
+                        category = category,
+                        enabledGroups = enabledGroups,
+                        requestPin = requestPin,
+                        withConsent = ::withConsent,
                     )
                     HorizontalDivider()
                 }
 
                 FullBlockRows(store = store, settings = settings, requestPin = requestPin)
-
-                AddWebsitesSection(store = store, requestPin = requestPin)
             }
         }
 
-        // Deliberately its own section rather than more rows above: everything above blocks by
-        // domain and costs nothing, this routes every packet on the device. Different bargain,
-        // different heading.
-        AppBlockSection(store = store, settings = settings, requestPin = requestPin)
+        // What the three rows above don't cover: a specific app, or a site nobody has listed.
+        Text(
+            stringResource(R.string.block_further_title),
+            style = MaterialTheme.typography.titleSmall,
+        )
+        Card {
+            Column(Modifier.padding(vertical = 8.dp)) {
+                Text(
+                    stringResource(R.string.appblock_intro),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                )
+                HorizontalDivider()
+                ChooseAppsRow(
+                    store = store,
+                    requestPin = requestPin,
+                    withConsent = ::withConsent,
+                )
+                HorizontalDivider()
+                AddWebsitesSection(store = store, requestPin = requestPin)
+            }
+        }
 
         AlwaysOnSection()
 
@@ -205,6 +229,100 @@ fun HomeScreen(
             )
         }
     }
+
+    confirming?.let { apply ->
+        AlertDialog(
+            onDismissRequest = { confirming = null },
+            title = { Text(stringResource(R.string.appblock_consent_title)) },
+            text = { Text(stringResource(R.string.appblock_consent_body)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    store.acknowledgeFullTunnel()
+                    confirming = null
+                    apply()
+                }) { Text(stringResource(R.string.appblock_consent_accept)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { confirming = null }) {
+                    Text(stringResource(R.string.appblock_consent_cancel))
+                }
+            },
+        )
+    }
+}
+
+/**
+ * The order the three subjects are offered in — games first, because that is the one people come
+ * looking for and the one no other blocklist maintainer publishes.
+ *
+ * Written out rather than taken from `Categories.optional` so the order is a UI decision rather
+ * than a side effect of the order someone happened to declare the categories in. Any optional
+ * category not named here still renders, at the end, so adding a seventh cannot make it vanish.
+ */
+private fun subjectOrder(): List<com.safeworld.core.CategoryMeta> {
+    val preferred = listOf(CategoryId.GAMES, CategoryId.SOCIAL, CategoryId.ENTERTAINMENT)
+    return Categories.optional.sortedBy {
+        preferred.indexOf(it.id).let { i -> if (i < 0) preferred.size else i }
+    }
+}
+
+/**
+ * One subject, one switch — the websites **and** the apps.
+ *
+ * **These used to be two rows and are deliberately one.** Somebody who wants social media gone
+ * does not want it gone in Chrome and alive in the Instagram app; splitting it meant five switches
+ * to express one intention, and a half-set state that looked like protection. The cost is real —
+ * the app half needs the full tunnel — which is why turning one on routes through [withConsent]
+ * rather than going straight through.
+ *
+ * **On only when both halves are on.** A row reading "on" while the app half was off would be
+ * claiming to block Instagram on a phone where Instagram still worked, which is the one thing this
+ * app must never say. An install left half-on by an older version therefore shows off, and one tap
+ * puts it right.
+ */
+@Composable
+private fun SubjectRow(
+    store: SettingsStore,
+    settings: com.safeworld.core.Settings,
+    category: com.safeworld.core.CategoryMeta,
+    enabledGroups: Set<AppGroup>,
+    requestPin: RequestPin,
+    withConsent: (() -> Unit) -> Unit,
+) {
+    val context = LocalContext.current
+    val label = labelResFor(category.id)?.let { stringResource(it) } ?: category.label
+    val description = descriptionResFor(category.id)?.let { stringResource(it) }
+        ?: category.description
+    // The bare noun, not the row's label — see `subjectResFor`.
+    val subject = subjectResFor(category.id)?.let { stringResource(it) } ?: label
+    val offTitle = stringResource(R.string.category_off_pin_title, subject)
+    val offMessage = stringResource(R.string.category_off_pin_message)
+
+    val group = AppGroup.entries.firstOrNull { it.category == category.id }
+    val checked = settings.categories[category.id] == true &&
+        (group == null || group in enabledGroups)
+
+    ToggleRow(
+        label = label,
+        description = description,
+        checked = checked,
+        onCheckedChange = { on ->
+            val apply = {
+                store.update { it.copy(categories = it.categories + (category.id to on)) }
+                if (group != null) {
+                    store.setAppGroupBlocked(group, on)
+                    // Routes are fixed at establish(), so moving between the DNS-only tunnel and
+                    // the full one needs the tunnel rebuilt before it takes effect.
+                    SafeWorldVpnService.refresh(context)
+                }
+            }
+            when {
+                !on -> requestPin(offTitle, offMessage, apply)
+                group != null -> withConsent(apply)
+                else -> apply()
+            }
+        },
+    )
 }
 
 @Composable

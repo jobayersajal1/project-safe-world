@@ -311,25 +311,25 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Add websites"
+            "value": "Block by website name"
           }
         },
         "bn": {
           "stringUnit": {
             "state": "translated",
-            "value": "ওয়েবসাইট যোগ করুন"
+            "value": "ওয়েবসাইটের নাম দিয়ে ব্লক"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Añadir sitios web"
+            "value": "Bloquear por nombre de sitio"
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "إضافة مواقع"
+            "value": "الحظر باسم الموقع"
           }
         }
       }
@@ -417,6 +417,35 @@
           "stringUnit": {
             "state": "translated",
             "value": "حفظ"
+          }
+        }
+      }
+    },
+    "appblock_choose_label": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select apps to block"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ব্লক করার অ্যাপ বেছে নিন"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elegir apps para bloquear"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اختيار تطبيقات لحظرها"
           }
         }
       }
@@ -566,35 +595,6 @@
         }
       }
     },
-    "appblock_intro": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stops the apps themselves from reaching the internet, not just their websites. Needs protection switched on."
-          }
-        },
-        "bn": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "শুধু ওয়েবসাইট নয়, অ্যাপগুলোকেই ইন্টারনেটে পৌঁছাতে দেয় না। এর জন্য সুরক্ষা চালু থাকতে হবে।"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Impide que las apps lleguen a internet, no solo sus webs. Requiere la protección activada."
-          }
-        },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "يمنع التطبيقات نفسها من الوصول إلى الإنترنت، وليس مواقعها فقط. يتطلب تشغيل الحماية."
-          }
-        }
-      }
-    },
     "appblock_off_pin_message": {
       "extractionState": "manual",
       "localizations": {
@@ -682,292 +682,60 @@
         }
       }
     },
-    "appblock_title": {
+    "appblock_save": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Block apps"
+            "value": "Save apps"
           }
         },
         "bn": {
           "stringUnit": {
             "state": "translated",
-            "value": "অ্যাপ ব্লক করুন"
+            "value": "অ্যাপ সংরক্ষণ"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bloquear apps"
+            "value": "Guardar apps"
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "حظر التطبيقات"
+            "value": "حفظ التطبيقات"
           }
         }
       }
     },
-    "apps_entertainment_description": {
+    "block_further_title": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "YouTube, Netflix, Spotify, Twitch and other streaming apps."
+            "value": "Want to block further?"
           }
         },
         "bn": {
           "stringUnit": {
             "state": "translated",
-            "value": "YouTube, Netflix, Spotify, Twitch ও অন্যান্য স্ট্রিমিং অ্যাপ।"
+            "value": "আরও গভীরভাবে ব্লক করতে চান?"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "YouTube, Netflix, Spotify, Twitch y otras apps de streaming."
+            "value": "¿Quieres bloquear aún más?"
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "يوتيوب ونتفليكس وسبوتيفاي وتويتش وتطبيقات البث الأخرى."
-          }
-        }
-      }
-    },
-    "apps_entertainment_label": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Entertainment apps"
-          }
-        },
-        "bn": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "বিনোদন অ্যাপ"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apps de entretenimiento"
-          }
-        },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تطبيقات الترفيه"
-          }
-        }
-      }
-    },
-    "apps_entertainment_off_pin_title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stop blocking entertainment apps?"
-          }
-        },
-        "bn": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "বিনোদন অ্যাপ ব্লক করা বন্ধ করবেন?"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "¿Dejar de bloquear las apps de entretenimiento?"
-          }
-        },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "إيقاف حظر تطبيقات الترفيه؟"
-          }
-        }
-      }
-    },
-    "apps_games_description": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Free Fire, PUBG, Ludo, Teen Patti, Dream11 and the like."
-          }
-        },
-        "bn": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ফ্রি ফায়ার, পাবজি, লুডু, তিন পাত্তি, ড্রিম১১ এবং এ ধরনের অ্যাপ।"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Free Fire, PUBG, Ludo, Teen Patti, Dream11 y similares."
-          }
-        },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "فري فاير وببجي ولودو وتين باتي ودريم11 وما شابهها."
-          }
-        }
-      }
-    },
-    "apps_games_label": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Games & betting apps"
-          }
-        },
-        "bn": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "গেম ও বাজির অ্যাপ"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apps de juegos y apuestas"
-          }
-        },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تطبيقات الألعاب والمراهنات"
-          }
-        }
-      }
-    },
-    "apps_games_off_pin_title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stop blocking game apps?"
-          }
-        },
-        "bn": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "গেম অ্যাপ ব্লক করা বন্ধ করবেন?"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "¿Dejar de bloquear las apps de juegos?"
-          }
-        },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "إيقاف حظر تطبيقات الألعاب؟"
-          }
-        }
-      }
-    },
-    "apps_social_description": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Instagram, Facebook, TikTok, X, Snapchat, Tinder and similar. Messaging apps are never blocked."
-          }
-        },
-        "bn": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Instagram, Facebook, TikTok, X, Snapchat, Tinder ও এ ধরনের অ্যাপ। মেসেজিং অ্যাপ কখনো ব্লক করা হয় না।"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Instagram, Facebook, TikTok, X, Snapchat, Tinder y similares. Las apps de mensajería nunca se bloquean."
-          }
-        },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "إنستغرام وفيسبوك وتيك توك وX وسناب شات وتيندر وما شابهها. تطبيقات المراسلة لا تُحظر أبدًا."
-          }
-        }
-      }
-    },
-    "apps_social_label": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Social media apps"
-          }
-        },
-        "bn": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "সোশ্যাল মিডিয়া অ্যাপ"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apps de redes sociales"
-          }
-        },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تطبيقات التواصل الاجتماعي"
-          }
-        }
-      }
-    },
-    "apps_social_off_pin_title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stop blocking social media apps?"
-          }
-        },
-        "bn": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "সোশ্যাল মিডিয়া অ্যাপ ব্লক করা বন্ধ করবেন?"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "¿Dejar de bloquear las apps de redes sociales?"
-          }
-        },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "إيقاف حظر تطبيقات التواصل الاجتماعي؟"
+            "value": "تريد المضي أبعد؟"
           }
         }
       }
@@ -1152,25 +920,25 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facebook, Instagram, X, TikTok, Reddit, dating sites and similar feeds."
+            "value": "Facebook, Instagram, X, TikTok, Snapchat, Reddit and dating — the apps and their websites. Messaging apps are never blocked."
           }
         },
         "bn": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facebook, Instagram, X, TikTok, Reddit, ডেটিং সাইট ও এ ধরনের ফিড।"
+            "value": "Facebook, Instagram, X, TikTok, Snapchat, Reddit ও ডেটিং — অ্যাপ ও ওয়েবসাইট দুটোই। মেসেজিং অ্যাপ কখনো ব্লক করা হয় না।"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facebook, Instagram, X, TikTok, Reddit, webs de citas y feeds similares."
+            "value": "Facebook, Instagram, X, TikTok, Snapchat, Reddit y citas: las apps y sus webs. Las apps de mensajería nunca se bloquean."
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "فيسبوك وإنستغرام وX وتيك توك وريديت ومواقع المواعدة والمواقع المشابهة."
+            "value": "فيسبوك وإنستغرام وX وتيك توك وسناب شات وريديت والمواعدة — التطبيقات ومواقعها معًا. تطبيقات المراسلة لا تُحظر أبدًا."
           }
         }
       }
@@ -1181,25 +949,54 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Social media websites"
+            "value": "Block social media"
           }
         },
         "bn": {
           "stringUnit": {
             "state": "translated",
-            "value": "সোশ্যাল মিডিয়া ওয়েবসাইট"
+            "value": "সোশ্যাল মিডিয়া ব্লক করুন"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Webs de redes sociales"
+            "value": "Bloquear redes sociales"
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "مواقع التواصل الاجتماعي"
+            "value": "حظر التواصل الاجتماعي"
+          }
+        }
+      }
+    },
+    "category_list4_subject": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "social media"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "সোশ্যাল মিডিয়া"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "las redes sociales"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "التواصل الاجتماعي"
           }
         }
       }
@@ -1210,25 +1007,25 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "YouTube, Netflix, Twitch and other streaming sites."
+            "value": "YouTube, Netflix, Spotify, Twitch and other streaming — the apps and their websites."
           }
         },
         "bn": {
           "stringUnit": {
             "state": "translated",
-            "value": "YouTube, Netflix, Twitch ও অন্যান্য স্ট্রিমিং সাইট।"
+            "value": "YouTube, Netflix, Spotify, Twitch ও অন্যান্য স্ট্রিমিং — অ্যাপ ও ওয়েবসাইট দুটোই।"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "YouTube, Netflix, Twitch y otros sitios de streaming."
+            "value": "YouTube, Netflix, Spotify, Twitch y otros servicios de streaming: las apps y sus webs."
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "يوتيوب ونتفليكس وتويتش ومواقع البث الأخرى."
+            "value": "يوتيوب ونتفليكس وسبوتيفاي وتويتش وخدمات البث الأخرى — التطبيقات ومواقعها معًا."
           }
         }
       }
@@ -1239,25 +1036,54 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Entertainment websites"
+            "value": "Block entertainment"
           }
         },
         "bn": {
           "stringUnit": {
             "state": "translated",
-            "value": "বিনোদন ওয়েবসাইট"
+            "value": "বিনোদন ব্লক করুন"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Webs de entretenimiento"
+            "value": "Bloquear entretenimiento"
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "مواقع الترفيه"
+            "value": "حظر الترفيه"
+          }
+        }
+      }
+    },
+    "category_list5_subject": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "entertainment"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "বিনোদন"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "el entretenimiento"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الترفيه"
           }
         }
       }
@@ -1268,25 +1094,25 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Game portals, browser games, and gaming platforms."
+            "value": "Free Fire, PUBG, Ludo, Teen Patti, Dream11 and betting apps, plus game portals and browser games."
           }
         },
         "bn": {
           "stringUnit": {
             "state": "translated",
-            "value": "গেম পোর্টাল, ব্রাউজার গেম ও গেমিং প্ল্যাটফর্ম।"
+            "value": "ফ্রি ফায়ার, পাবজি, লুডু, তিন পাত্তি, ড্রিম১১ ও বাজির অ্যাপ, সেই সঙ্গে গেম পোর্টাল ও ব্রাউজার গেম।"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Portales de juegos, juegos de navegador y plataformas de videojuegos."
+            "value": "Free Fire, PUBG, Ludo, Teen Patti, Dream11 y apps de apuestas, más portales y juegos de navegador."
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "بوابات الألعاب وألعاب المتصفح ومنصات الألعاب."
+            "value": "فري فاير وببجي ولودو وتين باتي ودريم11 وتطبيقات المراهنات، إضافة إلى بوابات الألعاب وألعاب المتصفح."
           }
         }
       }
@@ -1297,25 +1123,54 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Games websites"
+            "value": "Block harmful games"
           }
         },
         "bn": {
           "stringUnit": {
             "state": "translated",
-            "value": "গেম ওয়েবসাইট"
+            "value": "ক্ষতিকর গেম ব্লক করুন"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Webs de juegos"
+            "value": "Bloquear juegos dañinos"
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "مواقع الألعاب"
+            "value": "حظر الألعاب الضارة"
+          }
+        }
+      }
+    },
+    "category_list6_subject": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "harmful games"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ক্ষতিকর গেম"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "los juegos dañinos"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الألعاب الضارة"
           }
         }
       }
@@ -1326,25 +1181,25 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Enter your PIN to unblock these sites."
+            "value": "Enter your PIN to unblock these sites and apps."
           }
         },
         "bn": {
           "stringUnit": {
             "state": "translated",
-            "value": "এই সাইটগুলো আনব্লক করতে আপনার পিন দিন।"
+            "value": "এই সাইট ও অ্যাপগুলো আনব্লক করতে আপনার পিন দিন।"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Introduce tu PIN para desbloquear estos sitios."
+            "value": "Introduce tu PIN para desbloquear estos sitios y apps."
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "أدخل رمز PIN لإلغاء حظر هذه المواقع."
+            "value": "أدخل رمز PIN لإلغاء حظر هذه المواقع والتطبيقات."
           }
         }
       }

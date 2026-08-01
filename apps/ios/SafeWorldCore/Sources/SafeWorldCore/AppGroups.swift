@@ -29,10 +29,15 @@ public enum AppGroups {
     /// container* identifier — a completely unrelated Apple concept. Two types called AppGroup
     /// meaning different things is exactly the confusion that produces a wrong-looking-right bug.
     ///
-    /// - Note: `category` is the domain category covering the *same* subject, so the UI can pair
-    ///   the rows. **It does not turn the group on.** Blocking instagram.com in Safari and stopping
-    ///   the Instagram app from reaching the network are different decisions with different costs,
-    ///   and someone may well want one without the other.
+    /// - Note: `category` is the domain category covering the *same* subject. **The UI turns the
+    ///   two on together** — one switch per subject, both halves. They were separate switches
+    ///   once, on the grounds that the domain half is free while this half needs the packet
+    ///   tunnel; what that produced was five switches to express one intention, and a half-set
+    ///   state that looked like protection while the Instagram app still worked. The cost is real,
+    ///   so it is stated once by the consent alert instead of implied by an extra row.
+    ///
+    ///   This stays a distinct switch in storage rather than being derived from the category, so
+    ///   what puts the device on the tunnel remains an explicit fact.
     public enum Group: String, CaseIterable, Sendable {
         case social = "apps_social"
         case entertainment = "apps_entertainment"

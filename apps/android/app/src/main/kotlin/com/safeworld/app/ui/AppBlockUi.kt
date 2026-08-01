@@ -13,9 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -35,39 +33,35 @@ import com.safeworld.app.SettingsStore
 import com.safeworld.app.vpn.BlockedApps
 import com.safeworld.app.vpn.SafeWorldVpnService
 import com.safeworld.core.AppGroups
-import com.safeworld.core.AppGroups.AppGroup
-import com.safeworld.core.Settings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 /**
- * Blocking whole apps, rather than the sites they load.
+ * Picking individual apps by hand — the row, and the dialog behind it.
  *
- * **Why this is a separate section from "Block more".** Everything above it blocks by domain, which
- * costs nothing: the tunnel carries only DNS. This routes every packet on the device through Safe
- * World so a blocked app's traffic can be dropped by owning UID — the only rule an app cannot get
- * around by using DNS-over-HTTPS or an address it already knows. It is a different bargain, and the
- * user is told before they take it rather than after their battery goes.
+ * **The three subject rows above already block apps**; this is what they can't reach. The built-in
+ * catalogue only knows the apps we thought of, and the one someone actually loses hours to is often
+ * not on it — a new game, something regional, something released last week.
  *
- * **Each group is its own switch, independent of the category above with the same name.** Blocking
- * facebook.com in a browser and stopping the Facebook app from reaching the network are different
- * decisions with very different costs, and someone may want either one without the other.
+ * Blocking by app rather than by domain is the only rule an app cannot get around with
+ * DNS-over-HTTPS or an address it already knows, and it costs the full tunnel: every packet on the
+ * device crosses Safe World so a blocked app's traffic can be dropped by owning UID. That price is
+ * stated once, by the consent dialog `HomeScreen` owns — hence [withConsent] arriving as a
+ * parameter rather than being decided here.
  */
 @Composable
-fun AppBlockSection(
+fun ChooseAppsRow(
     store: SettingsStore,
-    settings: Settings,
     requestPin: RequestPin,
+    withConsent: (() -> Unit) -> Unit,
 ) {
     val context = LocalContext.current
     val revision by store.appBlockRevision.collectAsStateWithLifecycle()
 
     var picking by remember { mutableStateOf(false) }
-    var confirming by remember { mutableStateOf<(() -> Unit)?>(null) }
 
-    // Recomputed on every selection change: the count is the only feedback that a toggle did
+    // Recomputed on every selection change: the count is the only feedback that a change did
     // anything, since none of these apps are named on this screen.
-    val enabledGroups = remember(revision) { store.blockedAppGroups() }
     val blocked = remember(revision) {
         AppGroups.blockedPackages(
             enabledGroups = store.blockedAppGroups(),
@@ -78,70 +72,30 @@ fun AppBlockSection(
         BlockedApps.get(context).also { it.refresh(store) }.installedCount
     }
 
-    val offMessage = stringResource(R.string.appblock_off_pin_message)
-
-    /**
-     * Turning any of this on is where the full tunnel starts, so the warning goes here rather than
-     * on each switch. Shown once — after that the user has made the trade knowingly.
-     */
-    fun withConsent(apply: () -> Unit) {
-        if (store.fullTunnelAcknowledged) apply() else confirming = apply
-    }
-
-    Text(stringResource(R.string.appblock_title), style = MaterialTheme.typography.titleSmall)
-    androidx.compose.material3.Card {
-        Column(Modifier.padding(vertical = 8.dp)) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .clickable { picking = true }
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(Modifier.weight(1f)) {
             Text(
-                stringResource(R.string.appblock_intro),
+                stringResource(R.string.appblock_choose_label),
+                style = MaterialTheme.typography.bodyLarge,
+            )
+            Text(
+                // "N chosen, M installed" rather than just N: most of the built-in catalogue is
+                // not on any one phone, and a count that included apps the device does not have
+                // would overstate what is actually being blocked.
+                stringResource(
+                    R.string.appblock_choose_summary,
+                    CountFormat.grouped(blocked.size),
+                    CountFormat.grouped(installed),
+                ),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             )
-            HorizontalDivider()
-
-            for (group in AppGroup.entries) {
-                val offTitle = stringResource(appGroupOffPinTitleFor(group))
-                AppToggleRow(
-                    label = stringResource(appGroupLabelFor(group)),
-                    description = stringResource(appGroupDescriptionFor(group)),
-                    checked = group in enabledGroups,
-                    onCheckedChange = { on ->
-                        val apply = {
-                            store.setAppGroupBlocked(group, on)
-                            SafeWorldVpnService.refresh(context)
-                        }
-                        if (on) withConsent(apply) else requestPin(offTitle, offMessage, apply)
-                    },
-                )
-                HorizontalDivider()
-            }
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .clickable { picking = true }
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Column(Modifier.weight(1f)) {
-                    Text(
-                        stringResource(R.string.appblock_choose_label),
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                    Text(
-                        // "N chosen, M installed" rather than just N: most of the built-in
-                        // catalogue is not on any one phone, and a count that included apps the
-                        // device does not have would overstate what is actually being blocked.
-                        stringResource(
-                            R.string.appblock_choose_summary,
-                            CountFormat.grouped(blocked.size),
-                            CountFormat.grouped(installed),
-                        ),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-            }
         }
     }
 
@@ -149,54 +103,9 @@ fun AppBlockSection(
         AppPickerDialog(
             store = store,
             requestPin = requestPin,
-            onConsentNeeded = ::withConsent,
+            onConsentNeeded = withConsent,
             onDismiss = { picking = false },
         )
-    }
-
-    confirming?.let { apply ->
-        AlertDialog(
-            onDismissRequest = { confirming = null },
-            title = { Text(stringResource(R.string.appblock_consent_title)) },
-            text = { Text(stringResource(R.string.appblock_consent_body)) },
-            confirmButton = {
-                TextButton(onClick = {
-                    store.acknowledgeFullTunnel()
-                    confirming = null
-                    apply()
-                }) { Text(stringResource(R.string.appblock_consent_accept)) }
-            },
-            dismissButton = {
-                TextButton(onClick = { confirming = null }) {
-                    Text(stringResource(R.string.appblock_consent_cancel))
-                }
-            },
-        )
-    }
-}
-
-@Composable
-private fun AppToggleRow(
-    label: String,
-    description: String,
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
-) {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Column(Modifier.weight(1f)) {
-            Text(label, style = MaterialTheme.typography.bodyLarge)
-            Text(
-                description,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-        Switch(checked = checked, onCheckedChange = onCheckedChange)
     }
 }
 
