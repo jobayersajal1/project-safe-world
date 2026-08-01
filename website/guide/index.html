@@ -94,6 +94,21 @@
   }
   .note strong { color: var(--ink); }
 
+  /* ---------- Tutorial video ---------- */
+  .tutorial {
+    background: var(--bg-raised); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: clamp(1.25rem, 3vw, 2rem);
+    margin-block-start: 2.5rem;
+  }
+  .tutorial-head { max-width: 40rem; margin-block-end: 1.5rem; }
+  .tutorial-head h2 { font-size: clamp(1.4rem, 2.6vw, 1.9rem); margin-block-start: .5rem; }
+  .tutorial-head p { color: var(--ink-dim); margin-block-start: .8rem; font-size: .97rem; }
+  .tutorial video {
+    width: 100%; height: auto; display: block; border-radius: 10px;
+    background: #000; border: 1px solid var(--line);
+    box-shadow: 0 10px 28px var(--shadow); aspect-ratio: 16 / 9;
+  }
+
   main { padding-block-end: 4rem; }
 
   details.step {
@@ -191,6 +206,24 @@
     switch at all for the scam, real-money-gaming, and sensitive-content lists: installing
     Safe World is the decision to block those.
   </div>
+</div>
+
+<div class="wrap" id="video">
+  <section class="tutorial">
+    <div class="tutorial-head">
+      <span class="eyebrow">Watch first · 2 min 50 s</span>
+      <h2>The whole app, narrated.</h2>
+      <p>
+        Every feature below, in order, with the real screens and a spoken explanation of what each
+        switch does and why. If you only have three minutes, watch this.
+      </p>
+    </div>
+    <video controls preload="none" playsinline poster="video/poster.jpg">
+      <source src="video/safe-world-tutorial.mp4" type="video/mp4">
+      Your browser can't play embedded video —
+      <a href="video/safe-world-tutorial.mp4">download the tutorial instead</a>.
+    </video>
+  </section>
 </div>
 
 <main class="wrap">
