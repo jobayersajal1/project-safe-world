@@ -1,6 +1,5 @@
 package com.safeworld.app.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
@@ -165,9 +164,14 @@ private val AppTypography = Typography().run {
     )
 }
 
+/**
+ * @param darkTheme defaults to **light**, not to `isSystemInDarkTheme()`. The system is not
+ *   consulted anywhere in this app — see `SettingsStore.darkTheme` for why — and a default that
+ *   quietly reads it would put that decision back in the one place nobody looks.
+ */
 @Composable
 fun SafeWorldTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     MaterialTheme(

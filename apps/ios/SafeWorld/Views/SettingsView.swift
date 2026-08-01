@@ -22,6 +22,7 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 languageSection
+                appearanceSection
                 pinSection
                 allowListSection
                 rateSection
@@ -57,6 +58,30 @@ struct SettingsView: View {
                     }
                 }
             }
+        }
+    }
+
+    // MARK: Appearance
+
+    /// One switch, not a three-way with "follow the system".
+    ///
+    /// The third option is the one iOS would give for free, and it is the one this
+    /// app declines — see `SettingsStore.darkTheme`. A switch also matches the row
+    /// on Android, which matters more here than matching the platform: the two
+    /// apps are the same product, and someone helping a family member over the
+    /// phone should be describing the same control.
+    private var appearanceSection: some View {
+        Section {
+            Toggle(isOn: $store.darkTheme) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(L("settings_dark_theme"))
+                    Text(L("settings_theme_description"))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        } header: {
+            Text(L("settings_theme"))
         }
     }
 

@@ -26,6 +26,14 @@ struct SafeWorldApp: App {
                 // system blue, which is every other app on the phone — and cold, where this
                 // one is trying to reassure rather than alert.
                 .tint(Brand.accent)
+                // Stated rather than inherited. Without this SwiftUI follows the phone, and
+                // the app would be dark on a dark-mode iPhone while Android and the website
+                // — which no longer consult the system at all — stayed light. One product,
+                // one look. See `SettingsStore.darkTheme`.
+                //
+                // Set here, on the root, so it reaches `Brand`'s dynamic `UIColor`s through
+                // the trait collection as well as the built-in surfaces.
+                .preferredColorScheme(store.darkTheme ? .dark : .light)
         }
         .onChange(of: scenePhase) { newPhase in
             if newPhase == .active { store.refreshRemoteIfDue() }

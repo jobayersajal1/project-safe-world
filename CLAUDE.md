@@ -78,9 +78,26 @@ cd apps/ios && xcodegen generate  # regenerate SafeWorld.xcodeproj from project.
                                    # project.yml, never the .xcodeproj, then regenerate)
 ```
 
-Full app build needs an iOS Simulator platform installed (`xcodebuild -downloadPlatform iOS`), not
-present in this environment — see `apps/ios/README.md` for the `xcodebuild` invocation and why
-plain `-scheme`/`-destination` builds need it even just to compile.
+Full app build needs an iOS Simulator platform installed (`xcodebuild -downloadPlatform iOS`) — see
+`apps/ios/README.md` for the `xcodebuild` invocation and why plain `-scheme`/`-destination` builds
+need it even just to compile. **The iOS 26.5 simulator platform is now installed here**, so the app
+does build and run locally:
+
+```bash
+xcodebuild -project SafeWorld.xcodeproj -scheme SafeWorld -sdk iphonesimulator \
+  -destination 'platform=iOS Simulator,name=iPhone 17 Pro' -derivedDataPath build \
+  CODE_SIGNING_ALLOWED=NO build
+xcrun simctl install <device-udid> build/Build/Products/Debug-iphonesimulator/SafeWorld.app
+```
+
+Two things to know before verifying anything on it by hand. **Pass the device UDID, not `booted`** —
+more than one simulator is usually booted and `booted` picks the wrong one silently. And **the
+Simulator cannot be tapped**: driving it needs accessibility permission this environment can't grant,
+so screens are reached with launch arguments instead. `-startTab settings` opens the Settings tab
+(`RootView`), and any `UserDefaults` key can be forced the same way (`-darkTheme YES`) because
+launch arguments land in `NSArgumentDomain`, which outranks stored values. Editing the preference
+plist on disk does **not** work — `cfprefsd` caches it, and the copy `simctl spawn defaults` reads is
+a different domain from the one inside the app sandbox.
 
 Android (`apps/android`, not an npm workspace — its own Gradle/Kotlin toolchain):
 

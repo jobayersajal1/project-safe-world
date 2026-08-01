@@ -21,8 +21,26 @@ final class SettingsStore: ObservableObject {
         }
     }
 
+    /// Whether to show the dark theme. **Off by default, and the system is not
+    /// consulted.**
+    ///
+    /// Port of `SettingsStore.darkTheme` on Android, down to the default, and the
+    /// one place iOS deliberately overrides a platform convention: SwiftUI would
+    /// follow the phone for free, and following it reads badly here. Two people
+    /// opening the same app would see different things with no way to know which,
+    /// and a parent checking a child's phone would find an app that does not look
+    /// like the one on theirs. Light is what it is; dark is what you ask for, and
+    /// having asked, it stays asked.
+    @Published var darkTheme: Bool = false {
+        didSet {
+            guard darkTheme != oldValue else { return }
+            defaults.set(darkTheme, forKey: Self.darkThemeKey)
+        }
+    }
+
     private let defaults: UserDefaults
     private static let settingsKey = "settings"
+    private static let darkThemeKey = "darkTheme"
     private static let statsKey = "stats"
     private static let remoteDomainsKey = "remoteDomains"
     /// Which published payload was last applied — see `runRemoteUpdate`.
@@ -34,6 +52,9 @@ final class SettingsStore: ObservableObject {
         self.settings = Self.loadSettings(from: defaults)
         self.stats = Self.loadStats(from: defaults)
         self.remoteDomains = Self.loadRemoteDomains(from: defaults)
+        // `bool(forKey:)` is false for a key that was never written, which is the
+        // default we want anyway — a fresh install opens light.
+        self.darkTheme = defaults.bool(forKey: Self.darkThemeKey)
         syncContentBlocker()
         refreshRemoteIfDue()
     }
