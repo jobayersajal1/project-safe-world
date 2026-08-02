@@ -18,9 +18,10 @@
  */
 import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { gunzipSync, gzipSync } from "node:zlib";
 import { CATEGORIES } from "../packages/core/src/categories.js";
 import { SCRAMBLE_FORMAT, scrambleDomain, unscrambleDomain } from "./scramble.js";
 
@@ -47,6 +48,34 @@ function git(args: string[], cwd: string): string {
   return execFileSync("git", args, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
 }
 
+/**
+ * Lists are stored gzipped, and that is not an optimization — it is what makes
+ * the full corpus storable at all.
+ *
+ * Pretty-printed scrambled JSON runs to about 103 MB for `list1` alone, and
+ * GitHub rejects any file over 100 MB. The push failed, so the private repo
+ * kept whatever smaller lists it had (20,000 per category, from a capped
+ * fetch) — and because `lists:pull` overwrites the working tree, pulling then
+ * quietly replaced a 4.5M-domain corpus with a 85k one. A build straight after
+ * that produces apps that look healthy and block almost nothing.
+ *
+ * Gzip takes `list1` to roughly 12 MB, well inside the limit. `.json` is still
+ * read when no `.json.gz` is present, so a repo written by an older version of
+ * this script still pulls.
+ */
+function storedListPath(cache: string, id: string): { path: string; gzipped: boolean } | null {
+  const gz = join(cache, "lists", `${id}.json.gz`);
+  if (existsSync(gz)) return { path: gz, gzipped: true };
+  const plain = join(cache, "lists", `${id}.json`);
+  if (existsSync(plain)) return { path: plain, gzipped: false };
+  return null;
+}
+
+async function readStored(entry: { path: string; gzipped: boolean }): Promise<string> {
+  const raw = await readFile(entry.path);
+  return entry.gzipped ? gunzipSync(raw).toString("utf8") : raw.toString("utf8");
+}
+
 /** Clone on first use, otherwise fast-forward. Auth comes from the user's git/gh credentials. */
 function syncCache(): void {
   if (!existsSync(CACHE)) {
@@ -63,11 +92,11 @@ async function pull(): Promise<void> {
   await mkdir(listsDir, { recursive: true });
 
   for (const category of CATEGORIES) {
-    const path = join(CACHE, "lists", `${category.id}.json`);
-    if (!existsSync(path)) {
+    const stored = storedListPath(CACHE, category.id);
+    if (!stored) {
       throw new Error(`private repo has no list for ${category.id} — run lists:push first`);
     }
-    const file = JSON.parse(await readFile(path, "utf8")) as ScrambledFile;
+    const file = JSON.parse(await readStored(stored)) as ScrambledFile;
 
     // Refuse a format this build can't reverse rather than writing an empty
     // list: a silently empty blocklist ships an app that blocks nothing while
@@ -118,8 +147,17 @@ async function push(): Promise<void> {
       format: SCRAMBLE_FORMAT,
       domains: file.domains.map(scrambleDomain).filter(Boolean),
     };
-    await writeFile(join(CACHE, "lists", `${category.id}.json`), JSON.stringify(out, null, 2) + "\n");
-    console.log(`${category.id}: ${out.domains.length} domains scrambled`);
+    // Not pretty-printed: the indentation was a meaningful fraction of a
+    // hundred-megabyte file, and nobody reads a scrambled list by eye anyway.
+    const body = gzipSync(Buffer.from(JSON.stringify(out) + "\n", "utf8"), { level: 9 });
+    await writeFile(join(CACHE, "lists", `${category.id}.json.gz`), body);
+    // Drop the uncompressed file a previous version of this script wrote, so the
+    // repo does not carry two copies that can disagree.
+    await rm(join(CACHE, "lists", `${category.id}.json`), { force: true });
+    console.log(
+      `${category.id}: ${out.domains.length} domains scrambled` +
+        ` -> ${(body.length / 1048576).toFixed(1)} MB gz`,
+    );
   }
 
   const baselinePath = join(baselineDir, "baseline.json");
@@ -162,7 +200,12 @@ async function assertNothingReadable(root: string): Promise<void> {
     const path = join(root, dir);
     if (!existsSync(path)) continue;
     for (const name of await readdir(path)) {
-      const text = await readFile(join(path, name), "utf8");
+      // Decompressed before checking, deliberately. Gzip is not obfuscation and
+      // this check exists to inspect what is actually being stored — reading the
+      // compressed bytes would find no dots in anything and pass every time,
+      // turning the last line of defence into a no-op.
+      const raw = await readFile(join(path, name));
+      const text = name.endsWith(".gz") ? gunzipSync(raw).toString("utf8") : raw.toString("utf8");
       // Scrambled entries are base64 and never contain a dot; a "." inside the
       // domains array means something slipped through unscrambled.
       const parsed = JSON.parse(text) as { domains: unknown };

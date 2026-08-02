@@ -112,7 +112,69 @@ export const SOURCES: readonly Source[] = [
     license: "Unlicense (public domain)",
     redistributable: true,
     homepage: "https://github.com/blocklistproject/Lists",
-    note: "The only gaming feed any of the usual maintainers publish. Gaming is not a standard blocklist category the way porn and gambling are, so list6 is mostly curated.",
+    note: "Was the only gaming feed the usual DNS-blocklist maintainers publish, and it has since shrunk to a handful of entries. Kept because it costs nothing; UT1 below is what actually populates this category now.",
+  },
+
+  // The Université Toulouse 1 Capitole blacklist — the long-running academic one
+  // that school and library filters have used for two decades. It is the reason
+  // `list6` and the dating half of `list4` are no longer hand-curated: the DNS
+  // blocklist world categorises by *harm* (malware, phishing, porn, gambling),
+  // so it has nothing for "games" or "dating", while UT1 categorises by
+  // *subject* and therefore does.
+  //
+  // **CC BY-SA, which is a heavier obligation than the rest of this file.**
+  // Attribution is satisfied by the `sources` block written into every list
+  // file. ShareAlike is the part to be deliberate about: it attaches to adapted
+  // versions of the data, so the merged lists we publish inherit it. That is a
+  // decision about the *lists*, not about this repo's code — the code is
+  // unaffected either way, and the lists were already redistributed under a mix
+  // of upstream terms.
+  {
+    id: "ut1-games",
+    category: "list6",
+    url: "https://raw.githubusercontent.com/olbat/ut1-blacklists/master/blacklists/games/domains",
+    format: "domains",
+    license: "CC BY-SA 4.0",
+    redistributable: true,
+    homepage: "https://dsi.ut-capitole.fr/blacklists/",
+    note: "Game portals, launchers and publisher domains — the time-sink half of what people mean by 'block games'. Real-money games go to list2 instead; see the note there.",
+  },
+  {
+    id: "ut1-dating",
+    category: "list4",
+    url: "https://raw.githubusercontent.com/olbat/ut1-blacklists/master/blacklists/dating/domains",
+    format: "domains",
+    license: "CC BY-SA 4.0",
+    redistributable: true,
+    homepage: "https://dsi.ut-capitole.fr/blacklists/",
+  },
+  {
+    id: "ut1-gambling",
+    category: "list2",
+    url: "https://raw.githubusercontent.com/olbat/ut1-blacklists/master/blacklists/gambling/domains",
+    format: "domains",
+    license: "CC BY-SA 4.0",
+    redistributable: true,
+    homepage: "https://dsi.ut-capitole.fr/blacklists/",
+    note: "Carries the real-money card and rummy sites (teen patti, rummy, fantasy cricket) that the English-language gambling feeds under-cover.",
+  },
+  {
+    id: "sinfonietta-gambling",
+    category: "list2",
+    url: "https://raw.githubusercontent.com/Sinfonietta/hostfiles/master/gambling-hosts",
+    format: "hosts",
+    license: "MIT",
+    redistributable: true,
+    homepage: "https://github.com/Sinfonietta/hostfiles",
+  },
+  {
+    id: "sinfonietta-social",
+    category: "list4",
+    url: "https://raw.githubusercontent.com/Sinfonietta/hostfiles/master/social-hosts",
+    format: "hosts",
+    license: "MIT",
+    redistributable: true,
+    homepage: "https://github.com/Sinfonietta/hostfiles",
   },
   {
     id: "blocklistproject-youtube",

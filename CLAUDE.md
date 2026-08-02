@@ -11,7 +11,7 @@ app (`apps/ios`), is in progress**: SwiftUI app + Safari Content Blocker extensi
 Kotlin/Compose app + a local `VpnService` DNS sinkhole, backed by a `:core` Kotlin module. **Phase
 4, a macOS app (`apps/macos`), and Phase 5, a Windows app (`apps/windows`), both ship**: menu-bar
 and tray apps that run a **local DNS resolver** on `127.0.0.1:53` over memory-mapped fuse filters,
-blocking the full ~4.48M domains in every app. The `hosts`-file sinkhole each started as is now only
+blocking the full ~4.54M domains in every app. The `hosts`-file sinkhole each started as is now only
 the fallback when the resolver cannot start. macOS **shares iOS's
 `SafeWorldCore` Swift package** rather than reimplementing `decide()` again — it's pure Foundation
 and already declares macOS support in its own `Package.swift`, and both are Swift/Apple platforms.
@@ -21,9 +21,11 @@ Kotlin, C#) in sync with `packages/core` by hand**. Network Extension (macOS) an
 filtering are not started; with the DNS resolvers shipping, those are now about tamper resistance
 and about seeing DoH/direct-to-IP traffic, not about coverage.
 
-**Per-platform reach, because it differs and the numbers are easy to get wrong:** Android 4,430,965
-(VpnService); macOS 4,430,965 once the daemon is installed from the app, ~150,000 on the hosts
-fallback; Windows 4,482,470 via the proxy, ~150,000 on the hosts fallback; **iOS 150,000** — its
+**Per-platform reach, because it differs and the numbers are easy to get wrong:** Android, macOS and
+Windows all carry **4,536,263** — they build from the same fuse filters, so a figure that differs
+between those three is a stale note rather than a real difference. Android gets it through the
+VpnService; macOS once the daemon is installed from the app, ~150,000 on the hosts fallback; Windows
+via the proxy, same hosts fallback. **iOS 150,000** — its
 Safari content blocker is capped by Safari's ~150k rule ceiling, and the `SafeWorldTunnel` packet
 tunnel that would carry the full list needs a paid Apple Developer account and a real device, so it
 cannot run here. Note that Chrome on iOS does **not** use Safari content blockers, so the tunnel is
@@ -44,6 +46,15 @@ npm run lists:push   # working files -> scrambled -> private repo
 Every list-consuming script is gated behind `lists:check`, which fails with instructions rather than
 letting a build quietly produce apps that block nothing. If you are adding a build output that
 contains domains, **add its path to `.gitignore`** — that file is the enforcement point.
+
+**The stored lists are gzipped, and `lists:check` cannot catch the failure that made them so.**
+Pretty-printed scrambled `list1` is ~103 MB and GitHub rejects anything over 100 MB, so `lists:push`
+failed while `lists:pull` kept working — leaving the private repo holding an old 20,000-per-category
+fetch. Pulling that overwrote a 4.5M-domain working tree with an 85k one, and a build straight after
+produced apps that passed every test and blocked almost nothing. `lists:check` only asserts the
+files exist. **After a pull, check the counts, not just that it succeeded**; `fetch:lists` caps at
+`MAX_PER_CATEGORY` (default 20,000), so restoring the full corpus means
+`MAX_PER_CATEGORY=10000000 npm run fetch:lists`.
 
 ## Commands
 
@@ -170,10 +181,18 @@ Android and iOS so a stale stored value can't leave one off. `list4`/`list5`/`li
 entertainment, games) are opt-in, off until the user asks. Chrome is the exception by design: it's
 the self-control build with no PIN, where everything toggles freely.
 
-`list6` is much smaller than the others (~117 domains) and mostly hand-curated: gaming is not a
-standard blocklist category the way porn and gambling are, and `blocklistproject`'s `fortnite.txt`
-is the only feed any of the usual maintainers publish for it. It covers storefronts, launchers and
-browser-game portals. Treat its size as expected rather than as a build that went wrong.
+**`list6` (games) and the dating half of `list4` come from UT1, not from the DNS-blocklist world.**
+The usual maintainers categorise by *harm* — malware, phishing, porn, gambling — so they publish
+nothing for "games" or "dating"; `blocklistproject`'s `fortnite.txt` is down to a handful of
+entries. The Université Toulouse 1 Capitole blacklist categorises by *subject* and therefore does,
+which took `list6` from 117 hand-curated domains to ~33,700. It is **CC BY-SA 4.0**, the only
+share-alike source in `sources.ts` — attribution rides in each list file's `sources` block, and the
+ShareAlike term attaches to the published lists, not to this repo's code.
+
+Real-money play (teen patti, rummy, fantasy cricket, betting) goes in **`list2`, not `list6`**.
+Paying to play is gambling, `list2` is mandatory so it is blocked unconditionally rather than only
+for someone who opted into blocking games, and the headline count sums the categories — a domain in
+two of them would be counted twice.
 
 **One subject, one switch — the websites and the apps together.** A row named "Block social media"
 sets both `Settings.categories[.social]` and `AppGroup.SOCIAL`; `AppGroup.category` is what pairs
