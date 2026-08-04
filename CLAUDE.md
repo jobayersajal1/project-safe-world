@@ -11,7 +11,7 @@ app (`apps/ios`), is in progress**: SwiftUI app + Safari Content Blocker extensi
 Kotlin/Compose app + a local `VpnService` DNS sinkhole, backed by a `:core` Kotlin module. **Phase
 4, a macOS app (`apps/macos`), and Phase 5, a Windows app (`apps/windows`), both ship**: menu-bar
 and tray apps that run a **local DNS resolver** on `127.0.0.1:53` over memory-mapped fuse filters,
-blocking the full ~4.54M domains in every app. The `hosts`-file sinkhole each started as is now only
+blocking the full ~4.56M domains in every app. The `hosts`-file sinkhole each started as is now only
 the fallback when the resolver cannot start. macOS **shares iOS's
 `SafeWorldCore` Swift package** rather than reimplementing `decide()` again — it's pure Foundation
 and already declares macOS support in its own `Package.swift`, and both are Swift/Apple platforms.
@@ -22,11 +22,16 @@ filtering are not started; with the DNS resolvers shipping, those are now about 
 and about seeing DoH/direct-to-IP traffic, not about coverage.
 
 **Per-platform reach, because it differs and the numbers are easy to get wrong:** Android, macOS and
-Windows all carry **4,536,263** — they build from the same fuse filters, so a figure that differs
+Windows all carry **4,558,995** — they build from the same fuse filters, so a figure that differs
 between those three is a stale note rather than a real difference. Android gets it through the
-VpnService; macOS once the daemon is installed from the app, ~150,000 on the hosts fallback; Windows
-via the proxy, same hosts fallback. **iOS 150,000** — its
-Safari content blocker is capped by Safari's ~150k rule ceiling, and the `SafeWorldTunnel` packet
+VpnService; macOS once the daemon is installed from the app, ~172,000 on the hosts fallback; Windows
+via the proxy, same hosts fallback. **iOS 172,407** — the cap that actually binds is
+`IOS_MAX_PER_CATEGORY` (50,000, applied *per category* in `build-ios-blocklists.ts`), so the total
+is the sum of the capped categories and not a single ceiling. That is why this number went *up*
+when `list7` landed rather than staying pinned at 150,000: `BlockerListBuilder` emits one rule per
+category with the domains in its `if-domain` array, so Safari's ~150k *rule* ceiling is nowhere
+near binding — about seven rules are in play. The undocumented limit is the array length, which is
+what the conservative 50,000 is guarding. The `SafeWorldTunnel` packet
 tunnel that would carry the full list needs a paid Apple Developer account and a real device, so it
 cannot run here. Note that Chrome on iOS does **not** use Safari content blockers, so the tunnel is
 the only thing that would cover it.
@@ -175,11 +180,16 @@ category is one `CATEGORIES` entry (plus a blocklist JSON and a `rule_resources`
 manifest). Each category owns a disjoint rule-id range via `ruleIdBase`/`RULE_ID_STRIDE` so
 generated rule ids never collide.
 
-There are six, split by `optional`. `list1`/`list2`/`list3` (scam, gambling, adult) are the
-protection promise — on by default, and **forced on** by `enforceMandatoryCategories` on both
-Android and iOS so a stale stored value can't leave one off. `list4`/`list5`/`list6` (social,
-entertainment, games) are opt-in, off until the user asks. Chrome is the exception by design: it's
-the self-control build with no PIN, where everything toggles freely.
+There are seven, split by `optional`. `list1`/`list2`/`list3`/`list7` (scam, gambling, adult, drugs
+& illegal) are the protection promise — on by default, and **forced on** by
+`enforceMandatoryCategories` on all four app platforms so a stale stored value can't leave one off.
+`list4`/`list5`/`list6` (social, entertainment, games) are opt-in, off until the user asks. Chrome
+is the exception by design: it's the self-control build with no PIN, where everything toggles
+freely.
+
+**`list7`'s `ruleIdBase` is `7 * RULE_ID_STRIDE`, and it sits before `list6` in the array.** The
+bases are keyed to the list *number*, not to array position, precisely so a category inserted out
+of order cannot silently collide with an existing range.
 
 **`list6` (games) and the dating half of `list4` come from UT1, not from the DNS-blocklist world.**
 The usual maintainers categorise by *harm* — malware, phishing, porn, gambling — so they publish
@@ -187,7 +197,9 @@ nothing for "games" or "dating"; `blocklistproject`'s `fortnite.txt` is down to 
 entries. The Université Toulouse 1 Capitole blacklist categorises by *subject* and therefore does,
 which took `list6` from 117 hand-curated domains to ~33,700. It is **CC BY-SA 4.0**, the only
 share-alike source in `sources.ts` — attribution rides in each list file's `sources` block, and the
-ShareAlike term attaches to the published lists, not to this repo's code.
+ShareAlike term attaches to the published lists, not to this repo's code. **`list7` draws on UT1
+too** (`ut1-drugs`, `ut1-warez`, alongside two public-domain `blocklistproject` feeds), so the same
+ShareAlike term rides with it.
 
 Real-money play (teen patti, rummy, fantasy cricket, betting) goes in **`list2`, not `list6`**.
 Paying to play is gambling, `list2` is mandatory so it is blocked unconditionally rather than only
