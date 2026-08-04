@@ -12,36 +12,30 @@ struct MenuView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Safe World")
-                .font(.headline)
+            HStack {
+                Text("Safe World")
+                    .font(.headline)
+                Spacer()
+                themeToggle
+            }
 
             Toggle("Protection", isOn: Binding(
                 get: { store.settings.enabled },
                 set: { on in store.update { $0.enabled = on } }
             ))
+            .tint(Brand.calm)
 
             Text("Self-control model — you can turn protection off any time. There's no PIN lock.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
+            blockedCountCard
+
             deviceWideSection
 
             Divider()
 
-            ForEach(Categories.all, id: \.id) { category in
-                Toggle(isOn: Binding(
-                    get: { store.settings.categories[category.id] ?? false },
-                    set: { on in store.update { $0.categories[category.id] = on } }
-                )) {
-                    VStack(alignment: .leading, spacing: 1) {
-                        Text(category.label)
-                        Text(category.description)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .disabled(!store.settings.enabled)
-            }
+            subjectsSection
 
             Divider()
 
@@ -86,7 +80,107 @@ struct MenuView: View {
             }
         }
         .padding(16)
-        .frame(width: 300)
+        .frame(width: 320)
+        // The popover grew a count card and a subject list, and a menu-bar window does not scroll
+        // by itself — without a cap it runs off the bottom of a short screen and the Quit button
+        // becomes unreachable. `.fixedSize` keeps it at its natural height until it hits the cap.
+        .fixedSize(horizontal: false, vertical: true)
+    }
+
+    /// Light or dark, asked for rather than inherited — see `SettingsStore.darkTheme`.
+    private var themeToggle: some View {
+        Button {
+            store.darkTheme.toggle()
+        } label: {
+            Image(systemName: store.darkTheme ? "sun.max" : "moon")
+        }
+        .buttonStyle(.plain)
+        .foregroundStyle(Brand.accent)
+        .help(store.darkTheme ? "Switch to the light theme" : "Switch to the dark theme")
+    }
+
+    // MARK: How much is blocked
+
+    /// **Says something different when protection is off**, because the same sentence would be a
+    /// lie: nothing is being blocked, and a card announcing 4.5 million blocked sites above a
+    /// switch that is off is exactly the kind of reassurance this app must never give. Off, it
+    /// states the offer and points at the switch; on, it states the fact.
+    ///
+    /// Port of the same card on `HomeView` (iOS) and `HomeScreen` (Android), including the exact
+    /// figure under the rounded one — the headline is the claim someone repeats, the exact number
+    /// is what makes it checkable.
+    private var blockedCountCard: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            if store.settings.enabled {
+                Text("Blocking \(CountFormat.compact(store.blockedDomainCount)) harmful sites.")
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(Brand.calm)
+                Text("\(CountFormat.exact(store.blockedDomainCount)) sites in total.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } else {
+                Text("Protection is off.")
+                    .font(.title3.weight(.semibold))
+                Text("Turn it on to block \(CountFormat.compact(store.blockedDomainCount(ifEnabled: true))) harmful sites.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .fixedSize(horizontal: false, vertical: true)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    // MARK: What's blocked
+
+    /// The three mandatory lists are **stated, not offered**.
+    ///
+    /// This app used to draw a switch for all six categories. That was wrong for the same reason
+    /// it was wrong on the phones: installing Safe World is the decision to block scams, gambling,
+    /// and adult content, and a toggle that turns gambling back on in a weak moment defeats the
+    /// point of installing it. The Mac has no PIN — it is the self-control build — but "no lock on
+    /// the door" is not a reason to put the lever in easy reach and label it invitingly.
+    ///
+    /// So the mandatory three are a sentence, and the switches are only for *adding*. Games first;
+    /// it is the one people come looking for.
+    private var subjectsSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Always blocked")
+                .font(.subheadline.weight(.medium))
+            Text(Categories.all.filter { !$0.optional }.map(\.label).joined(separator: " · "))
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+            Text("Block more")
+                .font(.subheadline.weight(.medium))
+                .padding(.top, 4)
+
+            ForEach(subjectOrder, id: \.id) { category in
+                Toggle(isOn: Binding(
+                    get: { store.settings.categories[category.id] ?? false },
+                    set: { on in store.update { $0.categories[category.id] = on } }
+                )) {
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text(category.label)
+                        Text(category.description)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                .tint(Brand.calm)
+                .disabled(!store.settings.enabled)
+            }
+        }
+    }
+
+    /// Written out rather than taken from `Categories.optional`, so the order is a UI decision —
+    /// the same `subjectOrder` the other three platforms use.
+    private var subjectOrder: [CategoryMeta] {
+        let preferred: [CategoryId] = [.games, .social, .entertainment]
+        return Categories.optional.sorted {
+            (preferred.firstIndex(of: $0.id) ?? preferred.count)
+                < (preferred.firstIndex(of: $1.id) ?? preferred.count)
+        }
     }
 
     /// Installed version, and whatever the update check has found.

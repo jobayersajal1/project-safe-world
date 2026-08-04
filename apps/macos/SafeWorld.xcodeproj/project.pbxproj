@@ -8,13 +8,16 @@
 
 /* Begin PBXBuildFile section */
 		12885848E460804ABAE6EF03 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2430922C36E9B43E3F5235D /* SettingsStore.swift */; };
+		177BCBB5877184266336619B /* Brand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6C74602FCB3D949B4D25F0 /* Brand.swift */; };
 		1806B910C8005E974BBF5A40 /* SafeWorldApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888922C535B0B08BFF28D2B0 /* SafeWorldApp.swift */; };
+		1A1136A6B075FC325B413E0E /* CountFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B99E8E78D3EC58CFD0B84B /* CountFormat.swift */; };
 		24DC96C5A006C89663E141C9 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E79DCA08FBCD48DD1CB681E /* MenuView.swift */; };
 		4168C063283CEABE784E8159 /* SafeWorldCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B3C414C2520283B858BC6 /* SafeWorldCore */; };
 		426A4A8E729AE91FC9B9F110 /* RemoteUpdateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FA580CF498F370803254DE7 /* RemoteUpdateService.swift */; };
 		43B02553F5A82AB640882482 /* RemoteConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAA908788DF4B33765683C9A /* RemoteConfig.swift */; };
 		8356828B1E3D75FBE2847CA7 /* UpdateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8A7F1716ABDD2709EEC542 /* UpdateService.swift */; };
 		8D3FEF0D418A140B0986C6A1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 863B9431E0AC3458B7A8034E /* Assets.xcassets */; };
+		A358B65D07BCFF8FF14149F3 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8751977B7A9BD0FED7FB610E /* SetupView.swift */; };
 		CDFAE60B978758DEE2489033 /* HostsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D746F101B64C6202CF48292D /* HostsManager.swift */; };
 		D3B4821FF0698172575F91EA /* DaemonController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE730204611CACD5B6CED3EF /* DaemonController.swift */; };
 /* End PBXBuildFile section */
@@ -24,8 +27,11 @@
 		1F8A7F1716ABDD2709EEC542 /* UpdateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateService.swift; sourceTree = "<group>"; };
 		1FA580CF498F370803254DE7 /* RemoteUpdateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteUpdateService.swift; sourceTree = "<group>"; };
 		3E79DCA08FBCD48DD1CB681E /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
+		62B99E8E78D3EC58CFD0B84B /* CountFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountFormat.swift; sourceTree = "<group>"; };
+		6C6C74602FCB3D949B4D25F0 /* Brand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Brand.swift; sourceTree = "<group>"; };
 		7BE836801A19619F4AE0F4F6 /* SafeWorldCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SafeWorldCore; path = ../ios/SafeWorldCore; sourceTree = SOURCE_ROOT; };
 		863B9431E0AC3458B7A8034E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8751977B7A9BD0FED7FB610E /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
 		888922C535B0B08BFF28D2B0 /* SafeWorldApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeWorldApp.swift; sourceTree = "<group>"; };
 		92613E5F7D7C1F1B45177ED5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A2430922C36E9B43E3F5235D /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
@@ -58,6 +64,8 @@
 			isa = PBXGroup;
 			children = (
 				863B9431E0AC3458B7A8034E /* Assets.xcassets */,
+				6C6C74602FCB3D949B4D25F0 /* Brand.swift */,
+				62B99E8E78D3EC58CFD0B84B /* CountFormat.swift */,
 				AE730204611CACD5B6CED3EF /* DaemonController.swift */,
 				D746F101B64C6202CF48292D /* HostsManager.swift */,
 				92613E5F7D7C1F1B45177ED5 /* Info.plist */,
@@ -75,6 +83,7 @@
 			isa = PBXGroup;
 			children = (
 				3E79DCA08FBCD48DD1CB681E /* MenuView.swift */,
+				8751977B7A9BD0FED7FB610E /* SetupView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -194,6 +203,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				177BCBB5877184266336619B /* Brand.swift in Sources */,
+				1A1136A6B075FC325B413E0E /* CountFormat.swift in Sources */,
 				D3B4821FF0698172575F91EA /* DaemonController.swift in Sources */,
 				CDFAE60B978758DEE2489033 /* HostsManager.swift in Sources */,
 				24DC96C5A006C89663E141C9 /* MenuView.swift in Sources */,
@@ -201,6 +212,7 @@
 				426A4A8E729AE91FC9B9F110 /* RemoteUpdateService.swift in Sources */,
 				1806B910C8005E974BBF5A40 /* SafeWorldApp.swift in Sources */,
 				12885848E460804ABAE6EF03 /* SettingsStore.swift in Sources */,
+				A358B65D07BCFF8FF14149F3 /* SetupView.swift in Sources */,
 				8356828B1E3D75FBE2847CA7 /* UpdateService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

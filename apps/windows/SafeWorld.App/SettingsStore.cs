@@ -33,12 +33,112 @@ public sealed class SettingsStore
     /// <summary>True when the uncapped proxy is doing the blocking rather than the hosts file.</summary>
     public bool ProxyActive => Proxy.IsRunning;
 
+    /// <summary>
+    /// Whether first-run setup has been finished.
+    /// <para>
+    /// Stored beside the settings rather than inside them, because it is a fact about this
+    /// installation rather than a blocking preference — <see cref="Settings"/> is the shape the
+    /// hosts builder and the proxy consume, and it is shared with the other platforms' wire
+    /// format.
+    /// </para>
+    /// <para>
+    /// An install that predates the wizard has a settings file and no marker, and is treated as
+    /// done rather than dragged back through setup — the same carry-forward rule the other three
+    /// platforms use.
+    /// </para>
+    /// </summary>
+    public bool OnboardingComplete { get; private set; }
+
+    private static readonly string OnboardingPath = Path.Combine(
+        Path.GetDirectoryName(SettingsPath)!, "setup-complete");
+
     public SettingsStore()
     {
         Settings = Load();
+        OnboardingComplete = File.Exists(OnboardingPath) || File.Exists(SettingsPath);
         StartProxy();
         SyncHosts();
     }
+
+    public void CompleteOnboarding()
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(OnboardingPath)!);
+        File.WriteAllText(OnboardingPath, "1");
+        OnboardingComplete = true;
+        Save();
+        SyncHosts();
+        Changed?.Invoke();
+    }
+
+    /// <summary>
+    /// Forces every non-optional category on.
+    /// <para>
+    /// Port of <c>enforceMandatoryCategories</c> on Android, iOS, and macOS. Scam, gambling, and
+    /// adult are the protection promise — installing the app is the decision to block them — so
+    /// they are not a thing the UI offers to turn off, and a stored value that says otherwise (an
+    /// older build of this app, which drew a switch for all six, or a hand-edited settings.json)
+    /// must not be able to leave one off.
+    /// </para>
+    /// <para>Applied on load <i>and</i> on every mutation, so there is no window where a write puts
+    /// settings into a state the loader would have corrected.</para>
+    /// </summary>
+    private static Settings EnforceMandatoryCategories(Settings settings)
+    {
+        foreach (var category in Categories.All.Where(c => !c.Optional))
+        {
+            settings.Categories[category.Id] = true;
+        }
+        return settings;
+    }
+
+    /// <summary>
+    /// Domains covered by the currently enabled categories, plus the user's own — the number the
+    /// tray menu states.
+    /// <para>
+    /// Read from the fuse filters' entry counts rather than by counting the bundled JSON, for the
+    /// same reason the phones do it: the filters carry the full uncapped corpus while the JSON is
+    /// the capped subset the hosts file can take, and the proxy — which is what actually does the
+    /// blocking here — matches against the filters.
+    /// </para>
+    /// </summary>
+    public int BlockedDomainCount(bool? ifEnabled = null)
+    {
+        if (!(ifEnabled ?? Settings.Enabled)) return 0;
+
+        var bundled = FilterCounts.Value
+            .Where(kv => Settings.Categories.TryGetValue(kv.Key, out var on) && on)
+            .Sum(kv => kv.Value);
+        var remote = RemoteDomains
+            .Where(kv => Settings.Categories.TryGetValue(kv.Key, out var on) && on)
+            .Sum(kv => kv.Value.Count);
+        return bundled + remote + Settings.CustomBlock.Count;
+    }
+
+    /// <summary>
+    /// Computed once — the staged filters cannot change under a running app, so only the enabled
+    /// set has to be re-read.
+    /// </summary>
+    private static readonly Lazy<Dictionary<CategoryId, int>> FilterCounts = new(() =>
+    {
+        var counts = new Dictionary<CategoryId, int>();
+        foreach (var id in Enum.GetValues<CategoryId>())
+        {
+            try
+            {
+                var path = Path.Combine(ProxyController.FilterDirectory, $"{id.ToRawValue()}.filter");
+                using var filter = FuseFilter.Open(path);
+                counts[id] = filter.Size;
+            }
+            catch
+            {
+                // A filter that cannot be read — not yet extracted, or unreadable — means a
+                // smaller headline, which is better than a wrong one and much better than a crash
+                // on the way to drawing a menu.
+                counts[id] = 0;
+            }
+        }
+        return counts;
+    });
 
     /// <summary>
     /// Bring the proxy up if protection is on. Deliberately tolerant: a failure here is reported
@@ -63,14 +163,14 @@ public sealed class SettingsStore
             {
                 var json = File.ReadAllText(SettingsPath);
                 var stored = JsonSerializer.Deserialize<Settings>(json);
-                return Settings.WithDefaults(stored);
+                return EnforceMandatoryCategories(Settings.WithDefaults(stored));
             }
         }
         catch
         {
             // Corrupt or unreadable settings file: fall back to defaults rather than crashing.
         }
-        return Settings.Defaults();
+        return EnforceMandatoryCategories(Settings.Defaults());
     }
 
     private void Save()
@@ -82,6 +182,7 @@ public sealed class SettingsStore
     public void Update(Action<Settings> mutate)
     {
         mutate(Settings);
+        EnforceMandatoryCategories(Settings);
         Save();
         SyncHosts();
         Changed?.Invoke();

@@ -6,14 +6,68 @@ import SafeWorldCore
 /// managed block in /etc/hosts and applies it via `HostsManager`.
 @MainActor
 final class SettingsStore: ObservableObject {
+    /// The one instance.
+    ///
+    /// Both the `App` scene and the `NSApplicationDelegate` need this store — the scene to draw
+    /// the menu, the delegate to decide at launch whether to put up the setup window — and two
+    /// instances would mean setup writing its answers into a store the menu never reads. Same
+    /// reason `SettingsStore.get(context)` is a singleton on Android.
+    static let shared = SettingsStore()
+
     @Published private(set) var settings: Settings
     @Published var lastSyncError: String?
     /// Domains fetched from `RemoteConfig.updateURL`, merged into the bundled
     /// blocklists in `syncHosts()`. Empty until the first successful fetch.
     @Published private(set) var remoteDomains: [CategoryId: [String]] = [:]
 
+    /// Whether to show the dark theme. **Off by default, and the system is not consulted.**
+    ///
+    /// Port of `SettingsStore.darkTheme` on iOS and Android, down to the default. SwiftUI would
+    /// follow the Mac's appearance for free, and following it reads badly here for the same reason
+    /// it does on a phone: two people opening the same app would see different things with no way
+    /// to know which, and a parent checking a child's Mac would find an app that does not look like
+    /// the one on theirs. Light is what it is; dark is what you ask for.
+    @Published var darkTheme: Bool = false {
+        didSet {
+            guard darkTheme != oldValue else { return }
+            defaults.set(darkTheme, forKey: Self.darkThemeKey)
+        }
+    }
+
+    /// How far through first-run setup the user has got.
+    ///
+    /// Persisted rather than held in view state, exactly as on iOS and Android: the setup window
+    /// is rebuilt whenever the theme flips, and a step in `@State` would reset to the first
+    /// question.
+    @Published var onboardingStep: Int = 0 {
+        didSet {
+            guard onboardingStep != oldValue else { return }
+            defaults.set(onboardingStep, forKey: Self.onboardingStepKey)
+        }
+    }
+
+    /// Whether setup has been finished.
+    ///
+    /// The default carries installs that predate the wizard: they have settings stored and no
+    /// step, so they are treated as done rather than dragged back through setup. **The step half
+    /// of that test is the half that matters** — keying only on "has been used before" meant
+    /// someone who answered the first question and quit came back with setup considered finished,
+    /// silently skipping the rest. Same bug, same fix, as the other two platforms.
+    @Published private(set) var onboardingComplete: Bool = false
+
+    func completeOnboarding() {
+        defaults.set(true, forKey: Self.onboardingDoneKey)
+        onboardingComplete = true
+        // The first hosts write of this install's life. Everything before now was suppressed —
+        // see `syncHosts()`.
+        syncHosts()
+    }
+
     private let defaults = UserDefaults.standard
     private static let settingsKey = "settings"
+    private static let darkThemeKey = "darkTheme"
+    private static let onboardingStepKey = "onboardingStep"
+    private static let onboardingDoneKey = "onboardingComplete"
     private static let remoteDomainsKey = "remoteDomains"
     /// Which published payload was last applied — see `runRemoteUpdate`.
     private static let lastUpdateIdKey = "lastAppliedUpdateId"
@@ -22,6 +76,13 @@ final class SettingsStore: ObservableObject {
     init() {
         self.settings = Self.loadSettings(from: defaults)
         self.remoteDomains = Self.loadRemoteDomains(from: defaults)
+        // `bool(forKey:)` is false for a key that was never written, which is the default we want
+        // anyway — a fresh install opens light.
+        self.darkTheme = defaults.bool(forKey: Self.darkThemeKey)
+        self.onboardingStep = defaults.integer(forKey: Self.onboardingStepKey)
+        self.onboardingComplete = defaults.object(forKey: Self.onboardingDoneKey) as? Bool
+            ?? (defaults.data(forKey: Self.settingsKey) != nil
+                && defaults.object(forKey: Self.onboardingStepKey) == nil)
         syncHosts()
         refreshRemoteIfDue()
         // RefreshRemoteIfDue no-ops until 24h since the last fetch, so this just needs to run
@@ -50,14 +111,72 @@ final class SettingsStore: ObservableObject {
         guard
             let data = defaults.data(forKey: settingsKey),
             let stored = try? JSONDecoder().decode(Settings.self, from: data)
-        else { return .defaults() }
-        return Settings.withDefaults(stored)
+        else { return enforceMandatoryCategories(.defaults()) }
+        return enforceMandatoryCategories(Settings.withDefaults(stored))
+    }
+
+    /// Forces every non-optional category on.
+    ///
+    /// Port of `enforceMandatoryCategories` on iOS and Android. Scam, gambling, and adult are the
+    /// protection promise — installing the app is the decision to block them — so they are not a
+    /// thing the UI offers to turn off, and a stored value that says otherwise (an older build of
+    /// this app, which did offer the switch, or an edited plist) must not be able to leave one off.
+    ///
+    /// Applied on load *and* on every mutation, so there is no window where a write puts settings
+    /// into a state the loader would have corrected.
+    private static func enforceMandatoryCategories(_ settings: Settings) -> Settings {
+        var result = settings
+        for category in Categories.all where !category.optional {
+            result.categories[category.id] = true
+        }
+        return result
+    }
+
+    // MARK: How much is blocked
+
+    /// Domains covered by the currently enabled categories, plus the user's own.
+    ///
+    /// Read from the bundled filter headers rather than by counting the JSON lists, for the same
+    /// reason iOS does it: the filters carry the full uncapped corpus while the JSON is the capped
+    /// subset, and the headline should state what the app knows about.
+    ///
+    /// **This is the app's own figure, not the daemon's.** `DaemonController.blockedDomainCount`
+    /// counts the filters staged under `/Library/Application Support`, which only exist once the
+    /// daemon is installed; this one is the bundled corpus and is answerable before that.
+    ///
+    /// Computed once and cached — the bundle cannot change under a running app, so only the
+    /// enabled set has to be re-read.
+    private static let bundledCounts: [CategoryId: Int] = {
+        var counts: [CategoryId: Int] = [:]
+        for id in CategoryId.allCases {
+            guard let url = Blocklists.bundledFilterURL(for: id) else { continue }
+            counts[id] = FuseFilter.entryCount(atPath: url.path) ?? 0
+        }
+        return counts
+    }()
+
+    var blockedDomainCount: Int { blockedDomainCount(ifEnabled: settings.enabled) }
+
+    /// The count as it *would* be if protection were on.
+    ///
+    /// The off-state card needs this: it offers what turning the switch on would buy, and offering
+    /// "0 sites" is not an offer. Everything else wants the honest zero, which is what the
+    /// property above gives.
+    func blockedDomainCount(ifEnabled enabled: Bool) -> Int {
+        guard enabled else { return 0 }
+        let bundled = Self.bundledCounts
+            .filter { settings.categories[$0.key] == true }
+            .reduce(0) { $0 + $1.value }
+        let remote = remoteDomains
+            .filter { settings.categories[$0.key] == true }
+            .reduce(0) { $0 + $1.value.count }
+        return bundled + remote + settings.customBlock.count
     }
 
     func update(_ mutate: (inout Settings) -> Void) {
         var next = settings
         mutate(&next)
-        settings = next
+        settings = Self.enforceMandatoryCategories(next)
         if let data = try? JSONEncoder().encode(settings) {
             defaults.set(data, forKey: Self.settingsKey)
             publishForDaemon(data)
@@ -84,7 +203,21 @@ final class SettingsStore: ObservableObject {
         try? data.write(to: url, options: .atomic)
     }
 
+    /// Recomputes the managed block in /etc/hosts and applies it.
+    ///
+    /// **Does nothing until setup is finished, and that guard is the whole point.** Writing
+    /// /etc/hosts needs an admin password, which this asks for via `osascript` — synchronously.
+    /// Called from `init`, that put a password prompt on screen *before the app had drawn
+    /// anything*, blocking the main thread so the setup window could not appear behind it either.
+    /// A brand-new user's first experience of this app was an unexplained authentication dialog
+    /// from an app with no visible window, which is indistinguishable from malware.
+    ///
+    /// It was also asking for the wrong thing: mid-setup the user has not yet said which optional
+    /// categories they want, so the file it wanted a password to write was not the file they were
+    /// about to ask for. Setup finishes, then one write — see `completeOnboarding()`.
     func syncHosts() {
+        guard onboardingComplete else { return }
+
         var blocklists: [CategoryId: [String]] = [:]
         for id in CategoryId.allCases {
             blocklists[id] = Blocklists.domains(for: id) + (remoteDomains[id] ?? [])
