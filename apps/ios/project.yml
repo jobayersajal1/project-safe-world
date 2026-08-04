@@ -154,6 +154,26 @@ targets:
       - package: SafeWorldCore
         product: SafeWorldCore
 
+  # Drives the app in the Simulator: taps, types, asserts.
+  #
+  # **This is how iOS behaviour gets checked at all here.** Driving the
+  # Simulator from the host needs macOS accessibility permission, which this
+  # environment cannot grant — so screens were being verified by screenshot and
+  # nothing past the first one could be reached. XCUITest runs *inside* the
+  # simulator under `xcodebuild test` and needs no host permission, which is the
+  # difference between "renders" and "works".
+  SafeWorldUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: SafeWorldUITests
+    dependencies:
+      - target: SafeWorld
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.safeworld.app.uitests
+        TEST_TARGET_NAME: SafeWorld
+
 schemes:
   SafeWorld:
     build:
@@ -162,7 +182,8 @@ schemes:
         SafeWorldBlocker: all
         SafeWorldTunnel: all
     test:
-      targets: []
+      targets:
+        - SafeWorldUITests
     run:
       config: Debug
     archive:

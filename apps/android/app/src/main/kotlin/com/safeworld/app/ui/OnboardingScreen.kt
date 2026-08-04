@@ -278,7 +278,14 @@ private fun SubjectStep(
             store.acknowledgeFullTunnel()
             onDone()
         },
-        onNo = onDone,
+        // Writes `false` rather than just advancing. Only ever setting `true`
+        // made "no" mean "leave whatever was there", so a re-run of setup could
+        // not turn anything back off — the answer has to mean what it says.
+        onNo = {
+            store.update { it.copy(categories = it.categories + (category to false)) }
+            store.setAppGroupBlocked(group, false)
+            onDone()
+        },
     )
 }
 

@@ -67,6 +67,17 @@
          </BuildableReference>
       </MacroExpansion>
       <Testables>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "332E1FB51B38A99A6622A698"
+               BuildableName = "SafeWorldUITests.xctest"
+               BlueprintName = "SafeWorldUITests"
+               ReferencedContainer = "container:SafeWorld.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <CommandLineArguments>
       </CommandLineArguments>

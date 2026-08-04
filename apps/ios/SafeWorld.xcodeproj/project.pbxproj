@@ -11,6 +11,7 @@
 		0E716AA0D0B008B8FD7C7587 /* SafeWorldCore in Frameworks */ = {isa = PBXBuildFile; productRef = 536DD97AFB4B13C79FEDD36E /* SafeWorldCore */; };
 		12885848E460804ABAE6EF03 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2430922C36E9B43E3F5235D /* SettingsStore.swift */; };
 		1425531E1F858527A99F103F /* blockerList.json in Resources */ = {isa = PBXBuildFile; fileRef = 3EBBC75F37013962EC7F0821 /* blockerList.json */; };
+		15811E7D356613D2D83F444C /* OnboardingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A621B2FE617E441FDC4395 /* OnboardingUITests.swift */; };
 		177BCBB5877184266336619B /* Brand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6C74602FCB3D949B4D25F0 /* Brand.swift */; };
 		178C421895CC48C9EAC21521 /* PinStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7135D56A17CF762FD7EC8CE0 /* PinStore.swift */; };
 		1806B910C8005E974BBF5A40 /* SafeWorldApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888922C535B0B08BFF28D2B0 /* SafeWorldApp.swift */; };
@@ -38,6 +39,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		6E5220F198A2C9F6ED0ECF7B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D2321FC61E7E7F3753A74DF0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B42807D9AE433FABCCCAFF49;
+			remoteInfo = SafeWorld;
+		};
 		8050F0BF602D43E6640A04C5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D2321FC61E7E7F3753A74DF0 /* Project object */;
@@ -71,6 +79,7 @@
 
 /* Begin PBXFileReference section */
 		15CE8D94A3E663F372F10ED6 /* SupportLinks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportLinks.swift; sourceTree = "<group>"; };
+		17A621B2FE617E441FDC4395 /* OnboardingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingUITests.swift; sourceTree = "<group>"; };
 		1823BC5E585D8B1B6FB792D8 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		1B103485B7EB84B7AA2EF221 /* SafeWorld.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SafeWorld.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F8A7F1716ABDD2709EEC542 /* UpdateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateService.swift; sourceTree = "<group>"; };
@@ -100,6 +109,7 @@
 		DA49A4CCEB8846A8F11B0AF8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		ECF9BEE539F0C3E21C0715CF /* PacketTunnelProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketTunnelProvider.swift; sourceTree = "<group>"; };
 		F6A6533E351B8748B879804F /* ContentBlockerSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentBlockerSync.swift; sourceTree = "<group>"; };
+		FD25FE815F60268C07E50E72 /* SafeWorldUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SafeWorldUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,6 +146,14 @@
 				3EBBC75F37013962EC7F0821 /* blockerList.json */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		4B8079797CB3190469FE0BBA /* SafeWorldUITests */ = {
+			isa = PBXGroup;
+			children = (
+				17A621B2FE617E441FDC4395 /* OnboardingUITests.swift */,
+			);
+			path = SafeWorldUITests;
 			sourceTree = "<group>";
 		};
 		7BAC583736CE565DC12550D2 /* Packages */ = {
@@ -188,6 +206,7 @@
 				1B103485B7EB84B7AA2EF221 /* SafeWorld.app */,
 				37E8C2D74D27AF33AC33EDBA /* SafeWorldBlocker.appex */,
 				5802E650C1A5840112BE70F9 /* SafeWorldTunnel.appex */,
+				FD25FE815F60268C07E50E72 /* SafeWorldUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -209,6 +228,7 @@
 				C2F413A19B6D88D82C47EFFF /* SafeWorld */,
 				D9DF783767FAF41F5B28057A /* SafeWorldBlocker */,
 				F7F8C815C4F879576EC7FF35 /* SafeWorldTunnel */,
+				4B8079797CB3190469FE0BBA /* SafeWorldUITests */,
 				D088F9A79C07C9097BF8A505 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -225,6 +245,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		332E1FB51B38A99A6622A698 /* SafeWorldUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 337BD12EC3EE9230FF6F8E6A /* Build configuration list for PBXNativeTarget "SafeWorldUITests" */;
+			buildPhases = (
+				EF314AE888E9ED0DCBAE2C8B /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ED95DAD7067C6BAF2BBD5E22 /* PBXTargetDependency */,
+			);
+			name = SafeWorldUITests;
+			packageProductDependencies = (
+			);
+			productName = SafeWorldUITests;
+			productReference = FD25FE815F60268C07E50E72 /* SafeWorldUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		A1576E6289C94C88F6DF32C0 /* SafeWorldTunnel */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7DE9E3CE3A69A4946DE9072E /* Build configuration list for PBXNativeTarget "SafeWorldTunnel" */;
@@ -296,6 +334,10 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					332E1FB51B38A99A6622A698 = {
+						ProvisioningStyle = Automatic;
+						TestTargetID = B42807D9AE433FABCCCAFF49;
+					};
 					A1576E6289C94C88F6DF32C0 = {
 						ProvisioningStyle = Automatic;
 					};
@@ -330,6 +372,7 @@
 				B42807D9AE433FABCCCAFF49 /* SafeWorld */,
 				F0E14790C80C82F15B1BD718 /* SafeWorldBlocker */,
 				A1576E6289C94C88F6DF32C0 /* SafeWorldTunnel */,
+				332E1FB51B38A99A6622A698 /* SafeWorldUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -396,6 +439,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		EF314AE888E9ED0DCBAE2C8B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				15811E7D356613D2D83F444C /* OnboardingUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -403,6 +454,11 @@
 			isa = PBXTargetDependency;
 			target = A1576E6289C94C88F6DF32C0 /* SafeWorldTunnel */;
 			targetProxy = 8050F0BF602D43E6640A04C5 /* PBXContainerItemProxy */;
+		};
+		ED95DAD7067C6BAF2BBD5E22 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B42807D9AE433FABCCCAFF49 /* SafeWorld */;
+			targetProxy = 6E5220F198A2C9F6ED0ECF7B /* PBXContainerItemProxy */;
 		};
 		EF3FA1A0A6D170EFC204741A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -593,6 +649,22 @@
 			};
 			name = Debug;
 		};
+		9F26136BF616BF04BF1CA3C3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.safeworld.app.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SafeWorld;
+			};
+			name = Debug;
+		};
 		A9DFF32EE452E738534D3AC2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -631,6 +703,22 @@
 			};
 			name = Debug;
 		};
+		B5A1A72FEC4007638E717D34 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.safeworld.app.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SafeWorld;
+			};
+			name = Release;
+		};
 		FAB7822249A8E88E5B614EB9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -657,6 +745,15 @@
 			buildConfigurations = (
 				52B8B39C3F323DDDAE597FD4 /* Debug */,
 				49994B42C645FA6D1A63DB8A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		337BD12EC3EE9230FF6F8E6A /* Build configuration list for PBXNativeTarget "SafeWorldUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9F26136BF616BF04BF1CA3C3 /* Debug */,
+				B5A1A72FEC4007638E717D34 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

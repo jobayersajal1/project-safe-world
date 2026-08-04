@@ -168,7 +168,15 @@ struct OnboardingView: View {
                 apps.fullTunnelAcknowledged = true
                 store.onboardingStep += 1
             },
-            onNo: { store.onboardingStep += 1 }
+            // Writes `false` rather than just advancing. Only ever setting
+            // `true` made "no" mean "leave whatever was there", so a re-run of
+            // setup could not turn anything back off — the answer has to mean
+            // what it says.
+            onNo: {
+                store.update { $0.categories[id] = false }
+                apps.setGroup(group, blocked: false)
+                store.onboardingStep += 1
+            }
         )
     }
 }
