@@ -32,3 +32,54 @@
 # nothing else.
 -keep class com.safeworld.app.vpn.NativeTunnel { *; }
 -keep class com.safeworld.app.vpn.SafeWorldRelay { *; }
+
+# MediaPipe Tasks and TFLite, for the blur feature.
+#
+# Both resolve Java classes from native code by string — MediaPipe's graph
+# machinery and TFLite's `Interpreter`/`Delegate` bindings — so R8 sees no
+# reference and strips or renames them. The result is a release-only failure
+# where the models fail to load, `PersonScanner` logs a warning, and the app
+# covers nothing at all while looking perfectly healthy. Debug builds are
+# unminified and would never show it.
+-keep class com.google.mediapipe.** { *; }
+-keep class org.tensorflow.lite.** { *; }
+-dontwarn com.google.mediapipe.**
+-dontwarn org.tensorflow.lite.**
+
+# AutoValue-generated MediaPipe option/result types are referenced reflectively
+# by the builders above.
+-keep class autovalue.** { *; }
+-dontwarn autovalue.**
+
+# Flogger, which MediaPipe logs through.
+#
+# This one is not about reflection. Flogger finds the *call site* of a log
+# statement by walking the stack and matching class names; obfuscate it and the
+# walk finds nothing, so `Graph`'s static initializer dies with
+#
+#     java.lang.IllegalStateException: no caller found on the stack for: Z1.d
+#
+# taking the whole process with it the first time the blur service starts. It is
+# release-only — debug builds are unminified — and it happens *before* any of our
+# code runs, so nothing we write can catch it.
+-keep class com.google.common.flogger.** { *; }
+-keepnames class com.google.common.flogger.** { *; }
+-dontwarn com.google.common.flogger.**
+
+# Protobuf-lite, which MediaPipe serialises its graph config through.
+#
+# protobuf-lite does not generate field accessors — it looks fields up *by name*
+# at runtime from a schema string. Rename them and it fails with
+#
+#     Field typeUrl_ for com.google.protobuf.Any not found.
+#     Known fields are [... com.google.protobuf.Any.d, ... Any.e]
+#
+# which is R8 having shortened `typeUrl_` to `d`. Release-only, and it surfaces
+# as "detection models unavailable" — the app runs, the switch reads on, and
+# nothing is ever covered.
+-keep class com.google.protobuf.** { *; }
+-keepclassmembers class * extends com.google.protobuf.GeneratedMessageLite {
+    <fields>;
+}
+-keep class * extends com.google.protobuf.GeneratedMessageLite { *; }
+-dontwarn com.google.protobuf.**

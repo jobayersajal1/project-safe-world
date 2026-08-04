@@ -34,7 +34,9 @@ import com.safeworld.app.LocaleHelper
 import com.safeworld.app.R
 import com.safeworld.app.SettingsStore
 import com.safeworld.app.SubscriptionStore
+import com.safeworld.app.blur.BlurConsentActivity
 import com.safeworld.core.AppGroups.AppGroup
+import com.safeworld.core.BlurTarget
 import com.safeworld.core.CategoryId
 
 /**
@@ -69,6 +71,7 @@ fun OnboardingScreen(
     onEnableUninstallProtection: () -> Unit,
     onFinish: () -> Unit,
 ) {
+    val context = LocalContext.current
     val step by store.onboardingStep.collectAsStateWithLifecycle()
     val hasPin by store.hasPin.collectAsStateWithLifecycle()
 
@@ -81,6 +84,19 @@ fun OnboardingScreen(
     }
 
     fun advance() = store.setOnboardingStep(step + 1)
+
+    /**
+     * Record the choice, then go and pay for it.
+     *
+     * The setting is written *before* leaving, because
+     * [BlurConsentActivity] turns it back off if either consent is refused —
+     * which only reads correctly if it was on to begin with.
+     */
+    fun startBlur(target: BlurTarget) {
+        store.updateBlur { it.copy(enabled = true, target = target) }
+        BlurConsentActivity.start(context)
+        advance()
+    }
 
     when (step) {
         STEP_LANGUAGE -> LanguageStep(store, onNext = ::advance)
@@ -143,6 +159,37 @@ fun OnboardingScreen(
             onDone = ::advance,
         )
 
+        // The first step with three answers rather than two: it asks *who*, and
+        // a yes/no followed by a "which?" would be two screens for one decision.
+        //
+        // Picking a target leaves for the system consent screens immediately.
+        // That is safe because the step is persisted — the wizard resumes here
+        // on return — and it is the only honest moment to ask: screen-capture
+        // consent cannot be taken in advance and kept, since Android 14 requires
+        // it afresh every session.
+        STEP_BLUR -> ChoiceStep(
+            step = step,
+            title = stringResource(R.string.onb_blur_title),
+            body = stringResource(R.string.onb_blur_body),
+            note = stringResource(R.string.blur_lag_note),
+            choices = listOf(
+                Choice(stringResource(R.string.onb_blur_women), emphasised = true) {
+                    startBlur(BlurTarget.WOMEN)
+                },
+                Choice(stringResource(R.string.onb_blur_men), emphasised = true) {
+                    startBlur(BlurTarget.MEN)
+                },
+                Choice(stringResource(R.string.onb_blur_no), emphasised = false) {
+                    // Writes `false` rather than only advancing. "No" that means
+                    // "leave whatever was there" is a bug this wizard has already
+                    // shipped once — a re-run of setup could not turn anything
+                    // back off.
+                    store.updateBlur { it.copy(enabled = false) }
+                    advance()
+                },
+            ),
+        )
+
         // Reuses the standalone offer rather than restating it: the count and the
         // download size are computed from `Subscriptions`, and two screens
         // quoting different megabytes for the same download is how one of them
@@ -186,9 +233,10 @@ private const val STEP_PIN_ENTRY = 2
 private const val STEP_SOCIAL = 3
 private const val STEP_GAMES = 4
 private const val STEP_ENTERTAINMENT = 5
-private const val STEP_EXTRA = 6
-private const val STEP_UNINSTALL = 7
-private const val STEP_FINISH = 8
+private const val STEP_BLUR = 6
+private const val STEP_EXTRA = 7
+private const val STEP_UNINSTALL = 8
+private const val STEP_FINISH = 9
 
 /**
  * The steps that carry a "step N of M" header, in order.
@@ -204,6 +252,7 @@ private val NUMBERED_STEPS = listOf(
     STEP_SOCIAL,
     STEP_GAMES,
     STEP_ENTERTAINMENT,
+    STEP_BLUR,
     STEP_UNINSTALL,
     STEP_FINISH,
 )
@@ -289,15 +338,28 @@ private fun SubjectStep(
     )
 }
 
+/** One answer to a step. [emphasised] draws it as the filled button. */
+private data class Choice(
+    val label: String,
+    val emphasised: Boolean,
+    val onPick: () -> Unit,
+)
+
+/**
+ * A step with any number of answers.
+ *
+ * The blur question is the first that is not yes/no — it asks *who*, and the
+ * honest shape of that is three answers rather than a yes that then needs a
+ * follow-up. Generalising here rather than adding a third button to
+ * [QuestionStep] keeps one layout for every step, so the next non-binary
+ * question needs no new machinery either.
+ */
 @Composable
-private fun QuestionStep(
+private fun ChoiceStep(
     step: Int,
     title: String,
     body: String,
-    yesLabel: String,
-    noLabel: String?,
-    onYes: () -> Unit,
-    onNo: () -> Unit,
+    choices: List<Choice>,
     note: String? = null,
 ) {
     StepScaffold(step = step, title = title, body = body) {
@@ -309,11 +371,37 @@ private fun QuestionStep(
             )
         }
         Spacer(Modifier.padding(4.dp))
-        Button(onClick = onYes, modifier = Modifier.fillMaxWidth()) { Text(yesLabel) }
-        if (noLabel != null) {
-            OutlinedButton(onClick = onNo, modifier = Modifier.fillMaxWidth()) { Text(noLabel) }
+        for (choice in choices) {
+            if (choice.emphasised) {
+                Button(onClick = choice.onPick, modifier = Modifier.fillMaxWidth()) { Text(choice.label) }
+            } else {
+                OutlinedButton(onClick = choice.onPick, modifier = Modifier.fillMaxWidth()) { Text(choice.label) }
+            }
         }
     }
+}
+
+@Composable
+private fun QuestionStep(
+    step: Int,
+    title: String,
+    body: String,
+    yesLabel: String,
+    noLabel: String?,
+    onYes: () -> Unit,
+    onNo: () -> Unit,
+    note: String? = null,
+) {
+    ChoiceStep(
+        step = step,
+        title = title,
+        body = body,
+        note = note,
+        choices = buildList {
+            add(Choice(yesLabel, emphasised = true, onPick = onYes))
+            if (noLabel != null) add(Choice(noLabel, emphasised = false, onPick = onNo))
+        },
+    )
 }
 
 @Composable

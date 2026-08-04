@@ -209,4 +209,29 @@
     <string name="onb_finish_title">Activar la protección</string>
     <string name="onb_finish_body">Android pedirá permiso para crear la conexión — ese aviso es como el teléfono comprueba que era tu intención. La protección empieza en cuanto lo permitas, con todo lo que elegiste ya aplicado.</string>
     <string name="onb_finish_action">Permitir y terminar</string>
+
+    <!-- Blur people on screen -->
+    <string name="blur_title">Difuminar a las personas en pantalla</string>
+    <string name="blur_description">Se cubre a las personas dondequiera que aparezcan, en cualquier aplicación, no solo en el navegador.</string>
+    <string name="blur_target_women">Mujeres</string>
+    <string name="blur_target_men">Hombres</string>
+    <string name="blur_target_everyone">Todas las personas</string>
+    <string name="blur_settings_title">A quién difuminar</string>
+    <string name="blur_reveal_title">Permitirme mirar de todos modos</string>
+    <string name="blur_reveal_never">Nunca</string>
+    <string name="blur_reveal_tap">Al tocar</string>
+    <string name="blur_accuracy_note">Reconocer quién aparece en una imagen no es perfecto. Falla más con niños, perfiles de lado, imágenes pequeñas y rostros con hiyab o nicab. Cuando duda, cubre, así que algunas personas quedarán cubiertas sin necesidad.</string>
+    <string name="blur_lag_note">Hay un breve retraso entre que alguien aparece y queda cubierto. Safe World tiene que leer la pantalla para hacerlo, y eso lleva un momento: no se puede eliminar, solo mantenerlo pequeño.</string>
+    <string name="blur_channel_name">Difuminando personas</string>
+    <string name="blur_channel_description">Se muestra mientras Safe World cubre a las personas en pantalla.</string>
+    <string name="blur_notification_title">Difuminando personas en pantalla</string>
+    <string name="blur_notification_text">No se graba ni se envía nada a ninguna parte.</string>
+    <string name="blur_consent_declined">Difuminar necesita permiso para leer la pantalla, así que queda desactivado.</string>
+    <string name="blur_overlay_declined">Difuminar necesita permiso para dibujar sobre otras aplicaciones, así que queda desactivado.</string>
+    <string name="blur_restart_needed">Toca para volver a difuminar</string>
+    <string name="onb_blur_title">¿Difuminar a las personas en pantalla?</string>
+    <string name="onb_blur_body">Se cubre a las personas dondequiera que aparezcan, en cualquier aplicación. Tú eliges a quién. Android pedirá permiso para leer la pantalla: no se graba ni se envía nada a ninguna parte.</string>
+    <string name="onb_blur_women">Difuminar mujeres</string>
+    <string name="onb_blur_men">Difuminar hombres</string>
+    <string name="onb_blur_no">No</string>
 </resources>

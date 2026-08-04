@@ -6,6 +6,24 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!--
+        Blurring people on screen.
+
+        Android exposes no way for one app to read another's pixels except
+        MediaProjection, so covering people inside other apps means capturing the
+        screen and drawing over it. Both permissions exist only for that:
+
+        - SYSTEM_ALERT_WINDOW draws the covering panels. The window is
+          NOT_TOUCHABLE, so every tap passes through to the app underneath.
+        - FOREGROUND_SERVICE_MEDIA_PROJECTION is required from Android 14 for a
+          service that captures.
+
+        Nothing captured is stored or transmitted. Frames are scanned in memory
+        and dropped; the models are bundled in assets/ and never fetched.
+    -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
     <!--
         So protection comes back after a reboot. Without it the tunnel stayed down until someone
         opened the app, which on a device that is deliberately never opened again means protection
@@ -173,6 +191,32 @@
                 android:name="android.net.VpnService.SUPPORTS_ALWAYS_ON"
                 android:value="true" />
         </service>
+
+        <!--
+            Screen capture for the blur feature. Separate from the VPN service
+            because the two are independent: blurring works with the tunnel off,
+            and the tunnel works with blurring off.
+
+            Not exported — it is started only by BlurConsentActivity, which holds
+            the per-session MediaProjection consent token that this service
+            cannot obtain for itself.
+        -->
+        <service
+            android:name=".blur.BlurService"
+            android:exported="false"
+            android:foregroundServiceType="mediaProjection" />
+
+        <!--
+            Takes the two consents the blur feature needs — the overlay
+            permission and, because Android 14 requires it afresh every session,
+            screen capture. Translucent so it is a dialog over whatever was on
+            screen rather than a screen of its own.
+        -->
+        <activity
+            android:name=".blur.BlurConsentActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <!--
             Device admin exists only so Android refuses to uninstall the app

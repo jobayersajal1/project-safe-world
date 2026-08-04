@@ -217,4 +217,29 @@
     <string name="onb_finish_title">تشغيل الحماية</string>
     <string name="onb_finish_body">سيطلب أندرويد إذنًا لإعداد الاتصال — هذا الطلب هو طريقة الهاتف للتأكد من رغبتك. تبدأ الحماية فور سماحك، مع تطبيق كل ما اخترته.</string>
     <string name="onb_finish_action">اسمح وأنهِ الإعداد</string>
+
+    <!-- Blur people on screen -->
+    <string name="blur_title">تمويه الأشخاص على الشاشة</string>
+    <string name="blur_description">يُغطّى الأشخاص أينما ظهروا — في أي تطبيق، وليس في المتصفح فقط.</string>
+    <string name="blur_target_women">النساء</string>
+    <string name="blur_target_men">الرجال</string>
+    <string name="blur_target_everyone">الجميع</string>
+    <string name="blur_settings_title">من يُموَّه</string>
+    <string name="blur_reveal_title">اسمح لي بالنظر على أي حال</string>
+    <string name="blur_reveal_never">أبدًا</string>
+    <string name="blur_reveal_tap">عند اللمس</string>
+    <string name="blur_accuracy_note">التعرّف على من في الصورة ليس مثاليًا. وهو أقل دقة مع الأطفال والوجوه الجانبية والصور الصغيرة والوجوه بالحجاب أو النقاب. وعند عدم التأكد يقوم بالتغطية، لذا سيُغطّى بعض الأشخاص دون حاجة.</string>
+    <string name="blur_lag_note">هناك تأخير قصير بين ظهور الشخص وتغطيته. يحتاج Safe World إلى قراءة الشاشة للقيام بذلك، وهذا يستغرق لحظة — لا يمكن إزالته، بل تقليله فقط.</string>
+    <string name="blur_channel_name">تمويه الأشخاص</string>
+    <string name="blur_channel_description">يظهر أثناء قيام Safe World بتغطية الأشخاص على الشاشة.</string>
+    <string name="blur_notification_title">جارٍ تمويه الأشخاص على الشاشة</string>
+    <string name="blur_notification_text">لا يُسجَّل شيء ولا يُرسل إلى أي مكان.</string>
+    <string name="blur_consent_declined">يحتاج التمويه إلى إذن لقراءة الشاشة، لذا سيبقى متوقفًا.</string>
+    <string name="blur_overlay_declined">يحتاج التمويه إلى إذن للرسم فوق التطبيقات الأخرى، لذا سيبقى متوقفًا.</string>
+    <string name="blur_restart_needed">اضغط لبدء التمويه من جديد</string>
+    <string name="onb_blur_title">هل تريد تمويه الأشخاص على الشاشة؟</string>
+    <string name="onb_blur_body">يُغطّى الأشخاص أينما ظهروا، في أي تطبيق. وأنت تختار من. سيطلب Android الإذن لقراءة الشاشة — لا يُسجَّل شيء ولا يُرسل إلى أي مكان.</string>
+    <string name="onb_blur_women">تمويه النساء</string>
+    <string name="onb_blur_men">تمويه الرجال</string>
+    <string name="onb_blur_no">لا</string>
 </resources>

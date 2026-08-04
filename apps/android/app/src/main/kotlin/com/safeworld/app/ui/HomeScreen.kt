@@ -3,11 +3,14 @@ package com.safeworld.app.ui
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
@@ -17,6 +20,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -36,14 +40,18 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.safeworld.app.R
+import com.safeworld.app.blur.BlurConsentActivity
+import com.safeworld.app.blur.BlurService
 import com.safeworld.app.SettingsStore
 import com.safeworld.app.SubscriptionStore
 import com.safeworld.app.vpn.SafeWorldVpnService
 import com.safeworld.core.AppGroups.AppGroup
 import com.safeworld.core.Categories
+import com.safeworld.core.BlurTarget
 import com.safeworld.core.CategoryId
 import com.safeworld.core.Matcher
 
@@ -181,6 +189,17 @@ fun HomeScreen(
                 )
                 HorizontalDivider()
                 AddWebsitesSection(store = store, requestPin = requestPin)
+            }
+        }
+
+        // Not one of the three subject rows above, because it is not a subject:
+        // it does not block anything, it covers people wherever they already
+        // are. Blocking and blurring are independent — either works with the
+        // other off.
+        Text(stringResource(R.string.blur_title), style = MaterialTheme.typography.titleSmall)
+        Card {
+            Column(Modifier.padding(vertical = 8.dp)) {
+                BlurSection(store = store, requestPin = requestPin)
             }
         }
 
@@ -648,4 +667,102 @@ private fun PrivateDnsWarning() {
             }
         }
     }
+}
+
+/**
+ * Blurring people, as a row plus the choice of who.
+ *
+ * **Turning it on is free; turning it off costs the PIN.** The same rule every
+ * other setting is held to — strengthening protection goes straight through,
+ * weakening it does not. Switching the *target* is neither: it is a lateral
+ * move between two equally covered states, so it goes through.
+ *
+ * The row can read "on" while nothing is running, and that is not the half-state
+ * this product otherwise refuses. From Android 14 screen-capture consent is
+ * granted per session and cannot be stored, so after a reboot the setting
+ * legitimately survives and the capture does not. The row says exactly that and
+ * offers one tap to start it again — the alternative, silently turning the
+ * setting off on every restart, would be a promise quietly withdrawn.
+ */
+@Composable
+private fun BlurSection(store: SettingsStore, requestPin: RequestPin) {
+    val context = LocalContext.current
+    val blur by store.blur.collectAsStateWithLifecycle()
+    val running by BlurService.running.collectAsStateWithLifecycle()
+
+    val offTitle = stringResource(R.string.blur_title)
+    val offMessage = stringResource(R.string.category_off_pin_message)
+
+    ToggleRow(
+        label = stringResource(R.string.blur_title),
+        description = stringResource(R.string.blur_description),
+        checked = blur.enabled,
+        onCheckedChange = { on ->
+            if (on) {
+                store.updateBlur { it.copy(enabled = true) }
+                BlurConsentActivity.start(context)
+            } else {
+                requestPin(offTitle, offMessage) {
+                    store.updateBlur { it.copy(enabled = false) }
+                    BlurService.stop(context)
+                }
+            }
+        },
+    )
+
+    if (blur.enabled) {
+        if (!running) {
+            HorizontalDivider()
+            TextButton(
+                onClick = { BlurConsentActivity.start(context) },
+                modifier = Modifier.padding(horizontal = 8.dp),
+            ) { Text(stringResource(R.string.blur_restart_needed)) }
+        }
+
+        HorizontalDivider()
+        Text(
+            stringResource(R.string.blur_settings_title),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+        )
+        Column(Modifier.selectableGroup()) {
+            for (target in BlurTarget.entries) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .selectable(
+                            selected = blur.target == target,
+                            role = Role.RadioButton,
+                            // Lateral, not a weakening: every option covers
+                            // somebody, so none of them is a way out.
+                            onClick = { store.updateBlur { it.copy(target = target) } },
+                        )
+                        .padding(horizontal = 16.dp, vertical = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    RadioButton(selected = blur.target == target, onClick = null)
+                    Spacer(Modifier.padding(horizontal = 6.dp))
+                    Text(stringResource(target.labelRes()))
+                }
+            }
+        }
+
+        Text(
+            stringResource(R.string.blur_accuracy_note),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+        )
+    }
+}
+
+/**
+ * :core is a plain JVM module with no access to resources, so the label lives
+ * here — the same split `CategoryStrings` already makes.
+ */
+private fun BlurTarget.labelRes(): Int = when (this) {
+    BlurTarget.WOMEN -> R.string.blur_target_women
+    BlurTarget.MEN -> R.string.blur_target_men
+    BlurTarget.EVERYONE -> R.string.blur_target_everyone
 }

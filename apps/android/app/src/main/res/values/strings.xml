@@ -230,4 +230,29 @@
     <string name="onb_finish_title">Turn protection on</string>
     <string name="onb_finish_body">Android will ask permission to set up the connection — that prompt is how a phone checks you meant it. Protection starts the moment you allow it, with everything you chose already applied.</string>
     <string name="onb_finish_action">Allow and finish</string>
+
+    <!-- Blur people on screen -->
+    <string name="blur_title">Blur people on screen</string>
+    <string name="blur_description">People are covered wherever they appear — in any app, not only the browser.</string>
+    <string name="blur_target_women">Women</string>
+    <string name="blur_target_men">Men</string>
+    <string name="blur_target_everyone">Everyone</string>
+    <string name="blur_settings_title">Who to blur</string>
+    <string name="blur_reveal_title">Let me look anyway</string>
+    <string name="blur_reveal_never">Never</string>
+    <string name="blur_reveal_tap">On tap</string>
+    <string name="blur_accuracy_note">Recognising who is in a picture is imperfect. It is least reliable on children, side profiles, small pictures, and faces in hijab or niqab. When it is unsure it covers them, so expect some people to be covered who did not need to be.</string>
+    <string name="blur_lag_note">There is a short delay between someone appearing and being covered. Safe World has to read the screen to do this, and that takes a moment — it cannot be removed, only kept small.</string>
+    <string name="blur_channel_name">Blurring people</string>
+    <string name="blur_channel_description">Shown while Safe World is covering people on screen.</string>
+    <string name="blur_notification_title">Blurring people on screen</string>
+    <string name="blur_notification_text">Nothing is recorded or sent anywhere.</string>
+    <string name="blur_consent_declined">Blurring needs permission to read the screen, so it stays off.</string>
+    <string name="blur_overlay_declined">Blurring needs permission to draw over other apps, so it stays off.</string>
+    <string name="blur_restart_needed">Tap to start blurring again</string>
+    <string name="onb_blur_title">Blur people on screen?</string>
+    <string name="onb_blur_body">People are covered wherever they appear, in any app. You choose who. Android will ask permission to read the screen — nothing is recorded or sent anywhere.</string>
+    <string name="onb_blur_women">Blur women</string>
+    <string name="onb_blur_men">Blur men</string>
+    <string name="onb_blur_no">No</string>
 </resources>

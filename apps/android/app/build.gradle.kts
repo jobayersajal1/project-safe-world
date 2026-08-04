@@ -101,6 +101,14 @@ android {
     buildFeatures {
         compose = true
     }
+
+    androidResources {
+        // The blur models are memory-mapped straight out of the APK. A
+        // compressed asset cannot be mapped, so TFLite fails to load it at
+        // runtime — and the failure is a log line, not a build error, which
+        // means it ships.
+        noCompress += listOf("tflite")
+    }
 }
 
 dependencies {
@@ -118,6 +126,10 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.work.runtime.ktx)
+
+    // Blur feature. The models live in src/main/assets and are never fetched.
+    implementation(libs.mediapipe.tasks.vision)
+    implementation(libs.tensorflow.lite)
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)

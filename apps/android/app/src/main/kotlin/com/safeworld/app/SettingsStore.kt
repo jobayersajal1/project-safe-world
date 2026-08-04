@@ -2,6 +2,7 @@ package com.safeworld.app
 
 import android.content.Context
 import com.safeworld.core.AppGroups.AppGroup
+import com.safeworld.core.BlurSettings
 import com.safeworld.core.Blocklists
 import com.safeworld.core.Categories
 import com.safeworld.core.CategoryId
@@ -292,6 +293,31 @@ class SettingsStore private constructor(context: Context) {
         _onboardingComplete.value = true
     }
 
+    // MARK: Blur
+    //
+    // Its own key, not fields on `Settings` — see the note on `BlurSettings`.
+    // The store is the only thing the capture service reads, so a change here
+    // reaches it without the tunnel or the service being restarted.
+
+    private val _blur = MutableStateFlow(loadBlur())
+    val blur: StateFlow<BlurSettings> = _blur.asStateFlow()
+
+    private fun loadBlur(): BlurSettings {
+        val raw = prefs.getString(KEY_BLUR, null) ?: return BlurSettings.defaults()
+        return runCatching { json.decodeFromString<BlurSettings>(raw) }
+            // A blob this build cannot read means the *feature's* settings are
+            // unknown, not that protection should lapse: falling back to the
+            // defaults leaves it off, which the user can see and fix, rather
+            // than leaving it on in some state nobody chose.
+            .getOrElse { BlurSettings.defaults() }
+    }
+
+    fun updateBlur(mutate: (BlurSettings) -> BlurSettings) {
+        val next = mutate(_blur.value)
+        prefs.edit().putString(KEY_BLUR, json.encodeToString(next)).apply()
+        _blur.value = next
+    }
+
     // MARK: PIN
     //
     // Kept out of `Settings` on purpose: that type is the cross-platform shape
@@ -554,6 +580,7 @@ class SettingsStore private constructor(context: Context) {
         private const val KEY_ONBOARDING_DONE = "onboardingComplete"
 
         private const val KEY_SETTINGS = "settings"
+        private const val KEY_BLUR = "blurSettings"
         private const val KEY_STATS = "stats"
         private const val KEY_REMOTE_DOMAINS = "remoteDomains"
         private const val KEY_BLOCKED_APP_GROUPS = "blockedAppGroups"
