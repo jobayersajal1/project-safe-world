@@ -68,7 +68,7 @@ public static class Categories
     public static readonly IReadOnlyList<CategoryMeta> All = new List<CategoryMeta>
     {
         new(CategoryId.Scam, "Scam & Malware", "Phishing, fraud, and malware-hosting sites.", true, false),
-        new(CategoryId.Drugs, "Drugs & Illegal", "Drug marketplaces and paraphernalia, plus piracy and warez sites.", true, false),
+        new(CategoryId.Drugs, "Drugs, Alcohol & Piracy", "Drugs, alcohol, tobacco and vaping, plus piracy and warez sites.", true, false),
         new(CategoryId.Gambling, "Gambling", "Casinos, betting, and gambling sites.", true, false),
         new(CategoryId.Adult, "Adult Content", "Pornography and explicit adult sites.", true, false),
         new(CategoryId.Social, "Social Media", "Facebook, Instagram, X/Twitter, TikTok, and similar feeds.", false, true),

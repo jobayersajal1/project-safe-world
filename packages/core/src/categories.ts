@@ -87,8 +87,8 @@ export const CATEGORIES: readonly CategoryMeta[] = [
   },
   {
     id: "list7",
-    label: "Drugs & Illegal",
-    description: "Drug marketplaces and paraphernalia, plus piracy and warez sites.",
+    label: "Drugs, Alcohol & Piracy",
+    description: "Drugs, alcohol, tobacco and vaping, plus piracy and warez sites.",
     defaultEnabled: true,
     // Mandatory, like scam/gambling/adult: these are the harms the app exists
     // to block, not lifestyle choices someone opts into. It carries no UI row

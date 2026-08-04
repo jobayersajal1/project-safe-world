@@ -158,10 +158,15 @@ export const SOURCES: readonly Source[] = [
     homepage: "https://dsi.ut-capitole.fr/blacklists/",
     note: "Carries the real-money card and rummy sites (teen patti, rummy, fantasy cricket) that the English-language gambling feeds under-cover.",
   },
-  // `list7`. Drugs is the harm; piracy rides along because both are the same
-  // answer to the same question — a filter for a household that wants the
-  // illegal off the phone, not two separate switches for one intention. It is
-  // mandatory for the same reason scam, gambling and adult are.
+  // `list7`. Drugs are the feed-backed half; piracy rides along because both are
+  // the same answer to the same question rather than two switches for one
+  // intention. Mandatory for the same reason scam, gambling and adult are.
+  //
+  // **Alcohol and tobacco are in this category but not in this file**, because
+  // no maintainer publishes a feed for either — they are not standard blocklist
+  // categories the way malware and porn are, and UT1's French naming is not
+  // hiding one (`alcool` and `tabac` are both 404). They are curated entries in
+  // `list7.json` instead, which `fetch:lists` preserves across refreshes.
   {
     id: "blocklistproject-drugs",
     category: "list7",

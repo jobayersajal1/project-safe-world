@@ -56,8 +56,8 @@ public enum Categories {
         ),
         CategoryMeta(
             id: .drugs,
-            label: "Drugs & Illegal",
-            description: "Drug marketplaces and paraphernalia, plus piracy and warez sites.",
+            label: "Drugs, Alcohol & Piracy",
+            description: "Drugs, alcohol, tobacco and vaping, plus piracy and warez sites.",
             defaultEnabled: true,
             optional: false
         ),
