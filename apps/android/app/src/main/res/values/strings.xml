@@ -210,4 +210,24 @@
     <string name="settings_theme">Appearance</string>
     <string name="settings_dark_theme">Dark theme</string>
     <string name="settings_theme_description">Easier on the eyes at night</string>
+    <string name="onb_language_title">Choose your language</string>
+    <string name="onb_language_body">Everything after this is in the language you pick. You can change it later in Settings.</string>
+    <string name="onb_continue">Continue</string>
+    <string name="onb_step">Step %1$d of %2$d</string>
+    <string name="onb_pin_title">Set a PIN?</string>
+    <string name="onb_pin_body">A PIN is what stops blocking being switched off in a weak moment. Without one, anything you set up here can be undone with a tap.</string>
+    <string name="onb_pin_yes">Yes, set a PIN</string>
+    <string name="onb_pin_no">Not now</string>
+    <string name="onb_social_title">Block social media and dating?</string>
+    <string name="onb_games_title">Block harmful games?</string>
+    <string name="onb_entertainment_title">Block entertainment?</string>
+    <string name="onb_block_yes">Yes, block these</string>
+    <string name="onb_block_no">No</string>
+    <string name="onb_apps_note">This blocks the apps as well as the websites, so Safe World checks every connection this phone makes. That uses a little more battery. Nothing leaves the phone.</string>
+    <string name="onb_uninstall_title">Stop Safe World being uninstalled?</string>
+    <string name="onb_uninstall_body">Android will ask you to confirm on the next screen. Turning this off later needs your PIN.</string>
+    <string name="onb_uninstall_yes">Yes, protect it</string>
+    <string name="onb_finish_title">Turn protection on</string>
+    <string name="onb_finish_body">Android will ask permission to set up the connection — that prompt is how a phone checks you meant it. Protection starts the moment you allow it, with everything you chose already applied.</string>
+    <string name="onb_finish_action">Allow and finish</string>
 </resources>

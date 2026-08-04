@@ -75,6 +75,7 @@ fun SafeWorldApp(
 ) {
     val hasPin by store.hasPin.collectAsStateWithLifecycle()
     val hasRecoveryCode by store.hasRecoveryCode.collectAsStateWithLifecycle()
+    val onboardingComplete by store.onboardingComplete.collectAsStateWithLifecycle()
     val subscriptionsAccepted by subscriptions.accepted.collectAsStateWithLifecycle()
     // Skipping hides the offer for this launch only; `remember` does not survive
     // process death, so the next time the app is opened it asks again. That is
@@ -91,16 +92,25 @@ fun SafeWorldApp(
     //
     // In an effect rather than inline: issuing writes to storage, and doing
     // that during composition would mint a fresh code on every recomposition.
-    LaunchedEffect(hasPin, hasRecoveryCode) {
-        if (hasPin && !hasRecoveryCode) {
+    // Skipped during setup: the wizard issues and shows the code itself, and two
+    // issuers racing would show one code while storing the hash of another.
+    LaunchedEffect(hasPin, hasRecoveryCode, onboardingComplete) {
+        if (onboardingComplete && hasPin && !hasRecoveryCode) {
             gate = Gate.ShowRecoveryCode(store.issueRecoveryCode(), replacement = false)
         }
     }
 
-    // No PIN yet means first run: set one before anything can be configured, so
-    // protection is never established with nothing guarding it.
-    if (!hasPin) {
-        SetPinScreen(onPinChosen = store::setPin)
+    // First run: every decision is made once, in order, and applied — see
+    // `OnboardingScreen`. It owns the PIN too, which is why there is no
+    // "no PIN means force the PIN screen" branch here any more: a PIN is
+    // offered rather than imposed, and declining it is a supported answer.
+    if (!onboardingComplete) {
+        OnboardingScreen(
+            store = store,
+            subscriptions = subscriptions,
+            onEnableUninstallProtection = onEnableUninstallProtection,
+            onFinish = { onProtectionChange(true) },
+        )
         return
     }
 
@@ -181,7 +191,12 @@ fun SafeWorldApp(
     }
 
     val requestPin: RequestPin = { title, message, action ->
-        challenge = PinChallenge(title, message, action)
+        // **A PIN is optional now**, and prompting for one that was never set
+        // would be an unanswerable dialog in front of every weakening action.
+        // Running it straight through is the honest reading: the PIN is what
+        // makes weakening cost something, and someone who declined it chose the
+        // build without that friction — the bargain the Chrome extension makes.
+        if (hasPin) challenge = PinChallenge(title, message, action) else action()
     }
 
     Scaffold(

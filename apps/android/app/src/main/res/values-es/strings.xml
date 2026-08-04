@@ -189,4 +189,24 @@
     <string name="settings_theme">Apariencia</string>
     <string name="settings_dark_theme">Tema oscuro</string>
     <string name="settings_theme_description">Más cómodo para la vista de noche</string>
+    <string name="onb_language_title">Elige tu idioma</string>
+    <string name="onb_language_body">Todo lo que sigue aparecerá en el idioma que elijas. Puedes cambiarlo después en Ajustes.</string>
+    <string name="onb_continue">Continuar</string>
+    <string name="onb_step">Paso %1$d de %2$d</string>
+    <string name="onb_pin_title">¿Poner un PIN?</string>
+    <string name="onb_pin_body">El PIN es lo que impide desactivar el bloqueo en un momento de debilidad. Sin él, todo lo que configures aquí se deshace con un toque.</string>
+    <string name="onb_pin_yes">Sí, poner un PIN</string>
+    <string name="onb_pin_no">Ahora no</string>
+    <string name="onb_social_title">¿Bloquear redes sociales y citas?</string>
+    <string name="onb_games_title">¿Bloquear juegos dañinos?</string>
+    <string name="onb_entertainment_title">¿Bloquear entretenimiento?</string>
+    <string name="onb_block_yes">Sí, bloquear</string>
+    <string name="onb_block_no">No</string>
+    <string name="onb_apps_note">Esto bloquea las apps además de las webs, así que Safe World revisa cada conexión del teléfono. Usa algo más de batería. Nada sale del teléfono.</string>
+    <string name="onb_uninstall_title">¿Impedir que se desinstale Safe World?</string>
+    <string name="onb_uninstall_body">Android te pedirá confirmación en la siguiente pantalla. Desactivarlo más adelante requiere tu PIN.</string>
+    <string name="onb_uninstall_yes">Sí, protegerlo</string>
+    <string name="onb_finish_title">Activar la protección</string>
+    <string name="onb_finish_body">Android pedirá permiso para crear la conexión — ese aviso es como el teléfono comprueba que era tu intención. La protección empieza en cuanto lo permitas, con todo lo que elegiste ya aplicado.</string>
+    <string name="onb_finish_action">Permitir y terminar</string>
 </resources>

@@ -189,4 +189,24 @@
     <string name="settings_theme">চেহারা</string>
     <string name="settings_dark_theme">ডার্ক থিম</string>
     <string name="settings_theme_description">রাতে চোখের জন্য আরামদায়ক</string>
+    <string name="onb_language_title">আপনার ভাষা বেছে নিন</string>
+    <string name="onb_language_body">এরপরের সবকিছু আপনার বেছে নেওয়া ভাষায় দেখানো হবে। পরে সেটিংসে গিয়ে বদলাতে পারবেন।</string>
+    <string name="onb_continue">চালিয়ে যান</string>
+    <string name="onb_step">ধাপ %1$d / %2$d</string>
+    <string name="onb_pin_title">পিন সেট করবেন?</string>
+    <string name="onb_pin_body">দুর্বল মুহূর্তে ব্লকিং বন্ধ করে দেওয়া ঠেকায় পিন। পিন না থাকলে এখানে যা সেট করবেন, এক ট্যাপেই তা বাতিল করা যাবে।</string>
+    <string name="onb_pin_yes">হ্যাঁ, পিন সেট করি</string>
+    <string name="onb_pin_no">এখন নয়</string>
+    <string name="onb_social_title">সোশ্যাল মিডিয়া ও ডেটিং ব্লক করবেন?</string>
+    <string name="onb_games_title">ক্ষতিকর গেম ব্লক করবেন?</string>
+    <string name="onb_entertainment_title">বিনোদন ব্লক করবেন?</string>
+    <string name="onb_block_yes">হ্যাঁ, ব্লক করুন</string>
+    <string name="onb_block_no">না</string>
+    <string name="onb_apps_note">এটি ওয়েবসাইটের পাশাপাশি অ্যাপও ব্লক করে, তাই সেফ ওয়ার্ল্ড ফোনের প্রতিটি সংযোগ পরীক্ষা করে। এতে ব্যাটারি একটু বেশি খরচ হয়। কিছুই ফোনের বাইরে যায় না।</string>
+    <string name="onb_uninstall_title">সেফ ওয়ার্ল্ড আনইনস্টল ঠেকাবেন?</string>
+    <string name="onb_uninstall_body">পরের স্ক্রিনে অ্যান্ড্রয়েড আপনার অনুমতি চাইবে। পরে এটি বন্ধ করতে আপনার পিন লাগবে।</string>
+    <string name="onb_uninstall_yes">হ্যাঁ, সুরক্ষিত রাখুন</string>
+    <string name="onb_finish_title">সুরক্ষা চালু করুন</string>
+    <string name="onb_finish_body">সংযোগ তৈরির জন্য অ্যান্ড্রয়েড অনুমতি চাইবে — এই প্রশ্নটিই ফোনের নিশ্চিত হওয়ার উপায়। অনুমতি দিলেই আপনার বেছে নেওয়া সব সেটিংস নিয়ে সুরক্ষা শুরু হবে।</string>
+    <string name="onb_finish_action">অনুমতি দিন ও শেষ করুন</string>
 </resources>

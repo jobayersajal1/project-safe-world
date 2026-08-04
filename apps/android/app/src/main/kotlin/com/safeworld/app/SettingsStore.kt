@@ -248,6 +248,50 @@ class SettingsStore private constructor(context: Context) {
         prefs.edit().putString(KEY_SETTINGS, json.encodeToString(next)).apply()
     }
 
+    // MARK: First run
+
+    /**
+     * How far through the setup wizard the user has got.
+     *
+     * Persisted rather than held in composition because **choosing a language
+     * recreates the activity** (see `LocaleHelper` — the locale is applied in
+     * `attachBaseContext`, which only runs on create). A step held in `remember`
+     * would reset to the first question the moment anyone picked Bengali.
+     */
+    private val _onboardingStep = MutableStateFlow(prefs.getInt(KEY_ONBOARDING_STEP, 0))
+    val onboardingStep: StateFlow<Int> = _onboardingStep.asStateFlow()
+
+    fun setOnboardingStep(step: Int) {
+        prefs.edit().putInt(KEY_ONBOARDING_STEP, step).apply()
+        _onboardingStep.value = step
+    }
+
+    /**
+     * Whether setup has been finished.
+     *
+     * The default is what carries installs that predate the wizard: they have a
+     * PIN and have never written a step, so they are treated as done rather than
+     * marched back through setup for decisions they already made.
+     *
+     * **The step key is the half of that test which matters.** Keying only on
+     * "has a PIN" looked equivalent and was not: choosing a PIN is the second
+     * question, so someone who set one and then closed the app came back with
+     * setup considered finished and never saw the remaining questions — silently
+     * skipping the blocking they installed this for.
+     */
+    private val _onboardingComplete = MutableStateFlow(
+        prefs.getBoolean(
+            KEY_ONBOARDING_DONE,
+            loadPinRecord() != null && !prefs.contains(KEY_ONBOARDING_STEP),
+        ),
+    )
+    val onboardingComplete: StateFlow<Boolean> = _onboardingComplete.asStateFlow()
+
+    fun completeOnboarding() {
+        prefs.edit().putBoolean(KEY_ONBOARDING_DONE, true).apply()
+        _onboardingComplete.value = true
+    }
+
     // MARK: PIN
     //
     // Kept out of `Settings` on purpose: that type is the cross-platform shape
@@ -506,6 +550,8 @@ class SettingsStore private constructor(context: Context) {
         const val KEY_LANGUAGE = "language"
 
         private const val KEY_DARK_THEME = "darkTheme"
+        private const val KEY_ONBOARDING_STEP = "onboardingStep"
+        private const val KEY_ONBOARDING_DONE = "onboardingComplete"
 
         private const val KEY_SETTINGS = "settings"
         private const val KEY_STATS = "stats"

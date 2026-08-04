@@ -197,4 +197,24 @@
     <string name="settings_theme">المظهر</string>
     <string name="settings_dark_theme">الوضع الداكن</string>
     <string name="settings_theme_description">أرفق بالعينين ليلًا</string>
+    <string name="onb_language_title">اختر لغتك</string>
+    <string name="onb_language_body">كل ما يلي سيظهر باللغة التي تختارها. يمكنك تغييرها لاحقًا من الإعدادات.</string>
+    <string name="onb_continue">متابعة</string>
+    <string name="onb_step">الخطوة %1$d من %2$d</string>
+    <string name="onb_pin_title">هل تريد تعيين رمز PIN؟</string>
+    <string name="onb_pin_body">رمز PIN هو ما يمنع إيقاف الحظر في لحظة ضعف. بدونه يمكن التراجع عن كل ما تضبطه هنا بلمسة واحدة.</string>
+    <string name="onb_pin_yes">نعم، عيّن رمزًا</string>
+    <string name="onb_pin_no">ليس الآن</string>
+    <string name="onb_social_title">هل تريد حظر التواصل الاجتماعي والمواعدة؟</string>
+    <string name="onb_games_title">هل تريد حظر الألعاب الضارة؟</string>
+    <string name="onb_entertainment_title">هل تريد حظر الترفيه؟</string>
+    <string name="onb_block_yes">نعم، احظرها</string>
+    <string name="onb_block_no">لا</string>
+    <string name="onb_apps_note">هذا يحظر التطبيقات إلى جانب المواقع، لذا يفحص Safe World كل اتصال يجريه الهاتف. يستهلك ذلك بطارية أكثر قليلًا. ولا يغادر أي شيء الهاتف.</string>
+    <string name="onb_uninstall_title">هل تريد منع إلغاء تثبيت Safe World؟</string>
+    <string name="onb_uninstall_body">سيطلب أندرويد تأكيدك في الشاشة التالية. إيقاف ذلك لاحقًا يتطلب رمز PIN.</string>
+    <string name="onb_uninstall_yes">نعم، احمِ التطبيق</string>
+    <string name="onb_finish_title">تشغيل الحماية</string>
+    <string name="onb_finish_body">سيطلب أندرويد إذنًا لإعداد الاتصال — هذا الطلب هو طريقة الهاتف للتأكد من رغبتك. تبدأ الحماية فور سماحك، مع تطبيق كل ما اخترته.</string>
+    <string name="onb_finish_action">اسمح وأنهِ الإعداد</string>
 </resources>
