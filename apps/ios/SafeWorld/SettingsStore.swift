@@ -38,9 +38,39 @@ final class SettingsStore: ObservableObject {
         }
     }
 
+    /// How far through first-run setup the user has got.
+    ///
+    /// Persisted rather than held in view state for the same reason as Android's
+    /// (`SettingsStore.onboardingStep`): choosing a language re-renders the whole
+    /// tree through `RootView`'s `.id(store.language)`, and a step in `@State`
+    /// would reset to the first question.
+    @Published var onboardingStep: Int = 0 {
+        didSet {
+            guard onboardingStep != oldValue else { return }
+            defaults.set(onboardingStep, forKey: Self.onboardingStepKey)
+        }
+    }
+
+    /// Whether setup has been finished.
+    ///
+    /// The default carries installs that predate the wizard: they have settings
+    /// stored and no step, so they are treated as done rather than sent back
+    /// through setup. **The step half of that test is the half that matters** —
+    /// keying only on "has been used before" meant someone who answered the
+    /// first question and closed the app came back with setup considered
+    /// finished, silently skipping the rest. Same bug, same fix, as Android.
+    @Published private(set) var onboardingComplete: Bool = false
+
+    func completeOnboarding() {
+        defaults.set(true, forKey: Self.onboardingDoneKey)
+        onboardingComplete = true
+    }
+
     private let defaults: UserDefaults
     private static let settingsKey = "settings"
     private static let darkThemeKey = "darkTheme"
+    private static let onboardingStepKey = "onboardingStep"
+    private static let onboardingDoneKey = "onboardingComplete"
     private static let statsKey = "stats"
     private static let remoteDomainsKey = "remoteDomains"
     /// Which published payload was last applied — see `runRemoteUpdate`.
@@ -55,6 +85,10 @@ final class SettingsStore: ObservableObject {
         // `bool(forKey:)` is false for a key that was never written, which is the
         // default we want anyway — a fresh install opens light.
         self.darkTheme = defaults.bool(forKey: Self.darkThemeKey)
+        self.onboardingStep = defaults.integer(forKey: Self.onboardingStepKey)
+        self.onboardingComplete = defaults.object(forKey: Self.onboardingDoneKey) as? Bool
+            ?? (defaults.data(forKey: Self.settingsKey) != nil
+                && defaults.object(forKey: Self.onboardingStepKey) == nil)
         syncContentBlocker()
         refreshRemoteIfDue()
     }

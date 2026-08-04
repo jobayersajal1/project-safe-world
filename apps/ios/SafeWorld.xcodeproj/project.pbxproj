@@ -26,6 +26,7 @@
 		5039D49DDF1905CF0D5A899E /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1823BC5E585D8B1B6FB792D8 /* RootView.swift */; };
 		8356828B1E3D75FBE2847CA7 /* UpdateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8A7F1716ABDD2709EEC542 /* UpdateService.swift */; };
 		8D3FEF0D418A140B0986C6A1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 863B9431E0AC3458B7A8034E /* Assets.xcassets */; };
+		956AEE146D53052F4DA932B0 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D8E94450CE12BD30B273C0 /* OnboardingView.swift */; };
 		A0AA53F1F9E7A481A84221AB /* SafeWorldCore in Frameworks */ = {isa = PBXBuildFile; productRef = 90B717E2426C62E3FCA1F7FA /* SafeWorldCore */; };
 		B029073158019C81FB6C89D6 /* SupportLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15CE8D94A3E663F372F10ED6 /* SupportLinks.swift */; };
 		C3D9684A776967DF24B75BCF /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53EFA2470BC17495A3A21312 /* SettingsView.swift */; };
@@ -82,6 +83,7 @@
 		53EFA2470BC17495A3A21312 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		5802E650C1A5840112BE70F9 /* SafeWorldTunnel.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = SafeWorldTunnel.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		62B99E8E78D3EC58CFD0B84B /* CountFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountFormat.swift; sourceTree = "<group>"; };
+		67D8E94450CE12BD30B273C0 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		6C6C74602FCB3D949B4D25F0 /* Brand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Brand.swift; sourceTree = "<group>"; };
 		7135D56A17CF762FD7EC8CE0 /* PinStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinStore.swift; sourceTree = "<group>"; };
 		7BE836801A19619F4AE0F4F6 /* SafeWorldCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SafeWorldCore; path = SafeWorldCore; sourceTree = SOURCE_ROOT; };
@@ -172,6 +174,7 @@
 			children = (
 				2994A502B6A5F24C24192994 /* AppBlockSection.swift */,
 				879C4FB2DB466A93EA395324 /* HomeView.swift */,
+				67D8E94450CE12BD30B273C0 /* OnboardingView.swift */,
 				20F57803E891EBCB8882EA57 /* PinUi.swift */,
 				1823BC5E585D8B1B6FB792D8 /* RootView.swift */,
 				53EFA2470BC17495A3A21312 /* SettingsView.swift */,
@@ -370,6 +373,7 @@
 				1A1136A6B075FC325B413E0E /* CountFormat.swift in Sources */,
 				3B7555576DB3C61D6F3BBC08 /* HomeView.swift in Sources */,
 				079D36970C0DCE79D295FCDA /* Language.swift in Sources */,
+				956AEE146D53052F4DA932B0 /* OnboardingView.swift in Sources */,
 				178C421895CC48C9EAC21521 /* PinStore.swift in Sources */,
 				E5FE7BE1D5524D0E4032DE07 /* PinUi.swift in Sources */,
 				43B02553F5A82AB640882482 /* RemoteConfig.swift in Sources */,

@@ -20,6 +20,20 @@ struct RootView: View {
     @State private var tab = UserDefaults.standard.string(forKey: "startTab") == "settings" ? 1 : 0
 
     var body: some View {
+        // First run: every decision made once, in order, and applied — see
+        // `OnboardingView`. Placed ahead of the tabs so setup cannot be
+        // sidestepped by tapping Settings.
+        if !store.onboardingComplete {
+            OnboardingView(store: store, pins: pins)
+                .environment(\.locale, Language.effectiveLocale)
+                .environment(\.layoutDirection, Language.layoutDirection)
+                .id(store.language)
+        } else {
+            tabs
+        }
+    }
+
+    private var tabs: some View {
         TabView(selection: $tab) {
             HomeView()
                 .tabItem { Label(L("tab_home"), systemImage: "shield.fill") }
