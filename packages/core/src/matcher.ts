@@ -70,7 +70,12 @@ export function decide(
 
   for (const id of CATEGORY_IDS) {
     if (!settings.categories[id]) continue;
-    if (hostInList(h, blocklists[id])) return { blocked: true, reason: id };
+    // A category with no list loaded is treated as empty rather than thrown on.
+    // The map is populated asynchronously on some platforms and was missing an
+    // entry entirely the first time a seventh category was added — and a
+    // matcher that throws blocks *nothing at all*, which is far worse than one
+    // category being briefly inert.
+    if (hostInList(h, blocklists[id] ?? [])) return { blocked: true, reason: id };
   }
   return { blocked: false, reason: null };
 }

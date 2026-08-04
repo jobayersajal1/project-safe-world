@@ -158,6 +158,51 @@ export const SOURCES: readonly Source[] = [
     homepage: "https://dsi.ut-capitole.fr/blacklists/",
     note: "Carries the real-money card and rummy sites (teen patti, rummy, fantasy cricket) that the English-language gambling feeds under-cover.",
   },
+  // `list7`. Drugs is the harm; piracy rides along because both are the same
+  // answer to the same question — a filter for a household that wants the
+  // illegal off the phone, not two separate switches for one intention. It is
+  // mandatory for the same reason scam, gambling and adult are.
+  {
+    id: "blocklistproject-drugs",
+    category: "list7",
+    url: "https://raw.githubusercontent.com/blocklistproject/Lists/master/drugs.txt",
+    format: "hosts",
+    license: "Unlicense (public domain)",
+    redistributable: true,
+    homepage: "https://github.com/blocklistproject/Lists",
+  },
+  {
+    id: "ut1-drugs",
+    category: "list7",
+    url: "https://raw.githubusercontent.com/olbat/ut1-blacklists/master/blacklists/drogue/domains",
+    format: "domains",
+    license: "CC BY-SA 4.0",
+    redistributable: true,
+    homepage: "https://dsi.ut-capitole.fr/blacklists/",
+  },
+  {
+    id: "blocklistproject-piracy",
+    category: "list7",
+    url: "https://raw.githubusercontent.com/blocklistproject/Lists/master/piracy.txt",
+    format: "hosts",
+    license: "Unlicense (public domain)",
+    redistributable: true,
+    homepage: "https://github.com/blocklistproject/Lists",
+  },
+  {
+    id: "ut1-warez",
+    category: "list7",
+    url: "https://raw.githubusercontent.com/olbat/ut1-blacklists/master/blacklists/warez/domains",
+    format: "domains",
+    license: "CC BY-SA 4.0",
+    redistributable: true,
+    homepage: "https://dsi.ut-capitole.fr/blacklists/",
+  },
+  // UT1's `sect` (144 domains) is deliberately **not** used. It classifies
+  // religious movements, and a filter that quietly decides which faiths a
+  // household may read about is doing something other than what it says on the
+  // box. `astrology` is skipped too, for a duller reason: 28 domains is not a
+  // category, it is a rounding error.
   {
     id: "sinfonietta-gambling",
     category: "list2",

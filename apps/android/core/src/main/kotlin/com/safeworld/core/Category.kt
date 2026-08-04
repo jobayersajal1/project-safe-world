@@ -36,7 +36,10 @@ enum class CategoryId(val id: String) {
     ENTERTAINMENT("list5"),
 
     @SerialName("list6")
-    GAMES("list6");
+    GAMES("list6"),
+
+    @SerialName("list7")
+    DRUGS("list7");
 
     companion object {
         /** The `CategoryId` with this wire id, or null if unrecognized. */
@@ -73,6 +76,13 @@ object Categories {
             id = CategoryId.SCAM,
             label = "Scam & Malware",
             description = "Phishing, fraud, and malware-hosting sites.",
+            defaultEnabled = true,
+            optional = false,
+        ),
+        CategoryMeta(
+            id = CategoryId.DRUGS,
+            label = "Drugs & Illegal",
+            description = "Drug marketplaces and paraphernalia, plus piracy and warez sites.",
             defaultEnabled = true,
             optional = false,
         ),

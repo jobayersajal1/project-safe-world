@@ -14,6 +14,7 @@ public enum CategoryId: String, CaseIterable, Codable, Hashable, Sendable {
     case social = "list4"
     case entertainment = "list5"
     case games = "list6"
+    case drugs = "list7"
 }
 
 public struct CategoryMeta: Sendable {
@@ -50,6 +51,13 @@ public enum Categories {
             id: .scam,
             label: "Scam & Malware",
             description: "Phishing, fraud, and malware-hosting sites.",
+            defaultEnabled: true,
+            optional: false
+        ),
+        CategoryMeta(
+            id: .drugs,
+            label: "Drugs & Illegal",
+            description: "Drug marketplaces and paraphernalia, plus piracy and warez sites.",
             defaultEnabled: true,
             optional: false
         ),

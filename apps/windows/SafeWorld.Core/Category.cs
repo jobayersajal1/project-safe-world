@@ -16,6 +16,7 @@ public enum CategoryId
     Social,
     Entertainment,
     Games,
+    Drugs,
 }
 
 public static class CategoryIdExtensions
@@ -29,6 +30,7 @@ public static class CategoryIdExtensions
         CategoryId.Social => "list4",
         CategoryId.Entertainment => "list5",
         CategoryId.Games => "list6",
+        CategoryId.Drugs => "list7",
         _ => throw new ArgumentOutOfRangeException(nameof(id)),
     };
 
@@ -40,6 +42,7 @@ public static class CategoryIdExtensions
         "list4" => CategoryId.Social,
         "list5" => CategoryId.Entertainment,
         "list6" => CategoryId.Games,
+        "list7" => CategoryId.Drugs,
         _ => null,
     };
 }
@@ -65,6 +68,7 @@ public static class Categories
     public static readonly IReadOnlyList<CategoryMeta> All = new List<CategoryMeta>
     {
         new(CategoryId.Scam, "Scam & Malware", "Phishing, fraud, and malware-hosting sites.", true, false),
+        new(CategoryId.Drugs, "Drugs & Illegal", "Drug marketplaces and paraphernalia, plus piracy and warez sites.", true, false),
         new(CategoryId.Gambling, "Gambling", "Casinos, betting, and gambling sites.", true, false),
         new(CategoryId.Adult, "Adult Content", "Pornography and explicit adult sites.", true, false),
         new(CategoryId.Social, "Social Media", "Facebook, Instagram, X/Twitter, TikTok, and similar feeds.", false, true),

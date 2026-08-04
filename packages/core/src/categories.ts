@@ -10,7 +10,7 @@
  * The mapping is not a secret (it's right here), it just isn't advertised by
  * the artifacts themselves.
  */
-export type CategoryId = "list1" | "list2" | "list3" | "list4" | "list5" | "list6";
+export type CategoryId = "list1" | "list2" | "list3" | "list4" | "list5" | "list6" | "list7";
 
 export interface CategoryMeta {
   id: CategoryId;
@@ -84,6 +84,17 @@ export const CATEGORIES: readonly CategoryMeta[] = [
     defaultEnabled: false,
     optional: true,
     ruleIdBase: 5 * RULE_ID_STRIDE,
+  },
+  {
+    id: "list7",
+    label: "Drugs & Illegal",
+    description: "Drug marketplaces and paraphernalia, plus piracy and warez sites.",
+    defaultEnabled: true,
+    // Mandatory, like scam/gambling/adult: these are the harms the app exists
+    // to block, not lifestyle choices someone opts into. It carries no UI row
+    // for the same reason those three do not — it is stated in the count.
+    optional: false,
+    ruleIdBase: 7 * RULE_ID_STRIDE,
   },
   {
     id: "list6",
