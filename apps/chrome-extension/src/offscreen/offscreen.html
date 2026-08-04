@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Safe World — detection</title>
+</head>
+<body>
+  <!--
+    Never shown. An offscreen document is where the detection models live,
+    because neither of the other two places works:
+
+      - A content script is re-instantiated per tab, so every open tab would
+        hold its own copy of the weights and its own WebGL context.
+      - The service worker is torn down after ~30s idle, so the models would be
+        reloaded and re-uploaded to the GPU every time the user scrolled.
+
+    This document persists and has a real DOM, canvas and WebGL — which face-api
+    needs, and which a worker would only partly provide.
+  -->
+  <script type="module" src="./detect.ts"></script>
+</body>
+</html>

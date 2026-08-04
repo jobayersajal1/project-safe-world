@@ -1,0 +1,61 @@
+/*
+ * Boot blur — the whole feature depends on this file arriving before the page
+ * paints.
+ *
+ * It lives in `public/` and is injected by `chrome.scripting.registerContentScripts`
+ * rather than being declared in the manifest, and that is deliberate. A manifest
+ * content-style is injected into every page unconditionally; this feature ships
+ * *off*, so every user who never turns it on would watch every image on the web
+ * flash blurred while an async `chrome.storage` read came back. Registering the
+ * sheet only while the feature is enabled removes the race instead of shortening
+ * it — there is no state to read, because the sheet's presence *is* the state.
+ *
+ * `public/` also keeps the path stable: crxjs rewrites the files it processes to
+ * hashed asset names, and a dynamic registration has to name a path that exists.
+ *
+ * The three states of `data-safeworld-blur`:
+ *   absent  — undecided, and therefore blurred. This is the default and the
+ *             reason the feature works at all.
+ *   "off"   — cleared: analysed and found to contain nobody we blur.
+ *   "on"    — blurred on purpose, and the only state a reveal gesture applies to.
+ */
+
+img:not([data-safeworld-blur="off"]),
+video:not([data-safeworld-blur="off"]) {
+  filter: blur(var(--safeworld-blur-radius, 16px)) !important;
+}
+
+/*
+ * Elements carrying a CSS background-image. No selector can match "has a
+ * background" without reading computed styles, so these are found in JS and
+ * blurred by attribute — which means they, unlike <img>, do flash before the
+ * first pass runs.
+ */
+[data-safeworld-blur="on"] {
+  filter: blur(var(--safeworld-blur-radius, 16px)) !important;
+}
+
+/*
+ * Live toggle-off. Unregistering the script does not pull the sheet back out of
+ * pages it was already injected into, so the content script sets this attribute
+ * and the higher specificity (0,1,2 against the boot rule's 0,1,1) wins without
+ * either rule needing to know about the other.
+ */
+html[data-safeworld-blur-disabled] img,
+html[data-safeworld-blur-disabled] video,
+html[data-safeworld-blur-disabled] [data-safeworld-blur="on"] {
+  filter: none !important;
+}
+
+/* Reveal affordances. Only ever applied to "on" — an undecided image has not
+ * been judged yet, and letting it be uncovered would make the gesture a way to
+ * outrun the detector. */
+html[data-safeworld-reveal="hover"] img[data-safeworld-blur="on"]:hover,
+html[data-safeworld-reveal="hover"] video[data-safeworld-blur="on"]:hover,
+html[data-safeworld-reveal="hover"] [data-safeworld-blur="on"]:hover {
+  filter: none !important;
+}
+
+html[data-safeworld-reveal="tap"] [data-safeworld-blur="on"] {
+  cursor: pointer;
+}

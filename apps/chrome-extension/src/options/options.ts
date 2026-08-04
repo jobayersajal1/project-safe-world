@@ -1,5 +1,6 @@
-import { CATEGORIES } from "@safe-world/core";
+import { CATEGORIES, type BlurRevealMode, type BlurTarget } from "@safe-world/core";
 import { getSettings, saveSettings } from "../storage.js";
+import { getBlurSettings, saveBlurSettings } from "../blur/storage.js";
 
 const categoriesEl = document.getElementById("categories")!;
 const allowEl = document.getElementById("allow") as HTMLTextAreaElement;
@@ -9,6 +10,14 @@ const intervalEl = document.getElementById("interval") as HTMLInputElement;
 const lastUpdateEl = document.getElementById("lastUpdate")!;
 const updateStatusEl = document.getElementById("updateStatus")!;
 const savedEl = document.getElementById("saved")!;
+
+const blurEnabledEl = document.getElementById("blurEnabled") as HTMLInputElement;
+const blurTargetEl = document.getElementById("blurTarget") as HTMLSelectElement;
+const blurStrengthEl = document.getElementById("blurStrength") as HTMLInputElement;
+const blurMinPxEl = document.getElementById("blurMinPx") as HTMLInputElement;
+const blurVideoEl = document.getElementById("blurVideo") as HTMLInputElement;
+const blurRevealEl = document.getElementById("blurReveal") as HTMLSelectElement;
+const blurOptionsEl = document.getElementById("blurOptions")!;
 
 const categoryToggles = new Map<string, HTMLInputElement>();
 
@@ -42,6 +51,15 @@ async function render(): Promise<void> {
     categoryToggles.set(c.id, input);
   }
 
+  const blur = await getBlurSettings();
+  blurEnabledEl.checked = blur.enabled;
+  blurTargetEl.value = blur.target;
+  blurStrengthEl.value = String(blur.strength);
+  blurMinPxEl.value = String(blur.minImagePx);
+  blurVideoEl.checked = blur.blurVideo;
+  blurRevealEl.value = blur.revealMode;
+  blurOptionsEl.hidden = !blur.enabled;
+
   allowEl.value = settings.customAllow.join("\n");
   blockEl.value = settings.customBlock.join("\n");
   remoteUrlEl.value = settings.remoteUpdateUrl;
@@ -65,8 +83,31 @@ document.getElementById("save")!.addEventListener("click", async () => {
     remoteUpdateIntervalHours: Math.max(1, Number(intervalEl.value) || 24),
   });
 
+  // Stored under its own key, never merged into `settings`. See
+  // packages/core/src/blur.ts for why that separation is load-bearing.
+  await saveBlurSettings({
+    enabled: blurEnabledEl.checked,
+    target: blurTargetEl.value as BlurTarget,
+    strength: clamp(Number(blurStrengthEl.value), 4, 60, 16),
+    minImagePx: clamp(Number(blurMinPxEl.value), 16, 512, 64),
+    blurVideo: blurVideoEl.checked,
+    revealMode: blurRevealEl.value as BlurRevealMode,
+  });
+
   savedEl.hidden = false;
   setTimeout(() => (savedEl.hidden = true), 1500);
+});
+
+function clamp(value: number, min: number, max: number, fallback: number): number {
+  if (!Number.isFinite(value)) return fallback;
+  return Math.min(max, Math.max(min, Math.round(value)));
+}
+
+// Reveal the rest of the section as soon as the switch flips, rather than after
+// a save — the settings below it are meaningless while it is off, and hiding
+// them until a round trip makes the switch feel unresponsive.
+blurEnabledEl.addEventListener("change", () => {
+  blurOptionsEl.hidden = !blurEnabledEl.checked;
 });
 
 document.getElementById("updateNow")!.addEventListener("click", () => {

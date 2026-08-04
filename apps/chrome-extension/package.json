@@ -9,7 +9,8 @@
     "typecheck": "tsc -b"
   },
   "dependencies": {
-    "@safe-world/core": "*"
+    "@safe-world/core": "*",
+    "@vladmandic/face-api": "^1.7.15"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.0.0-beta.28",

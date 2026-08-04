@@ -11,6 +11,15 @@ import {
   type Settings,
 } from "@safe-world/core";
 import { getSettings, incrementBlockedToday, onSettingsChanged } from "./storage.js";
+import { getBlurSettings, onBlurSettingsChanged } from "./blur/storage.js";
+import {
+  BLUR_CSS_PATH,
+  BLUR_CSS_SCRIPT_ID,
+  OFFSCREEN_PATH,
+  type BlurVerdictResponse,
+  type OffscreenMessage,
+} from "./blur/protocol.js";
+import type { BlurSettings } from "@safe-world/core";
 
 const BLOCKED_PAGE = "/src/blocked/blocked.html";
 const CUSTOM_BLOCK_BASE = 900_000_000;
@@ -186,6 +195,91 @@ async function runRemoteUpdate(settings: Settings): Promise<{ ok: boolean; error
   }
 }
 
+/* ---------------------------------------------------------------------- blur */
+
+/**
+ * Creating the offscreen document is not idempotent — a second call while the
+ * first is still in flight throws "Only a single offscreen document may be
+ * created". A page of images asks fifty times at once, so the promise is shared.
+ */
+let offscreenReady: Promise<void> | null = null;
+
+async function ensureOffscreen(): Promise<void> {
+  offscreenReady ??= (async () => {
+    if (await chrome.offscreen.hasDocument()) return;
+    await chrome.offscreen.createDocument({
+      url: OFFSCREEN_PATH,
+      // `BLOBS` is the honest reason: the detector fetches each image itself and
+      // decodes it with `createImageBitmap`, because drawing a third-party <img>
+      // to a canvas taints it and every read after that throws.
+      reasons: [chrome.offscreen.Reason.BLOBS],
+      justification:
+        "Runs the on-device face and gender models used to blur photos of people. No image leaves the machine.",
+    });
+  })().catch((e) => {
+    // Let the next request try again rather than wedging the feature on one
+    // failed creation.
+    offscreenReady = null;
+    throw e;
+  });
+  return offscreenReady;
+}
+
+/**
+ * Inject or withdraw the boot stylesheet.
+ *
+ * This is registered dynamically rather than declared in the manifest for one
+ * reason: a manifest content-style is injected into every page unconditionally,
+ * and this feature ships off. Every user who never enables it would watch every
+ * image flash blurred while an async settings read came back. Registering the
+ * sheet only while the feature is on removes the race instead of shortening it.
+ */
+async function syncBlurStyles(blur: BlurSettings): Promise<void> {
+  const registered = await chrome.scripting.getRegisteredContentScripts({
+    ids: [BLUR_CSS_SCRIPT_ID],
+  });
+
+  if (!blur.enabled) {
+    if (registered.length > 0) {
+      await chrome.scripting.unregisterContentScripts({ ids: [BLUR_CSS_SCRIPT_ID] });
+    }
+    // Withdrawing the registration does nothing to pages it was already
+    // injected into; the content script overrides it there on the same
+    // storage change.
+    return;
+  }
+
+  if (registered.length === 0) {
+    await chrome.scripting.registerContentScripts([
+      {
+        id: BLUR_CSS_SCRIPT_ID,
+        matches: ["http://*/*", "https://*/*"],
+        css: [BLUR_CSS_PATH],
+        runAt: "document_start",
+        allFrames: true,
+        persistAcrossSessions: true,
+      },
+    ]);
+  }
+
+  // Registration only affects pages loaded from now on, so tabs that are
+  // already open get the sheet directly — otherwise enabling the feature
+  // appears to do nothing until every tab is reloaded.
+  const tabs = await chrome.tabs.query({ url: ["http://*/*", "https://*/*"] });
+  await Promise.all(
+    tabs.map((t) =>
+      t.id == null
+        ? Promise.resolve()
+        : chrome.scripting
+            .insertCSS({ target: { tabId: t.id, allFrames: true }, files: [BLUR_CSS_PATH] })
+            .catch(() => {
+              // Tabs we have no access to (the web store, other extensions'
+              // pages) are expected to refuse. Nothing to do and nothing wrong.
+            }),
+    ),
+  );
+}
+
 const REMOTE_ALARM = "safe-world-remote-update";
 
 async function scheduleRemoteUpdate(settings: Settings): Promise<void> {
@@ -207,6 +301,7 @@ async function init(): Promise<void> {
   const settings = await getSettings();
   await syncAll(settings);
   await scheduleRemoteUpdate(settings);
+  await syncBlurStyles(await getBlurSettings());
 }
 
 chrome.runtime.onInstalled.addListener(init);
@@ -215,6 +310,16 @@ chrome.runtime.onStartup.addListener(init);
 onSettingsChanged(async (settings) => {
   await syncAll(settings);
   await scheduleRemoteUpdate(settings);
+});
+
+onBlurSettingsChanged(async (blur) => {
+  await syncBlurStyles(blur);
+  // Every cached verdict was reached under the old target, so none of them can
+  // be trusted after a change. Only worth saying if the document is up.
+  if (await chrome.offscreen.hasDocument()) {
+    const msg: OffscreenMessage = { to: "offscreen", type: "blurClearCache" };
+    await chrome.runtime.sendMessage(msg).catch(() => {});
+  }
 });
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
@@ -244,6 +349,36 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
           }] as chrome.declarativeNetRequest.Rule[],
         });
         sendResponse({ ok: true });
+        break;
+      }
+      // Registered here deliberately: this switch `default`s to an error, so a
+      // message type that is not listed does not misbehave — it silently never
+      // works, and every image on every page stays blurred forever.
+      case "blurCheck": {
+        const url = typeof msg.url === "string" ? msg.url : "";
+        if (!url) { sendResponse({ verdict: "blur" } satisfies BlurVerdictResponse); break; }
+
+        const blur = await getBlurSettings();
+        if (!blur.enabled) { sendResponse({ verdict: "clear" } satisfies BlurVerdictResponse); break; }
+
+        try {
+          await ensureOffscreen();
+          const req: OffscreenMessage = {
+            to: "offscreen",
+            type: "blurDetect",
+            url,
+            blurTarget: blur.target,
+          };
+          sendResponse((await chrome.runtime.sendMessage(req)) as BlurVerdictResponse);
+        } catch (e) {
+          // Fail toward blurring. Anything that goes wrong between here and the
+          // model is a reason not to know what the image contains, never a
+          // reason to show it.
+          sendResponse({
+            verdict: "blur",
+            error: e instanceof Error ? e.message : String(e),
+          } satisfies BlurVerdictResponse);
+        }
         break;
       }
       case "allowAlways": {

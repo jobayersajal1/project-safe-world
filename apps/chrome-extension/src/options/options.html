@@ -37,6 +37,65 @@
   </section>
 
   <section class="card">
+    <h2>Blur photos of people</h2>
+    <p class="hint muted">
+      Photos are blurred where they appear, on every site. Everything runs on this
+      device — no image is ever uploaded.
+    </p>
+    <div class="row">
+      <div>
+        <div>Blur photos</div>
+        <div class="muted" style="font-size:12px">Off until you turn it on.</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="blurEnabled" />
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div id="blurOptions">
+      <label class="field" for="blurTarget" style="margin-top:12px">Blur</label>
+      <select id="blurTarget">
+        <option value="women">Women</option>
+        <option value="men">Men</option>
+        <option value="everyone">Everyone</option>
+      </select>
+
+      <label class="field" for="blurStrength" style="margin-top:12px">Strength</label>
+      <input type="number" id="blurStrength" min="4" max="60" /> <span class="hint muted">pixels</span>
+
+      <label class="field" for="blurMinPx" style="margin-top:12px">Ignore images smaller than</label>
+      <input type="number" id="blurMinPx" min="16" max="512" /> <span class="hint muted">pixels</span>
+
+      <div class="row" style="margin-top:12px">
+        <div>
+          <div>Blur videos</div>
+          <div class="muted" style="font-size:12px">
+            Videos are blurred for as long as they play — they are not checked frame by frame.
+          </div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="blurVideo" />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <label class="field" for="blurReveal" style="margin-top:12px">Let me look anyway</label>
+      <select id="blurReveal">
+        <option value="never">Never</option>
+        <option value="hover">On hover</option>
+        <option value="tap">On click</option>
+      </select>
+
+      <p class="hint muted" style="margin-top:12px">
+        Recognising who is in a photo is imperfect. It is least reliable on children,
+        side profiles, small thumbnails, and faces in hijab or niqab. When it is unsure
+        it blurs, so expect some photos to be blurred that did not need to be.
+      </p>
+    </div>
+  </section>
+
+  <section class="card">
     <h2>Remote updates</h2>
     <p class="hint muted">Optionally fetch fresher blocklists from a URL you trust (JSON).</p>
     <label class="field" for="remoteUrl">Update URL</label>
