@@ -18,7 +18,7 @@
     <!-- Without this the assembly is stamped 1.0.0, which is both wrong in the file properties and
          the kind of default that later compares as *newer* than a real 0.x release — the same trap
          `CFBundleShortVersionString` fell into on the Apple side. -->
-    <Version>0.3.0</Version>
+    <Version>0.5.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
