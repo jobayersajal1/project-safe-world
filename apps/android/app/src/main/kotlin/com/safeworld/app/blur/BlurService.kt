@@ -65,6 +65,9 @@ class BlurService : Service() {
     /** Captured-frame → screen scale, for placing the panels. */
     private var scale = 1f
 
+    /** Last fingerprint of the uncovered part of the screen; see [hold]. */
+    private var lastSignature: IntArray? = null
+
     override fun attachBaseContext(base: Context) {
         // Without this the notification lands in a different language from the
         // app that started it — the same trap the VPN service already documents.
@@ -255,58 +258,76 @@ class BlurService : Service() {
     }
 
     /**
-     * Keep covering a region for as long as our own panel is what the capture
-     * shows there.
+     * Keep covering the regions found before, until the screen actually moves.
      *
-     * **The capture includes our overlay**, and that closes a loop: cover
+     * **The capture includes our own overlay**, and that closes a loop: cover
      * somebody opaquely, and the next frame has no person there to find, so the
      * region is dropped, so they are visible again, so they are found again.
      * Left alone it oscillates several times a second and the feature is worse
-     * than useless — it shows the thing it was installed to hide, rhythmically.
+     * than useless — it shows the very thing it was installed to hide, in a
+     * rhythm.
      *
-     * `FLAG_SECURE` on the overlay would exclude it from capture and solve this
-     * outright, but it also blanks every screenshot and screen recording on the
-     * device while it is up, which is not ours to take away.
+     * `FLAG_SECURE` on the panels would exclude them from capture and end the
+     * loop outright, but it also blanks every screenshot and screen recording on
+     * the device while it is up, which is not ours to take away.
      *
-     * So a held region is released only when the pixels under it stop looking
-     * like a panel. A panel is flat by construction, so "still a panel" is just
-     * "still nearly uniform" — when the user scrolls or switches app, real
-     * content appears, variance jumps, and the region is re-evaluated on its
-     * merits.
+     * The first attempt here released a region once the pixels under it stopped
+     * looking flat. That is self-fulfilling: an opaque panel *is* flat, so
+     * nothing was ever released and coverage only ever grew, eventually over the
+     * whole screen. What can still be trusted is everything the panels are *not*
+     * covering — so a held region survives while the rest of the frame is
+     * unchanged, and every held region is dropped the moment it moves. A scroll,
+     * a new page or an app switch all re-scan from scratch; a still screen keeps
+     * what it had, which is right, because the person is still there.
      */
     private fun hold(frame: Bitmap, previous: List<Rect>, found: List<Rect>): List<Rect> {
-        val kept = previous.filter { it.stillCovered(frame) && found.none { f -> Rect.intersects(f, it) } }
-        return found + kept
+        val signature = signatureOutside(frame, previous)
+        val moved = lastSignature == null || differs(lastSignature!!, signature)
+        lastSignature = signature
+
+        if (moved) return found
+        return found + previous.filter { p -> found.none { Rect.intersects(it, p) } }
     }
 
     /**
-     * True if this region of the frame is flat enough to be our own panel
-     * rather than content.
+     * A coarse fingerprint of the frame, ignoring anything already covered.
      *
-     * Sampled on a coarse grid: this runs per region per frame, and the
-     * question is only "flat or not", which a few dozen points answer as well
-     * as a hundred thousand.
+     * Mean luma per cell over a small grid. Cells that fall inside a held region
+     * are recorded as -1 and compared as equal, so our own panels can never be
+     * the thing that reports a change.
      */
-    private fun Rect.stillCovered(frame: Bitmap): Boolean {
-        val stepX = (width() / SAMPLES).coerceAtLeast(1)
-        val stepY = (height() / SAMPLES).coerceAtLeast(1)
-        var min = 255
-        var max = 0
-        var seen = 0
-        var y = top.coerceAtLeast(0)
-        while (y < bottom && y < frame.height) {
-            var x = left.coerceAtLeast(0)
-            while (x < right && x < frame.width) {
+    private fun signatureOutside(frame: Bitmap, covered: List<Rect>): IntArray {
+        val out = IntArray(GRID_X * GRID_Y)
+        val cellW = (frame.width / GRID_X).coerceAtLeast(1)
+        val cellH = (frame.height / GRID_Y).coerceAtLeast(1)
+
+        for (cy in 0 until GRID_Y) {
+            for (cx in 0 until GRID_X) {
+                val x = cx * cellW + cellW / 2
+                val y = cy * cellH + cellH / 2
+                if (x >= frame.width || y >= frame.height) { out[cy * GRID_X + cx] = -1; continue }
+                if (covered.any { it.contains(x, y) }) { out[cy * GRID_X + cx] = -1; continue }
                 val p = frame.getPixel(x, y)
-                val luma = ((p shr 16 and 0xFF) * 299 + (p shr 8 and 0xFF) * 587 + (p and 0xFF) * 114) / 1000
-                if (luma < min) min = luma
-                if (luma > max) max = luma
-                seen++
-                x += stepX
+                out[cy * GRID_X + cx] =
+                    ((p shr 16 and 0xFF) * 299 + (p shr 8 and 0xFF) * 587 + (p and 0xFF) * 114) / 1000
             }
-            y += stepY
         }
-        return seen > 0 && (max - min) <= FLAT_RANGE
+        return out
+    }
+
+    /** True if enough cells moved to call it a different screen. */
+    private fun differs(a: IntArray, b: IntArray): Boolean {
+        var changed = 0
+        var compared = 0
+        for (i in a.indices) {
+            if (a[i] < 0 || b[i] < 0) continue
+            compared++
+            if (kotlin.math.abs(a[i] - b[i]) > CELL_TOLERANCE) changed++
+        }
+        // Nothing comparable means the panels cover everything worth comparing;
+        // treat that as movement so the scan is trusted rather than the memory.
+        if (compared == 0) return true
+        return changed * 100 / compared > CHANGED_PERCENT
     }
 
     override fun onDestroy() {
@@ -350,17 +371,19 @@ class BlurService : Service() {
          */
         private const val FRAME_INTERVAL_MS = 200L
 
-        /** Grid resolution per axis for the flatness test in [stillCovered]. */
-        private const val SAMPLES = 8
+        /** Fingerprint grid for [signatureOutside]. */
+        private const val GRID_X = 6
+        private const val GRID_Y = 10
+
+        /** Per-cell luma change that counts as that cell having moved. */
+        private const val CELL_TOLERANCE = 12
 
         /**
-         * Luma spread below which a region counts as one of our own panels.
-         *
-         * Generous: the capture is scaled and JPEG-ish artefacts move flat
-         * colour around by a few levels. Erring high keeps a region covered a
-         * little too long, which is the harmless direction.
+         * How much of the uncovered screen has to move before held regions are
+         * dropped. Low enough that a scroll releases immediately, high enough
+         * that a blinking cursor or a clock tick does not.
          */
-        private const val FLAT_RANGE = 24
+        private const val CHANGED_PERCENT = 8
 
         fun stop(context: Context) {
             context.startService(Intent(context, BlurService::class.java).setAction(ACTION_STOP))
