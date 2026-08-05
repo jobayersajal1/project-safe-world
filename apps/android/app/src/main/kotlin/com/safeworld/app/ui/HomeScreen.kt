@@ -691,7 +691,11 @@ private fun BlurSection(store: SettingsStore, requestPin: RequestPin) {
     val running by BlurService.running.collectAsStateWithLifecycle()
 
     val offTitle = stringResource(R.string.blur_title)
-    val offMessage = stringResource(R.string.category_off_pin_message)
+    // Its own string, not the category one. That reads "unblock these sites and
+    // apps", which is what turning a *category* off does — blurring unblocks
+    // nothing, it stops covering people, and a PIN prompt that misdescribes what
+    // it is about to do is the last place to be sloppy.
+    val offMessage = stringResource(R.string.blur_off_pin_message)
 
     ToggleRow(
         label = stringResource(R.string.blur_title),

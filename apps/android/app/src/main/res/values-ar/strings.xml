@@ -219,6 +219,7 @@
     <string name="onb_finish_action">اسمح وأنهِ الإعداد</string>
 
     <!-- Blur people on screen -->
+    <string name="blur_off_pin_message">أدخل رمز PIN لإيقاف تغطية الأشخاص على الشاشة.</string>
     <string name="blur_title">تمويه الأشخاص على الشاشة</string>
     <string name="blur_description">يُغطّى الأشخاص أينما ظهروا — في أي تطبيق، وليس في المتصفح فقط.</string>
     <string name="blur_target_women">النساء</string>

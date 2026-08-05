@@ -232,6 +232,7 @@
     <string name="onb_finish_action">Allow and finish</string>
 
     <!-- Blur people on screen -->
+    <string name="blur_off_pin_message">Enter your PIN to stop covering people on screen.</string>
     <string name="blur_title">Blur people on screen</string>
     <string name="blur_description">People are covered wherever they appear — in any app, not only the browser.</string>
     <string name="blur_target_women">Women</string>

@@ -57,8 +57,8 @@ android {
         // rely on; see apps/android/README.md.
         minSdk = 26
         targetSdk = 35
-        versionCode = 13
-        versionName = "0.6.1"
+        versionCode = 14
+        versionName = "0.7.0"
     }
 
     signingConfigs {

@@ -211,6 +211,7 @@
     <string name="onb_finish_action">Permitir y terminar</string>
 
     <!-- Blur people on screen -->
+    <string name="blur_off_pin_message">Introduce tu PIN para dejar de cubrir a las personas en pantalla.</string>
     <string name="blur_title">Difuminar a las personas en pantalla</string>
     <string name="blur_description">Se cubre a las personas dondequiera que aparezcan, en cualquier aplicación, no solo en el navegador.</string>
     <string name="blur_target_women">Mujeres</string>

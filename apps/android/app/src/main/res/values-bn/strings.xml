@@ -211,6 +211,7 @@
     <string name="onb_finish_action">অনুমতি দিন ও শেষ করুন</string>
 
     <!-- Blur people on screen -->
+    <string name="blur_off_pin_message">স্ক্রিনে মানুষ ঢাকা বন্ধ করতে আপনার পিন দিন।</string>
     <string name="blur_title">স্ক্রিনে মানুষ ঝাপসা করুন</string>
     <string name="blur_description">যেখানেই মানুষ দেখা যাবে সেখানেই ঢেকে দেওয়া হবে — শুধু ব্রাউজারে নয়, যেকোনো অ্যাপে।</string>
     <string name="blur_target_women">নারী</string>
