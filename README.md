@@ -5,7 +5,8 @@ content — by blocking known-bad domains at the network layer.
 
 **Roadmap:** Chrome extension (this phase) → Android → iOS / macOS / Windows. The
 platform-agnostic category and matching logic lives in `packages/core` so later platforms can
-reuse it.
+reuse it. A second, independent feature — [blurring people on screen](#blurring-people-on-screen-chrome--android-not-yet-in-a-release) —
+is built for Chrome and Android.
 
 **Website:** [`website/`](website) is the public landing page (self-contained `index.html`, no
 build step, translated into English/Bengali/Spanish/Arabic) — see [website/README.md](website/README.md)
@@ -45,6 +46,31 @@ managing a system-wide `hosts` sinkhole, backed by a `SafeWorld.Core` C# library
 from-scratch port of `decide()`, since Windows has neither a JS runtime nor Swift/Kotlin. Runs
 elevated (one UAC prompt at launch) to write the hosts file directly. WFP-based filtering is not
 started.
+
+## Blurring people on screen (Chrome + Android, not yet in a release)
+
+Everything above is all-or-nothing: a site or an app is reachable or it is not. This is the setting
+in between — the page loads, and photos of people of the chosen gender are covered in place. All
+on-device; no image, and no request about an image, ever leaves the machine.
+
+- **Chrome** blurs `<img>`, `<video>` and CSS backgrounds. The stylesheet that hides every image
+  arrives with the document and the content script only ever takes blur *away*, so nothing is ever
+  briefly visible. Built and measured (first verdict 162 ms, 50 images in 3.1 s on software WebGL);
+  **not yet checked by hand in real Chrome**, which unpacked MV3 requires.
+- **Android** covers *people*, not faces — a screen is not a photograph, and covering face boxes
+  leaves the body. It detects person boxes, finds faces inside them, and classifies only those,
+  which also covers someone turned away from the camera. Verified on-device against the minified
+  release build.
+
+The two platforms run the **same** classifier: `scripts/port-gender-model.py` reimplements
+face-api's `AgeGenderNet` in TensorFlow and loads its MIT weights, and
+`scripts/check-gender-parity.py` holds the port to the original's own output — currently 3.3e-07
+across 16 faces, which is float32 round-off. Run it after touching the port.
+
+Recognising who is in a picture is imperfect, and least reliable on children, side profiles, small
+thumbnails, and faces in hijab or niqab. The rule everywhere is that **uncertainty covers**: an
+unsure answer blurs, because a missed blur is the failure the feature exists to prevent while an
+over-blur is an inconvenience. The apps say so rather than implying more accuracy than they have.
 
 ## Repository layout
 
