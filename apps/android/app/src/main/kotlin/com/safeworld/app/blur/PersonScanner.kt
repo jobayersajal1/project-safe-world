@@ -85,29 +85,73 @@ class PersonScanner(context: Context) : AutoCloseable {
         // by far the more expensive half — is skipped entirely.
         if (target == BlurTarget.EVERYONE) return personBoxes
 
-        val faceBoxes = try {
-            faces.detect(image).detections().mapNotNull { it.boundingBox()?.toRect(frame) }
-        } catch (e: RuntimeException) {
-            Log.w(TAG, "face detection failed", e)
-            // People were found but their faces cannot be read. Every one of
-            // them is unknown, and unknown blurs.
-            return personBoxes
-        }
+        return personBoxes.filter { person -> shouldCover(frame, person, target) }
+    }
 
-        return personBoxes.filter { person ->
-            val within = faceBoxes.filter { person.containsMostOf(it) }
-            if (within.isEmpty()) {
-                // A person with no readable face: turned away, too small, or
-                // cropped. Not evidence that they are safe to show.
-                return@filter true
+    /**
+     * Decide one person, by looking only at them.
+     *
+     * **Face detection runs on the person's own crop, upscaled — not on the
+     * whole frame.** The frame is captured at [BlurService] resolution, well
+     * below the screen's, so a photo occupying half the width leaves a face a
+     * few dozen pixels across, and BlazeFace short-range — built for a face
+     * filling a selfie — simply does not find it. Every person then came back
+     * with no readable face, which the rule below treats as unknown, so
+     * *everyone* was covered whatever the target was. The gender choice was
+     * still being made correctly and then never consulted.
+     *
+     * Cropping to the person and scaling up puts the face back into the range
+     * the detector works in, and costs one detector pass per person instead of
+     * one per frame — at a handful of people, a fair trade for the setting
+     * actually meaning something.
+     */
+    private fun shouldCover(frame: Bitmap, person: Rect, target: BlurTarget): Boolean {
+        val crop = cropUpscaled(frame, person) ?: return true
+        try {
+            val faceBoxes = try {
+                faces.detect(BitmapImageBuilder(crop).build())
+                    .detections().mapNotNull { it.boundingBox()?.toRect(crop) }
+            } catch (e: RuntimeException) {
+                Log.w(TAG, "face detection failed", e)
+                return true
             }
-            val observed = within.mapNotNull { box -> gender.classify(frame, box) }
-            if (observed.size < within.size) {
-                // At least one crop could not be classified at all.
-                return@filter true
-            }
-            BlurRules.verdict(observed, target) == BlurVerdict.BLUR
+
+            // Turned away, too small, or cropped out of shot. Not evidence that
+            // they are safe to show.
+            if (faceBoxes.isEmpty()) return true
+
+            val observed = faceBoxes.mapNotNull { gender.classify(crop, it) }
+            // At least one face could not be classified at all.
+            if (observed.size < faceBoxes.size) return true
+
+            return BlurRules.verdict(observed, target) == BlurVerdict.BLUR
+        } finally {
+            if (crop !== frame) crop.recycle()
         }
+    }
+
+    /** The person's own pixels, enlarged so a small face becomes a findable one. */
+    private fun cropUpscaled(frame: Bitmap, person: Rect): Bitmap? {
+        val r = Rect(person)
+        if (!r.intersect(0, 0, frame.width, frame.height)) return null
+        if (r.width() < 8 || r.height() < 8) return null
+
+        val crop = runCatching {
+            Bitmap.createBitmap(frame, r.left, r.top, r.width(), r.height())
+        }.getOrNull() ?: return null
+
+        val longest = maxOf(crop.width, crop.height)
+        if (longest >= FACE_INPUT_EDGE) return crop
+
+        val factor = FACE_INPUT_EDGE.toFloat() / longest
+        return runCatching {
+            Bitmap.createScaledBitmap(
+                crop,
+                (crop.width * factor).toInt().coerceAtLeast(1),
+                (crop.height * factor).toInt().coerceAtLeast(1),
+                true,
+            ).also { if (it !== crop) crop.recycle() }
+        }.getOrElse { crop }
     }
 
     override fun close() {
@@ -122,6 +166,13 @@ class PersonScanner(context: Context) : AutoCloseable {
         const val FACE_MODEL = "blaze_face_short_range.tflite"
         const val PERSON_SCORE = 0.35f
         const val FACE_SCORE = 0.4f
+
+        /**
+         * A person crop is enlarged until its long edge reaches this before the
+         * face detector sees it. Below roughly this size BlazeFace short-range
+         * stops finding faces at all.
+         */
+        const val FACE_INPUT_EDGE = 256
 
         /**
          * A crowd scene past this is covered wholesale anyway, and the per-face
@@ -143,17 +194,3 @@ private fun RectF.toRect(frame: Bitmap): Rect? {
     return if (r.width() > 1 && r.height() > 1) r else null
 }
 
-/**
- * True if [inner] is mostly inside this box.
- *
- * Not strict containment: the person box and the face box come from different
- * models and their edges disagree by a few pixels, so a face on the boundary
- * would otherwise be assigned to nobody and its person covered as unknown.
- */
-private fun Rect.containsMostOf(inner: Rect): Boolean {
-    val overlap = Rect(this)
-    if (!overlap.intersect(inner)) return false
-    val area = inner.width().toLong() * inner.height()
-    if (area == 0L) return false
-    return overlap.width().toLong() * overlap.height() >= area / 2
-}
