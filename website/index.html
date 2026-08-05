@@ -459,6 +459,7 @@
       <span data-i18n="nav.brand">Safe World</span>
     </a>
     <nav class="nav-links">
+      <a href="#tutorial" data-i18n="nav.tutorial">Tutorial</a>
       <a href="#download" data-i18n="nav.download">Download</a>
       <a href="#how" data-i18n="nav.how">How it works</a>
       <a href="#compare" data-i18n="nav.compare">Compare</a>
@@ -525,13 +526,36 @@
             </div>
           </div>
         </div>
-        <a class="btn btn-accent download-now" href="guide/">
+        <a class="btn btn-accent download-now" href="guide/#video">
           <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true">
             <rect x="2.6" y="4.8" width="18.8" height="14.4" rx="2.6" fill="none" stroke="currentColor" stroke-width="1.9"/>
             <path d="M10.2 9.4 15 12l-4.8 2.6Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
           </svg>
           <span data-i18n="hero.watch_cta">Watch tutorial</span>
         </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="tutorial">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow" data-i18n="tutorial.eyebrow">Watch first · 3 min 33 s</span>
+        <h2 data-i18n="tutorial.h2">See exactly what it does, before you install it.</h2>
+        <p data-i18n="tutorial.body">Every feature, on the real app: what each switch does, what changes when it's on or off, and why it's there.</p>
+      </div>
+      <div class="video-wrap reveal">
+        <video controls preload="none" playsinline poster="guide/video/poster.jpg">
+          <source src="guide/video/safe-world-tutorial.mp4" type="video/mp4">
+          <track kind="subtitles" src="guide/video/tutorial.en.vtt" srclang="en" label="English" default>
+          <track kind="subtitles" src="guide/video/tutorial.bn.vtt" srclang="bn" label="বাংলা">
+          <track kind="subtitles" src="guide/video/tutorial.es.vtt" srclang="es" label="Español">
+          <track kind="subtitles" src="guide/video/tutorial.ar.vtt" srclang="ar" label="العربية">
+          <a href="guide/video/safe-world-tutorial.mp4" data-i18n="tutorial.fallback">Download the tutorial video</a>
+        </video>
+        <p class="video-note">
+          <a href="guide/" data-i18n="tutorial.read_guide">Prefer to read? Open the full written guide →</a>
+        </p>
       </div>
     </div>
   </section>
@@ -765,6 +789,7 @@
 <footer class="site wrap">
   <span data-i18n="footer.tagline">Content filtering that stays on your device.</span>
   <div class="foot-links">
+    <a href="#tutorial" data-i18n="nav.tutorial">Tutorial</a>
     <a href="guide/" data-i18n="nav.guide">User guide</a>
     <a href="privacy.html" data-i18n="footer.privacy">Privacy</a>
     <a href="https://github.com/jobayersajal1/project-safe-world" target="_blank" rel="noopener" data-i18n="footer.github">GitHub</a>
