@@ -313,12 +313,25 @@ redirect; accepted, because a *guess* does not get to charge for a blocking hand
 navigation, and listed categories never take this path. Blocking is a **second** opt-in there on top
 of warning: someone who asked to be warned has not agreed to have sites taken away.
 
-`SafeWorldVpnService` passes `allowBlocking = true` and takes only the strict tier — there is
-nowhere in an NXDOMAIN to put "continue anyway", which is precisely why that tier sits where it
-does. Verdicts are cached per host and the cache is **keyed on the settings**, so turning a category
-off applies on the next query rather than whenever the cache next fills. iOS/macOS/Windows have
-`DomainModel.{swift,cs}` ported and pinned but wired to nothing: a content-blocker rule list has no
-interstitial, and the resolver path is the same yes-or-no as Android's.
+`SafeWorldVpnService`, `safeworld-dnsd` and Windows' `DnsProxy` all pass `allowBlocking = true` and
+take only the strict tier — there is nowhere in a DNS reply to put "continue anyway", which is
+precisely why that tier sits where it does. Verdicts are cached per host and the cache is **keyed on
+the settings**, so turning a category off applies on the next query rather than whenever the cache
+next fills.
+
+**`advisoryBlocks` is deliberately separate from `isBlocked`/`IsBlocked`.** Those mirror
+`Matcher.decide` exactly and their tests assert the two agree over a corpus; folding a *guess* into
+them would make that equivalence false. The proxies call both and OR the results.
+
+**The hosts-file fallback cannot carry it.** A hosts file sinkholes names known in advance and this
+is about a name nobody knew, so when the macOS/Windows resolver cannot start the advisory tier goes
+quiet along with the rest of the full list.
+
+**iOS is the one platform where this cannot work at all.** A Safari content blocker compiles a fixed
+rule list ahead of time and never calls back into us, so there is nothing to run per query. It would
+need the `SafeWorldTunnel` packet tunnel, which needs a paid Apple Developer account and a real
+device. `DomainModel.swift` is shared with macOS and pinned, so the arithmetic is ready if that ever
+lands.
 
 **`list5` is not a category.** 24,241 of its 24,360 entries are `*.googlevideo.com` hostnames, so a
 model trained on it learns "short CDN-shaped name" and flags `bayer.com` and `mail.google.com`. It
