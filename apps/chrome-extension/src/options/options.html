@@ -37,6 +37,60 @@
   </section>
 
   <section class="card">
+    <h2>Warn about sites nobody has listed yet</h2>
+    <p class="hint muted">
+      The block lists are exact: a gambling site registered this morning is not on
+      them yet. This looks at the address itself and warns when it reads like one
+      — the page still opens, with a "continue anyway" you can click. It is a
+      guess, so it is off unless you want it.
+    </p>
+    <div class="row">
+      <div>
+        <div>Warn about likely matches</div>
+        <div class="muted" style="font-size:12px">Warns only. It never blocks anything on its own.</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="advisoryEnabled" />
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div id="advisoryOptions">
+      <div class="row">
+        <div>
+          <div>Gambling</div>
+          <div class="muted" style="font-size:12px">
+            Catches about a fifth of unlisted gambling sites, and is wrong on
+            roughly one address in a million.
+          </div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="advisoryList2" />
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="row">
+        <div>
+          <div>Adult</div>
+          <div class="muted" style="font-size:12px">
+            About a quarter of unlisted adult sites, and wrong somewhat more
+            often than the gambling one.
+          </div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="advisoryList3" />
+          <span class="slider"></span>
+        </label>
+      </div>
+      <p class="hint muted">
+        Only these two are offered. The same approach was measured on scam,
+        social, games and drugs and was not accurate enough to be worth the
+        interruptions, so it is not shipped for them.
+      </p>
+    </div>
+  </section>
+
+  <section class="card">
     <h2>Blur photos of people</h2>
     <p class="hint muted">
       Photos are blurred where they appear, on every site. Everything runs on this

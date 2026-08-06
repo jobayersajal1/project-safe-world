@@ -14,6 +14,7 @@
     "build": "npm run build --workspace @safe-world/core && npm run build --workspace @safe-world/chrome-extension",
     "lists:check": "tsx scripts/check-lists-present.ts",
     "build:lists": "npm run lists:check --silent && tsx scripts/build-blocklists.ts",
+    "build:model": "tsx scripts/build-advisory-model.ts",
     "build:ios": "npm run lists:check --silent && tsx scripts/build-ios-blocklists.ts",
     "build:android": "npm run lists:check --silent && tsx scripts/build-android-blocklists.ts",
     "build:windows": "npm run lists:check --silent && tsx scripts/build-windows-blocklists.ts",

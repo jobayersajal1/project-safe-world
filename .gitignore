@@ -76,3 +76,6 @@ __pycache__/
 # Derived weights, not domains — but generated like every other list artifact,
 # so one command rebuilds everything and a fresh clone has no stale copy.
 packages/core/src/model/
+
+# Advisory model, copied into the extension by scripts/build-advisory-model.ts.
+apps/chrome-extension/public/model/

@@ -1,6 +1,8 @@
 import {
+  AdvisoryCache,
   CATEGORIES,
   SCRAMBLE_FORMAT,
+  advise,
   generateRulesForCategory,
   normalizeHost,
   plainDomains,
@@ -12,6 +14,7 @@ import {
 } from "@safe-world/core";
 import { getSettings, incrementBlockedToday, onSettingsChanged } from "./storage.js";
 import { getBlurSettings, onBlurSettingsChanged } from "./blur/storage.js";
+import { getAdvisorySettings, loadAdvisoryModels, onAdvisorySettingsChanged } from "./advisory/storage.js";
 import {
   BLUR_CSS_PATH,
   BLUR_CSS_SCRIPT_ID,
@@ -34,9 +37,53 @@ const CUSTOM_RULE_FLOOR = CUSTOM_BLOCK_BASE;
 /** In-memory map of the last top-level navigation target per tab, for the block page. */
 const pendingNavigation = new Map<number, string>();
 
+/**
+ * The advisory second stage.
+ *
+ * `declarativeNetRequest` cannot express it — a DNR rule is a fixed list of
+ * domains, and the whole point here is a host nobody has listed. So the check
+ * rides on navigation instead, and sends the tab to the same blocked page with
+ * `advisory=1`, where "continue anyway" is the expected answer rather than the
+ * dangerous one.
+ *
+ * The gap this leaves is real and is the right trade: MV3 has no blocking
+ * navigation hook, so the page has already started loading when we redirect.
+ * A model *guess* is not worth the alternative — a blocking request handler
+ * over every navigation on the device — and the listed categories, which are
+ * the protection promise, never take this path at all. They are blocked by DNR
+ * before a request leaves.
+ */
+const advisoryCache = new AdvisoryCache();
+
+async function checkAdvisory(tabId: number, url: string): Promise<void> {
+  const settings = await getAdvisorySettings();
+  if (!settings.enabled) return;
+
+  const host = normalizeHost(url);
+  if (!host) return;
+
+  // Anything the lists or the user's own rules already cover is not our
+  // business: DNR has either blocked it, or the user explicitly allowed it and
+  // a guess must not override that.
+  const main = await getSettings();
+  if (main.customAllow.some((d) => host === d || host.endsWith("." + d))) return;
+
+  const models = await loadAdvisoryModels();
+  if (models.length === 0) return;
+
+  const verdict = advisoryCache.get(host, () => advise(host, models, settings));
+  if (!verdict.advise) return;
+
+  const target = `${BLOCKED_PAGE}?category=${verdict.category}&advisory=1`;
+  await chrome.tabs.update(tabId, { url: chrome.runtime.getURL(target) }).catch(() => {});
+}
+
 chrome.webNavigation.onBeforeNavigate.addListener((details) => {
   if (details.frameId === 0 && details.tabId >= 0) {
     pendingNavigation.set(details.tabId, details.url);
+    if (details.url.startsWith("http")) {
+      void checkAdvisory(details.tabId, details.url);
+    }
   }
 });
 
@@ -310,7 +357,12 @@ chrome.runtime.onStartup.addListener(init);
 onSettingsChanged(async (settings) => {
   await syncAll(settings);
   await scheduleRemoteUpdate(settings);
+  // A host the user has just allowed must stop being advised against
+  // immediately, and the cache would otherwise hold the old verdict.
+  advisoryCache.clear();
 });
+
+onAdvisorySettingsChanged(() => advisoryCache.clear());
 
 onBlurSettingsChanged(async (blur) => {
   await syncBlurStyles(blur);

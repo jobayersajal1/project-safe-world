@@ -15,14 +15,26 @@
       background: var(--card); border: 1px solid var(--border); font-size: 12px;
     }
     .actions { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
+    .note { font-size: 13px; line-height: 1.5; }
   </style>
 </head>
 <body>
   <div class="box">
-    <div class="shield">🛡️</div>
-    <h1>Site blocked</h1>
-    <p class="muted">Safe World blocked <span class="host" id="host">this site</span>.</p>
+    <div class="shield" id="shield">🛡️</div>
+    <h1 id="title">Site blocked</h1>
+    <p class="muted" id="lede">Safe World blocked <span class="host" id="host">this site</span>.</p>
     <p><span class="badge" id="category">—</span></p>
+    <!--
+      Hidden unless the advisory model, not a list, is what stopped this. The
+      wording has to carry that difference: a listed site is a fact, this is a
+      guess, and telling the user otherwise is how a guess earns the trust it
+      has not got.
+    -->
+    <p class="muted note" id="advisoryNote" hidden>
+      This site isn’t on any block list. Safe World is guessing from the address
+      alone that it might be one, so it may well be wrong — if you know the site,
+      carry on.
+    </p>
     <div class="actions">
       <button class="primary" id="back">Go back to safety</button>
       <button id="allowOnce">Allow this time only</button>
