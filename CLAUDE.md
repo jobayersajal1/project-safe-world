@@ -297,16 +297,28 @@ list3 — and then flagged Blogger's own image CDN (`1.bp.blogspot.com`, `2.`, `
 the pictures on every Blogger blog there is, plus `videoseriesbiblicas.blogspot.com`. A subdomain
 on shared hosting says something about that one blog and nothing about the platform.
 
-**Chrome is the only surface that can warn, and ships it.** DNR cannot express this (a rule is a
+**Two thresholds, because "possibly" and "almost certainly" are different claims.** `threshold`
+warns; `blockThreshold` may block outright and is held far stricter than the hand review requires —
+the bar is "nothing near the boundary", not "no false positive found". It costs most of the recall
+(gambling 23.8% → 7.6%, adult 24.5% → 16.3%) and everything between the two still warns. A model
+file lacking `blockThreshold` defaults to **infinity** in all four ports, never zero: the
+difference between "warn only" and "block everything".
+
+**Chrome warns; Android blocks, because a DNS answer cannot warn.** DNR cannot express this (a rule is a
 fixed list of domains; the point is a host on no list), so the check rides on
 `webNavigation.onBeforeNavigate` and redirects to the blocked page with `advisory=1`, which is a
 visibly different page — "Continue anyway" is the emphasised button and it says outright that the
 site is on no list. MV3 has no blocking navigation hook, so the page has begun loading when we
 redirect; accepted, because a *guess* does not get to charge for a blocking handler on every
-navigation, and listed categories never take this path. Android/iOS/macOS/Windows have
-`DomainModel.{kt,swift,cs}` ported and pinned against the same vectors but **wired to nothing** — a
-DNS answer and a content-blocker rule list are yes-or-no, and choosing between a hard block and a
-notification is a product call.
+navigation, and listed categories never take this path. Blocking is a **second** opt-in there on top
+of warning: someone who asked to be warned has not agreed to have sites taken away.
+
+`SafeWorldVpnService` passes `allowBlocking = true` and takes only the strict tier — there is
+nowhere in an NXDOMAIN to put "continue anyway", which is precisely why that tier sits where it
+does. Verdicts are cached per host and the cache is **keyed on the settings**, so turning a category
+off applies on the next query rather than whenever the cache next fills. iOS/macOS/Windows have
+`DomainModel.{swift,cs}` ported and pinned but wired to nothing: a content-blocker rule list has no
+interstitial, and the resolver path is the same yes-or-no as Android's.
 
 **`list5` is not a category.** 24,241 of its 24,360 entries are `*.googlevideo.com` hostnames, so a
 model trained on it learns "short CDN-shaped name" and flags `bayer.com` and `mail.google.com`. It
