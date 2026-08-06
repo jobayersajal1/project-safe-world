@@ -110,14 +110,17 @@ function structuralTokens(host: string): string[] {
   }
   let longest = 0;
   for (const l of labels) longest = Math.max(longest, l.length);
+  // The \u0001 prefix namespaces these away from the n-grams. It was a literal
+  // control byte in the source once, which worked and was invisible to anyone
+  // reading or reviewing it; every port now writes the escape.
   return [
-    "tld=" + (labels.length > 1 ? labels[labels.length - 1]! : ""),
-    "sld=" + (labels.length > 1 ? labels[labels.length - 2]! : ""),
-    "labels=" + Math.min(labels.length, 6),
-    "len=" + bucket(host.length, [8, 12, 16, 20, 26, 34, 48]),
-    "digits=" + bucket(Math.floor((100 * digits) / Math.max(1, host.length)), [0, 5, 15, 30, 50]),
-    "hyphens=" + bucket(hyphens, [0, 1, 2, 4]),
-    "longest=" + bucket(longest, [4, 7, 10, 14, 20, 30]),
+    "\u0001tld=" + (labels.length > 1 ? labels[labels.length - 1]! : ""),
+    "\u0001sld=" + (labels.length > 1 ? labels[labels.length - 2]! : ""),
+    "\u0001labels=" + Math.min(labels.length, 6),
+    "\u0001len=" + bucket(host.length, [8, 12, 16, 20, 26, 34, 48]),
+    "\u0001digits=" + bucket(Math.floor((100 * digits) / Math.max(1, host.length)), [0, 5, 15, 30, 50]),
+    "\u0001hyphens=" + bucket(hyphens, [0, 1, 2, 4]),
+    "\u0001longest=" + bucket(longest, [4, 7, 10, 14, 20, 30]),
   ];
 }
 
