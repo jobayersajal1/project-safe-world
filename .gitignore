@@ -67,3 +67,7 @@ xcuserdata/
 bin/
 obj/
 
+
+# Python bytecode from the model-training scripts
+__pycache__/
+*.pyc
