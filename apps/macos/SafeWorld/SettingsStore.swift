@@ -184,6 +184,49 @@ final class SettingsStore: ObservableObject {
         syncHosts()
     }
 
+    // MARK: Advisory model
+    //
+    // Its own stored value and its own file, never fields on `Settings` — see
+    // the note on `AdvisorySettings`. The daemon re-reads it at start, so a
+    // change here reaches the resolver on the next restart.
+
+    @Published private(set) var advisory: AdvisorySettings = SettingsStore.loadAdvisory()
+
+    private static let advisoryKey = "advisorySettings"
+
+    private static func loadAdvisory() -> AdvisorySettings {
+        guard let data = UserDefaults.standard.data(forKey: advisoryKey),
+              let decoded = try? JSONDecoder().decode(AdvisorySettings.self, from: data)
+        else {
+            // Defaults leave it off, which the user can see and turn back on —
+            // better than leaving a guessing filter on in a state nobody chose.
+            return AdvisorySettings()
+        }
+        return decoded
+    }
+
+    func updateAdvisory(_ mutate: (inout AdvisorySettings) -> Void) {
+        var next = advisory
+        mutate(&next)
+        advisory = next
+        guard let data = try? JSONEncoder().encode(next) else { return }
+        defaults.set(data, forKey: Self.advisoryKey)
+        publishAdvisoryForDaemon(data)
+    }
+
+    private static let daemonAdvisoryPath =
+        "/Library/Application Support/SafeWorld/advisory.json"
+
+    /// Best-effort, like `publishForDaemon`: a settings change must never fail
+    /// because the daemon is not installed.
+    private func publishAdvisoryForDaemon(_ data: Data) {
+        let url = URL(fileURLWithPath: Self.daemonAdvisoryPath)
+        guard FileManager.default.fileExists(atPath: url.deletingLastPathComponent().path) else {
+            return
+        }
+        try? data.write(to: url, options: .atomic)
+    }
+
     /// Where `safeworld-dnsd` reads settings from.
     ///
     /// The daemon runs as root in a separate process and cannot see this app's UserDefaults, so

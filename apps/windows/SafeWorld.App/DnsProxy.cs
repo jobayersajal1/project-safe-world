@@ -86,7 +86,10 @@ public sealed class DnsProxy : IDisposable
         try
         {
             var name = DnsMessage.QuestionName(request.Buffer);
-            if (name is not null && _engine.IsBlocked(name))
+            // The list first, then the model's second opinion for a name no list
+            // covers. IsBlocked stays the whole of Matcher.Decide; the advisory
+            // is a separate call so that equivalence keeps holding.
+            if (name is not null && (_engine.IsBlocked(name) || _engine.AdvisoryBlocks(name)))
             {
                 var nx = DnsMessage.NxDomainResponse(request.Buffer);
                 if (nx is not null)

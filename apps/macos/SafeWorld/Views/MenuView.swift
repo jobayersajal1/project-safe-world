@@ -39,6 +39,10 @@ struct MenuView: View {
 
             Divider()
 
+            advisorySection
+
+            Divider()
+
             DisclosureGroup("Custom lists", isExpanded: $listsExpanded) {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Always allow (one per line)")
@@ -169,6 +173,49 @@ struct MenuView: View {
                 }
                 .tint(Brand.calm)
                 .disabled(!store.settings.enabled)
+            }
+        }
+    }
+
+    /// The advisory model's switch.
+    ///
+    /// **Here it can only hard-block.** A DNS reply is yes or no, so there is
+    /// nowhere to put the "continue anyway" the Chrome extension offers — which
+    /// is why the resolver takes only the strictest part of the model's ranking
+    /// and catches noticeably less than the model knows.
+    ///
+    /// The copy says "guess" rather than dressing it up. Every other switch here
+    /// blocks from a list and is a fact; this one is not, and a user who is told
+    /// so can make sense of a wrong block instead of losing faith in all of it.
+    ///
+    /// **Only reaches the resolver, never the hosts fallback.** A hosts file
+    /// sinkholes names known in advance and this is about names nobody knew, so
+    /// with the daemon not installed the switch has nothing to act through.
+    private var advisorySection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Toggle(isOn: Binding(
+                get: { store.advisory.enabled },
+                set: { on in store.updateAdvisory { $0.enabled = on } }
+            )) {
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("Block likely new sites")
+                    Text("Blocks gambling and adult sites that are not on any list yet, "
+                         + "by looking at the address itself.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            .tint(Brand.calm)
+            .disabled(!store.settings.enabled)
+
+            if store.advisory.enabled {
+                Text("This is a guess, not a list. It only acts when it is almost certain, "
+                     + "so it catches some new sites and not all of them. Takes effect when "
+                     + "the filter restarts.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
     }

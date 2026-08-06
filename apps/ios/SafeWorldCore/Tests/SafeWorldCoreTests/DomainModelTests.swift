@@ -121,6 +121,38 @@ final class DomainModelTests: XCTestCase {
             DomainModel.advise("x.example", models: [model], allowBlocking: true)?.action, .warn)
     }
 
+    func testLoadsTheShippedModelsFromTheResourceDirectory() throws {
+        // The resolvers read the models from the same directory as the fuse
+        // filters. A model that failed to ship there leaves the advisory tier
+        // silently inert — an app that looks healthy while the feature does
+        // nothing, which is the failure this project guards against everywhere.
+        let dir = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()   // SafeWorldCoreTests
+            .deletingLastPathComponent()   // Tests
+            .deletingLastPathComponent()   // SafeWorldCore
+            .appendingPathComponent("Sources/SafeWorldCore/Resources")
+
+        let models = DomainModel.load(directory: dir)
+        // Generated artifact: absent on a fresh clone, so assert only when present.
+        try XCTSkipIf(models.isEmpty, "run `npm run build:model` to exercise this")
+
+        XCTAssertEqual(models.count, 2)
+        for m in models {
+            XCTAssertEqual(m.values.count, DomainModel.tableSize)
+            // An all-zero table would score every host at the bias and look like
+            // a working model that never fires.
+            XCTAssertTrue(m.values.contains { $0 != 0 })
+            XCTAssertGreaterThan(m.blockThreshold, m.threshold)
+        }
+
+        XCTAssertEqual(
+            DomainModel.advise("best-casino-slots-bonus.com", models: models, allowBlocking: true)?.action,
+            .block)
+        for host in ["github.com", "wikipedia.org", "nhs.uk", "acme-plumbing-services.com"] {
+            XCTAssertNil(DomainModel.advise(host, models: models, allowBlocking: true), host)
+        }
+    }
+
     func testMissingBlockTierNeverBlocks() {
         // The default is infinity, not zero — a model file predating the block
         // tier must not mean "block everything".

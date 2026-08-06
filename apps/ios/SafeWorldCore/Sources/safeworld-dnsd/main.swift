@@ -54,6 +54,22 @@ func loadSettings(_ path: String) -> Settings {
     return decoded
 }
 
+/// The advisory settings sit next to `settings.json`, under their own name for
+/// the same reason they are a separate stored value everywhere else: a new
+/// non-optional field on `Settings` would fail to decode an existing blob and
+/// silently reset every preference the user has.
+func loadAdvisory(_ settingsPath: String) -> AdvisorySettings {
+    let url = URL(fileURLWithPath: settingsPath)
+        .deletingLastPathComponent()
+        .appendingPathComponent("advisory.json")
+    guard let data = try? Data(contentsOf: url),
+          let decoded = try? JSONDecoder().decode(AdvisorySettings.self, from: data)
+    else {
+        return AdvisorySettings()
+    }
+    return decoded
+}
+
 let options = parseOptions()
 
 let engine: FilterEngine
@@ -68,6 +84,10 @@ do {
     FileHandle.standardError.write(Data("safeworld-dnsd: \(error)\n".utf8))
     exit(1)
 }
+
+// The advisory model is opt-in and lives beside the ordinary settings. A
+// daemon started before the setting existed simply never turns it on.
+engine.updateAdvisory(loadAdvisory(options.settings))
 
 let proxy = DnsProxy(engine: engine, upstream: options.upstream)
 do {

@@ -150,6 +150,39 @@ public class DomainModelTests
     }
 
     [Fact]
+    public void LoadsTheShippedModelsFromTheFilterDirectory()
+    {
+        // The DNS proxy reads the models from the same directory as the fuse
+        // filters. A model that failed to ship there leaves the advisory tier
+        // silently inert — an app that looks healthy while the feature does
+        // nothing, which is the failure this project guards against everywhere.
+        var dir = Path.GetFullPath(Path.Combine(
+            AppContext.BaseDirectory, "..", "..", "..", "..", "SafeWorld.App", "filters"));
+
+        var models = DomainModel.Load(dir);
+        // Generated artifact: absent on a fresh clone, so assert only when present.
+        if (models.Count == 0) return;
+
+        Assert.Equal(2, models.Count);
+        foreach (var m in models)
+        {
+            Assert.Equal(DomainModel.TableSize, m.Values.Length);
+            // An all-zero table would score every host at the bias and look like
+            // a working model that never fires.
+            Assert.Contains(m.Values, v => v != 0);
+            Assert.True(m.BlockThreshold > m.Threshold);
+        }
+
+        Assert.Equal(
+            DomainModel.Action.Block,
+            DomainModel.Advise("best-casino-slots-bonus.com", models, allowBlocking: true)?.Action);
+        foreach (var host in new[] { "github.com", "wikipedia.org", "nhs.uk", "acme-plumbing-services.com" })
+        {
+            Assert.Null(DomainModel.Advise(host, models, allowBlocking: true));
+        }
+    }
+
+    [Fact]
     public void MissingBlockTierNeverBlocks()
     {
         // The default is infinity, not zero — a model file predating the block

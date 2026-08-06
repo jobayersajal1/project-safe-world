@@ -136,11 +136,26 @@ final class DaemonController: ObservableObject {
         }
         guard copied > 0 else { throw Failure.filtersMissing }
 
+        // The advisory models live in the same directory as the filters, because
+        // that is the one path the daemon is given. Absent on a build that never
+        // ran `npm run build:model`, which must behave exactly like a build from
+        // before the feature existed — so this is best-effort, not required.
+        for id in CategoryId.allCases {
+            guard let source = DomainModel.bundledModelURL(for: id) else { continue }
+            try? fm.copyItem(
+                at: source,
+                to: staging.appendingPathComponent("filters/\(id.rawValue).model.json")
+            )
+        }
+
         // The daemon runs as root and cannot read this app's UserDefaults, so settings travel as a
         // file. Left owned by the installing user afterwards, which is what lets the unprivileged
         // app keep it current — see `SettingsStore.publishForDaemon`.
         let encoded = try JSONEncoder().encode(settings)
         try encoded.write(to: staging.appendingPathComponent("settings.json"))
+
+        let advisory = try JSONEncoder().encode(AdvisorySettings())
+        try advisory.write(to: staging.appendingPathComponent("advisory.json"))
 
         try Data(plistContents.utf8).write(to: staging.appendingPathComponent("com.safeworld.dnsd.plist"))
         return staging
@@ -181,10 +196,17 @@ final class DaemonController: ObservableObject {
         cp '\(staging)/safeworld-dnsd' '\(prefix)/safeworld-dnsd'
         chmod 755 '\(prefix)/safeworld-dnsd'
         cp '\(staging)/filters/'*.filter '\(prefix)/filters/'
+        # Best-effort: a build without the advisory models has none to copy.
+        cp '\(staging)/filters/'*.model.json '\(prefix)/filters/' 2>/dev/null || true
         if [ ! -f '\(prefix)/settings.json' ]; then
           cp '\(staging)/settings.json' '\(prefix)/settings.json'
         fi
-        chown '\(owner)' '\(prefix)' '\(prefix)/settings.json'
+        # Seeded off, and only when absent, so reinstalling never silently turns
+        # a guessing filter on for someone who declined it.
+        if [ ! -f '\(prefix)/advisory.json' ]; then
+          cp '\(staging)/advisory.json' '\(prefix)/advisory.json'
+        fi
+        chown '\(owner)' '\(prefix)' '\(prefix)/settings.json' '\(prefix)/advisory.json'
         printf '%s\\n' '\(upstream)' > '\(prefix)/dns-restore.txt'
 
         # An uninstaller that outlives the app.

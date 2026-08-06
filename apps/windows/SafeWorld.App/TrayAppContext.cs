@@ -125,6 +125,28 @@ internal sealed class TrayAppContext : ApplicationContext
 
         menu.Items.Add(new ToolStripSeparator());
 
+        // Only the resolver can act on this. A hosts file sinkholes names known in advance and
+        // this is about names nobody knew, so on the fallback path the switch has nothing to act
+        // through — which is why it says so rather than appearing to work.
+        var advisory = new ToolStripMenuItem("Block likely new sites")
+        {
+            Checked = _store.Advisory.Enabled,
+            Enabled = _store.Settings.Enabled,
+            ToolTipText = _store.ProxyActive
+                ? "Blocks gambling and adult sites that are not on any list yet, by looking at the "
+                  + "address itself. A guess, not a list — it only acts when almost certain."
+                : "Needs the local resolver, which is not running. The hosts-file fallback can only "
+                  + "block names known in advance.",
+        };
+        advisory.Click += (_, _) =>
+        {
+            var next = !_store.Advisory.Enabled;
+            _store.UpdateAdvisory(a => a.Enabled = next);
+        };
+        menu.Items.Add(advisory);
+
+        menu.Items.Add(new ToolStripSeparator());
+
         // Shown rather than assumed: if this is off, protection ends at the next restart, and the
         // only symptom is blocked sites quietly working again.
         var startWithWindows = new ToolStripMenuItem("Start with Windows")

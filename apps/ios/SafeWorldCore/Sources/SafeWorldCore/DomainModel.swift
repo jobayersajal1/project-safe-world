@@ -15,13 +15,16 @@ import Foundation
 /// itself and guesses. It never blocks — `Matcher.decide` remains the whole
 /// decision — and the strongest thing it can say is "worth warning about".
 ///
-/// **Nothing on Apple platforms is wired to it yet, and that is not an
-/// oversight.** A warn tier needs somewhere to put "probably, but have a look",
-/// and a Safari content-blocker rule list has no interstitial: it can only say
-/// yes or no, before the page exists. Chrome has the blocked page and ships the
-/// feature; here the arithmetic is ported and tested so that when a surface does
-/// exist it is already known to agree with the others, rather than being written
-/// under deadline against a model nobody re-verified.
+/// **macOS uses it; iOS cannot.** The macOS daemon is a real resolver — our code
+/// sees every query — so it can score a name nobody has listed, exactly as
+/// Android's tunnel does, and blocks on the strict tier because a DNS reply has
+/// nowhere to put "continue anyway". A Safari content blocker compiles a fixed
+/// rule list ahead of time and never calls back into us, so on iOS this can only
+/// run if the packet tunnel is ever built.
+///
+/// Note the hosts-file fallback cannot carry it either, for the same reason: a
+/// hosts file sinkholes names known in advance, and the whole point here is a
+/// name nobody knew about.
 public enum DomainModel {
 
     // MARK: - Shape
@@ -208,6 +211,59 @@ public enum DomainModel {
         return false
     }
 
+    /// Where the model ships inside `SafeWorldCore`'s resource bundle.
+    ///
+    /// The same mechanism `Blocklists.bundledFilterURL` uses. `Bundle.main`
+    /// would not find these: they belong to the package's resource bundle, not
+    /// the app's.
+    public static func bundledModelURL(for category: CategoryId) -> URL? {
+        Bundle.module.url(forResource: "\(category.rawValue).model", withExtension: "json")
+    }
+
+    /// The bundled models, read from the same directory as the fuse filters.
+    ///
+    /// A missing file is not an error worth raising. The models are a generated
+    /// artifact, and a build without them must behave exactly like a build from
+    /// before this feature existed.
+    public static func load(directory: URL) -> [Weights] {
+        [CategoryId.gambling, CategoryId.adult].compactMap { load(directory: directory, category: $0) }
+    }
+
+    private static func load(directory: URL, category: CategoryId) -> Weights? {
+        let url = directory.appendingPathComponent("\(category.rawValue).model.json")
+        guard let data = try? Data(contentsOf: url),
+              let file = try? JSONDecoder().decode(ModelFile.self, from: data)
+        else { return nil }
+
+        // Refusing beats scoring against a mismatched table, which produces
+        // confident nonsense rather than an obvious failure.
+        guard file.tableSize == tableSize,
+              let raw = Data(base64Encoded: file.weights),
+              raw.count == tableSize
+        else { return nil }
+
+        return Weights(
+            category: category,
+            scale: file.scale,
+            bias: file.bias,
+            threshold: file.threshold,
+            // A model file predating the block tier must never fall back to
+            // zero, which would block everything.
+            blockThreshold: file.blockThreshold ?? .infinity,
+            values: raw.map { Int8(bitPattern: $0) }
+        )
+    }
+
+    private struct ModelFile: Decodable {
+        let category: String
+        let tableSize: Int
+        let scale: Double
+        let bias: Double
+        let threshold: Double
+        let blockThreshold: Double?
+        let weights: String
+    }
+
     /// The second stage. Call only for a host `Matcher.decide` returned allowed.
     ///
     /// `allowBlocking` gates the stricter tier. A surface with no way to offer
@@ -230,5 +286,27 @@ public enum DomainModel {
             }
         }
         return nil
+    }
+}
+
+/// Whether the advisory model is allowed to act, and for which categories.
+///
+/// Its own stored value, never fields on `Settings` — adding a non-optional
+/// field there silently wipes every stored setting, which is the trap
+/// `BlurSettings` documents. Mirrors `ADVISORY_STORAGE_KEY` in
+/// `packages/core/src/advisory.ts`.
+///
+/// Ships **off**. Everything else in this app answers from a list and is a
+/// fact; this one guesses, and a guess should be opted into.
+public struct AdvisorySettings: Codable, Equatable, Sendable {
+    public var enabled: Bool
+    public var categories: [CategoryId: Bool]
+
+    public init(
+        enabled: Bool = false,
+        categories: [CategoryId: Bool] = [.gambling: true, .adult: true]
+    ) {
+        self.enabled = enabled
+        self.categories = categories
     }
 }

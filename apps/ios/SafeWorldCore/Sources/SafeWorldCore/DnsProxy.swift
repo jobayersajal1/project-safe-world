@@ -95,7 +95,11 @@ public final class DnsProxy: @unchecked Sendable {
     }
 
     private func handle(query: [UInt8], on connection: NWConnection) {
-        if let name = DnsMessage.questionName(query), engine.isBlocked(name) {
+        // The list first, then the model's second opinion for a name no list
+        // covers. `isBlocked` stays the whole of `Matcher.decide`; the advisory
+        // is a separate call so that equivalence keeps holding.
+        if let name = DnsMessage.questionName(query),
+           engine.isBlocked(name) || engine.advisoryBlocks(name) {
             if let nx = DnsMessage.nxDomainResponse(query) {
                 // Not cancelled: the same connection carries this client's next query.
                 connection.send(content: Data(nx), completion: .contentProcessed { _ in })

@@ -1,4 +1,6 @@
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SafeWorld.Core;
 
@@ -23,12 +25,16 @@ namespace SafeWorld.Core;
 /// decision — and the strongest thing it can say is "worth warning about".
 /// </para>
 /// <para>
-/// <b>The DNS proxy does not use it yet, and that is a product decision rather
-/// than missing work.</b> A DNS answer is yes or no: there is nowhere in it to
-/// put "probably, but have a look", which is the only thing this model has
-/// earned the right to say. Chrome has an interstitial and ships the feature.
-/// Here the arithmetic is ported and tested so that when a surface does exist it
-/// is already known to agree with the other platforms.
+/// The DNS proxy uses it. Windows runs a real resolver, so our code sees every
+/// query and can score a name nobody has listed — but a DNS reply is yes or no,
+/// with nowhere to put the "continue anyway" Chrome offers, so only the strict
+/// tier applies here and most of the recall is given up for it.
+/// </para>
+/// <para>
+/// The hosts-file fallback cannot carry this. A hosts file sinkholes names known
+/// in advance, and the whole point is a name nobody knew about — so when the
+/// resolver cannot start, the advisory tier goes quiet along with the rest of
+/// the full list.
 /// </para>
 /// </remarks>
 public static class DomainModel
@@ -222,6 +228,78 @@ public static class DomainModel
         return false;
     }
 
+    /// <summary>
+    /// The bundled models, read from the same directory as the fuse filters.
+    /// </summary>
+    /// <remarks>
+    /// A missing file is not an error worth raising. The models are a generated
+    /// artifact, and a build without them must behave exactly like a build from
+    /// before the feature existed.
+    /// </remarks>
+    public static List<Weights> Load(string directory)
+    {
+        var loaded = new List<Weights>();
+        foreach (var category in new[] { CategoryId.Gambling, CategoryId.Adult })
+        {
+            var w = Load(directory, category);
+            if (w is not null) loaded.Add(w);
+        }
+        return loaded;
+    }
+
+    private static Weights? Load(string directory, CategoryId category)
+    {
+        var path = Path.Combine(directory, $"{category.ToRawValue()}.model.json");
+        if (!File.Exists(path)) return null;
+
+        ModelFile? file;
+        try
+        {
+            file = JsonSerializer.Deserialize<ModelFile>(File.ReadAllText(path));
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
+        if (file is null) return null;
+
+        // Refusing beats scoring against a mismatched table, which produces
+        // confident nonsense rather than an obvious failure.
+        if (file.TableSize != TableSize || file.Weights is null) return null;
+        byte[] raw;
+        try
+        {
+            raw = Convert.FromBase64String(file.Weights);
+        }
+        catch (FormatException)
+        {
+            return null;
+        }
+        if (raw.Length != TableSize) return null;
+
+        var values = new sbyte[TableSize];
+        Buffer.BlockCopy(raw, 0, values, 0, TableSize);
+
+        return new Weights(
+            category,
+            file.Scale,
+            file.Bias,
+            file.Threshold,
+            values,
+            // A model file predating the block tier must never fall back to
+            // zero, which would block everything.
+            file.BlockThreshold ?? double.PositiveInfinity);
+    }
+
+    private sealed record ModelFile(
+        string? Category,
+        int TableSize,
+        double Scale,
+        double Bias,
+        double Threshold,
+        double? BlockThreshold,
+        string? Weights);
+
     /// <summary>The second stage. Call only for a host <c>Matcher.Decide</c> returned allowed.</summary>
     /// <remarks>
     /// <paramref name="allowBlocking"/> gates the stricter tier. A surface with
@@ -243,4 +321,27 @@ public static class DomainModel
         }
         return null;
     }
+}
+
+/// <summary>
+/// Whether the advisory model is allowed to act, and for which categories.
+/// </summary>
+/// <remarks>
+/// Its own stored value, never fields on <see cref="Settings"/> — mirrors
+/// <c>ADVISORY_STORAGE_KEY</c> in <c>packages/core/src/advisory.ts</c>.
+/// Ships <b>off</b>: everything else here answers from a list and is a fact,
+/// this one guesses, and a guess should be opted into.
+/// </remarks>
+public sealed class AdvisorySettings
+{
+    public bool Enabled { get; set; }
+
+    public Dictionary<string, bool> Categories { get; set; } = new()
+    {
+        ["list2"] = true,
+        ["list3"] = true,
+    };
+
+    public bool EnabledFor(CategoryId category) =>
+        Enabled && Categories.TryGetValue(category.ToRawValue(), out var on) && on;
 }

@@ -29,6 +29,11 @@ const chromeDir = join(repoRoot, "apps", "chrome-extension", "public", "model");
 // Kotlin reads it off the classpath, exactly as `Blocklists` reads the filters,
 // so `:core:test` and the packaged APK take the same path.
 const androidDir = join(repoRoot, "apps", "android", "core", "src", "main", "resources", "model");
+// macOS and Windows read the models from the same directory as the fuse
+// filters, because that is the directory their resolvers are already pointed
+// at — one path to configure, not two.
+const macosDir = join(repoRoot, "apps", "ios", "SafeWorldCore", "Sources", "SafeWorldCore", "Resources");
+const windowsDir = join(repoRoot, "apps", "windows", "SafeWorld.App", "filters");
 
 async function build(): Promise<void> {
   if (!existsSync(modelDir)) {
@@ -36,8 +41,10 @@ async function build(): Promise<void> {
     return;
   }
 
-  await mkdir(chromeDir, { recursive: true });
-  await mkdir(androidDir, { recursive: true });
+  for (const dir of [chromeDir, androidDir, macosDir, windowsDir]) {
+    await mkdir(dir, { recursive: true });
+  }
+
   let copied = 0;
   for (const category of ADVISORY_CATEGORIES) {
     const src = join(modelDir, `${category}.json`);
@@ -45,11 +52,15 @@ async function build(): Promise<void> {
       console.log(`${category}: no model, skipping`);
       continue;
     }
-    for (const dir of [chromeDir, androidDir]) {
-      await copyFile(src, join(dir, `${category}.json`));
-    }
+    // Chrome and Android fetch by category name; the two resolvers read a
+    // directory that already holds `<category>.filter`, so the model needs a
+    // distinct suffix there or it collides with the list metadata JSON.
+    await copyFile(src, join(chromeDir, `${category}.json`));
+    await copyFile(src, join(androidDir, `${category}.json`));
+    await copyFile(src, join(macosDir, `${category}.model.json`));
+    await copyFile(src, join(windowsDir, `${category}.model.json`));
     const { size } = await stat(join(chromeDir, `${category}.json`));
-    console.log(`${category}: ${Math.round(size / 1024)} KB -> chrome, android`);
+    console.log(`${category}: ${Math.round(size / 1024)} KB -> chrome, android, macos, windows`);
     copied++;
   }
 
@@ -61,10 +72,20 @@ async function build(): Promise<void> {
   // A stale model for a category that has since been withdrawn would keep being
   // served, and the extension would go on warning from weights nobody meant to
   // ship. Named categories are the whole set, so anything else here is stale.
+  // Only the two directories that hold nothing but models can be swept: the
+  // resolvers' directories also hold the fuse filters and their metadata.
   const allowed = new Set(ADVISORY_CATEGORIES.map((c) => `${c}.json`));
   for (const dir of [chromeDir, androidDir]) {
     for (const name of await readdir(dir)) {
       if (!allowed.has(name)) {
+        throw new Error(`${join(dir, name)} is not a shipped advisory model — delete it`);
+      }
+    }
+  }
+  const allowedModels = new Set(ADVISORY_CATEGORIES.map((c) => `${c}.model.json`));
+  for (const dir of [macosDir, windowsDir]) {
+    for (const name of await readdir(dir)) {
+      if (name.endsWith(".model.json") && !allowedModels.has(name)) {
         throw new Error(`${join(dir, name)} is not a shipped advisory model — delete it`);
       }
     }

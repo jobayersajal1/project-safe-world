@@ -88,6 +88,7 @@ public sealed class ProxyController : IDisposable
             }
 
             _engine = new FilterEngine(FilterDirectory, settings);
+            _engine.UpdateAdvisory(_advisory);
 
             if (!_dns.Redirect())
             {
@@ -114,6 +115,16 @@ public sealed class ProxyController : IDisposable
     }
 
     public void UpdateSettings(Settings settings) => _engine?.Update(settings);
+
+    /// <summary>Applies to the running proxy at once — no restart, unlike macOS's daemon.</summary>
+    public void UpdateAdvisory(AdvisorySettings advisory)
+    {
+        _advisory = advisory;
+        _engine?.UpdateAdvisory(advisory);
+    }
+
+    /// Held so a proxy started later gets the current setting rather than the default.
+    private AdvisorySettings _advisory = new();
 
     public void Stop()
     {

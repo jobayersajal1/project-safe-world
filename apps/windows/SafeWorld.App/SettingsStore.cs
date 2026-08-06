@@ -28,6 +28,54 @@ public sealed class SettingsStore
     /// see <see cref="ProxyController.Unavailable"/> — in which case the hosts file below is still
     /// applied and blocking continues with the smaller capped list.
     /// </summary>
+    /// <summary>Whether the advisory model may block. Its own file, never fields on Settings.</summary>
+    /// <remarks>
+    /// Ships off: everything else here answers from a list and is a fact, this
+    /// one guesses, and a guess should be opted into. Only the resolver can act
+    /// on it — a hosts file sinkholes names known in advance, and this is about
+    /// names nobody knew.
+    /// </remarks>
+    public AdvisorySettings Advisory { get; private set; } = new();
+
+    private static readonly string AdvisoryPath = Path.Combine(
+        Path.GetDirectoryName(SettingsPath)!, "advisory.json");
+
+    private void LoadAdvisory()
+    {
+        try
+        {
+            if (File.Exists(AdvisoryPath))
+            {
+                Advisory = JsonSerializer.Deserialize<AdvisorySettings>(File.ReadAllText(AdvisoryPath))
+                           ?? new AdvisorySettings();
+            }
+        }
+        catch (Exception)
+        {
+            // Defaults leave it off, which the user can see and turn back on —
+            // better than leaving a guessing filter on in a state nobody chose.
+            Advisory = new AdvisorySettings();
+        }
+        Proxy.UpdateAdvisory(Advisory);
+    }
+
+    public void UpdateAdvisory(Action<AdvisorySettings> mutate)
+    {
+        mutate(Advisory);
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(AdvisoryPath)!);
+            File.WriteAllText(AdvisoryPath, JsonSerializer.Serialize(Advisory));
+        }
+        catch (Exception)
+        {
+            // A settings change must never fail because the file cannot be
+            // written; the running proxy is still updated below.
+        }
+        Proxy.UpdateAdvisory(Advisory);
+        Changed?.Invoke();
+    }
+
     public ProxyController Proxy { get; } = new();
 
     /// <summary>True when the uncapped proxy is doing the blocking rather than the hosts file.</summary>
@@ -56,6 +104,9 @@ public sealed class SettingsStore
     {
         Settings = Load();
         OnboardingComplete = File.Exists(OnboardingPath) || File.Exists(SettingsPath);
+        // Before StartProxy, so a proxy that comes up immediately already has the
+        // setting rather than running unadvised until the next change.
+        LoadAdvisory();
         StartProxy();
         SyncHosts();
     }
