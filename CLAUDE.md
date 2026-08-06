@@ -67,6 +67,7 @@ files exist. **After a pull, check the counts, not just that it succeeded**; `fe
 npm install          # install all workspaces (npm workspaces monorepo)
 npm run lists:pull   # REQUIRED FIRST — the lists are not in this repo
 npm run build:lists  # regenerate apps/chrome-extension/src/rules/*.json from the core blocklists
+npm run build:model  # copy the exported advisory models into the extension's packaged files
 npm run build        # build core (tsc) then extension (vite) -> apps/chrome-extension/dist
 npm run dev          # vite watch-build of the extension
 npm test             # run all vitest suites
@@ -83,6 +84,20 @@ Run a single test file: `npx vitest run packages/core/test/matcher.test.ts`
 Load in Chrome: `chrome://extensions` → Developer mode → **Load unpacked** → pick
 `apps/chrome-extension/dist`. Unpacked MV3 extensions cannot be loaded in a headless/in-app
 browser, so end-to-end checks are manual in real Chrome.
+
+Advisory model (Python, not an npm workspace — needs the venv from `scripts/port-gender-model.py`,
+and `DYLD_LIBRARY_PATH=/opt/homebrew/opt/expat/lib` or Homebrew's broken `pyexpat` breaks pip):
+
+```bash
+# $WORK must be OUTSIDE this repo — everything below writes domain data.
+python3 scripts/prepare-model-corpus.py --work $WORK --data $WORK/data  # needs majestic.csv,
+                                    # top-1m.csv (Tranco), top10milliondomains.csv (DomCop),
+                                    # public_suffix_list.dat
+python3 scripts/train-domain-model.py --work $WORK
+python3 scripts/eval-domain-model.py --work $WORK --dump-top 60   # the gate; hand-review the dumps
+python3 scripts/export-domain-model.py --work $WORK               # -> packages/core/src/model/
+npm run build:model
+```
 
 iOS (`apps/ios`, not an npm workspace — its own Xcode/Swift toolchain):
 
@@ -239,6 +254,63 @@ rule is `SafeWorldCore.ProtectionChange.weakens(from:to:)` — a single tested f
 condition per switch, so a setting added later gets its gate by construction. Note the asymmetry it
 exists to capture: *removing* a custom-block entry weakens, but *adding* a custom-allow entry
 weakens too, because allow outranks every category in `decide`.
+
+**The advisory model is a third feature, and the only one that guesses.** Everything else is
+exact: `decide()` answers from a list. `packages/core/src/advisory.ts` scores the *hostname itself*
+— hashed character 3/4/5-grams plus structural tokens (TLD, label count, length, digit and hyphen
+ratios) into a per-category linear model — and warns about a domain nobody has listed yet. It runs
+only where `decide()` already returned allowed, and **the strongest thing it can say is warn**.
+
+**Two categories ship, because two cleared the gate.** Measured on 1,790,722 held-out negatives:
+gambling at ~24% recall with genuine false positives under 1 per million, adult at ~24% at roughly
+5 per million. Scam, social, games and drugs did not, and carry no model — enablement is per
+category for that reason. Thresholds are the score at a *hand-reviewed rank* (list2 1200, list3
+400), baked in by `export-domain-model.py`; a round number would be an operating point nobody
+measured.
+
+Four things here are counter-intuitive and each cost real time:
+
+- **The false-positive rate measures list coverage, not model error, until adjudicated.** Negatives
+  are top-sites minus our lists, so every gambling site we miss is labelled allowed. 11% of DomCop's
+  10M was dropped for already being on a list, and what survives is not clean: list2's forty
+  highest-scoring "false positives" were `jojobet-casino.top`, `222.casino`, `1xbet-48.com` and
+  thirty-seven more of the same. `eval-domain-model.py --dump-top` writes the top-scoring negatives
+  for hand review; **the reviewed files hold domains and stay in the work directory**, and they are
+  tied to a model version — re-rank and the review must be redone.
+- **Negatives must include the long tail.** Majestic's top million alone taught the model "looks
+  obscure", because every negative it had seen was a short brandy name. The domains it must never
+  flag are `1752solutions.com` and `247lightheartedcaregivers.com`. DomCop Open PageRank 10M
+  supplies them. Raw recall *drops* when they are added; that is the honest direction.
+- **There is no temporal split available.** `baseline/baseline.json` is the 20,000-per-category
+  truncation from the stale-fetch incident, not a snapshot in time, and the private list repo's
+  only full-corpus commits are two days and ~70 domains apart. The split is grouped by coarse
+  registrable domain instead — 19.4% of list1 shares a parent, and shared hosting accounts for tens
+  of thousands each, so a random split would measure memory.
+- **int8 quantisation was never the blocker it looked like.** A max logit delta of 0.16–0.67 sounds
+  alarming and means nothing: positives and negatives shift together so ranking survives, and recall
+  moves 0.23 points. Clipping outliers to tighten the scale made it *worse*. Measure quantisation by
+  its effect on recall.
+
+**`advise()` refuses to score a shared publishing platform, and that guard is load-bearing.** The
+adult model learned `*.blogspot.com` is adult — adult Blogger blogs are heavily represented in
+list3 — and then flagged Blogger's own image CDN (`1.bp.blogspot.com`, `2.`, `3.`), which serves
+the pictures on every Blogger blog there is, plus `videoseriesbiblicas.blogspot.com`. A subdomain
+on shared hosting says something about that one blog and nothing about the platform.
+
+**Chrome is the only surface that can warn, and ships it.** DNR cannot express this (a rule is a
+fixed list of domains; the point is a host on no list), so the check rides on
+`webNavigation.onBeforeNavigate` and redirects to the blocked page with `advisory=1`, which is a
+visibly different page — "Continue anyway" is the emphasised button and it says outright that the
+site is on no list. MV3 has no blocking navigation hook, so the page has begun loading when we
+redirect; accepted, because a *guess* does not get to charge for a blocking handler on every
+navigation, and listed categories never take this path. Android/iOS/macOS/Windows have
+`DomainModel.{kt,swift,cs}` ported and pinned against the same vectors but **wired to nothing** — a
+DNS answer and a content-blocker rule list are yes-or-no, and choosing between a hard block and a
+notification is a product call.
+
+**`list5` is not a category.** 24,241 of its 24,360 entries are `*.googlevideo.com` hostnames, so a
+model trained on it learns "short CDN-shaped name" and flags `bayer.com` and `mail.google.com`. It
+needs repairing as a list, independently of any of this.
 
 **Blurring people is a second, independent feature — Chrome only so far.** Everything above is
 all-or-nothing: a site is reachable or it is not. `BlurSettings` (`packages/core/src/blur.ts`) adds
