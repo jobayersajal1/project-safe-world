@@ -92,7 +92,7 @@ final class DomainModelTests: XCTestCase {
         let always = DomainModel.Weights(
             category: .gambling, scale: 1, bias: 1, threshold: 0,
             values: [Int8](repeating: 0, count: DomainModel.tableSize))
-        XCTAssertEqual(DomainModel.advise("anything.example", models: [always]), .gambling)
+        XCTAssertEqual(DomainModel.advise("anything.example", models: [always])?.category, .gambling)
         XCTAssertNil(DomainModel.advise("anyone.blogspot.com", models: [always]))
         XCTAssertNil(DomainModel.advise("", models: [always]))
 
@@ -100,5 +100,34 @@ final class DomainModelTests: XCTestCase {
             category: .gambling, scale: 1, bias: 0, threshold: 1,
             values: [Int8](repeating: 0, count: DomainModel.tableSize))
         XCTAssertNil(DomainModel.advise("anything.example", models: [never]))
+    }
+
+    func testOnlyWarnsUntilBlockingIsAskedFor() {
+        // The stricter tier must stay inert unless the caller opts in: taking a
+        // site away on a guess is the thing this model was not built for.
+        let model = DomainModel.Weights(
+            category: .gambling, scale: 1, bias: 1, threshold: 0, blockThreshold: 0.5,
+            values: [Int8](repeating: 0, count: DomainModel.tableSize))
+        XCTAssertEqual(DomainModel.advise("x.example", models: [model])?.action, .warn)
+        XCTAssertEqual(
+            DomainModel.advise("x.example", models: [model], allowBlocking: true)?.action, .block)
+    }
+
+    func testWarnsRatherThanBlocksBetweenTheThresholds() {
+        let model = DomainModel.Weights(
+            category: .gambling, scale: 1, bias: 0, threshold: -1, blockThreshold: 1,
+            values: [Int8](repeating: 0, count: DomainModel.tableSize))
+        XCTAssertEqual(
+            DomainModel.advise("x.example", models: [model], allowBlocking: true)?.action, .warn)
+    }
+
+    func testMissingBlockTierNeverBlocks() {
+        // The default is infinity, not zero — a model file predating the block
+        // tier must not mean "block everything".
+        let model = DomainModel.Weights(
+            category: .gambling, scale: 1, bias: 1, threshold: 0,
+            values: [Int8](repeating: 0, count: DomainModel.tableSize))
+        XCTAssertEqual(
+            DomainModel.advise("x.example", models: [model], allowBlocking: true)?.action, .warn)
     }
 }

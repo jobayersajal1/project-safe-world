@@ -7,12 +7,10 @@ Only the categories that cleared the gate are exported. The rest carry no model
 and stay list-only, which is the point of enabling per category rather than
 all-or-nothing.
 
-**The threshold is measured, not chosen.** Each category names a rank in the
-held-out negatives — the depth to which the ranking was reviewed by hand and
-found to contain no genuine false positive — and the threshold is the score at
-that rank. Writing a round number like 0.5 here would be inventing an operating
-point that nobody measured, and the whole argument for shipping this rests on
-that measurement.
+**Both thresholds are measured, not chosen.** Each category names two ranks in
+the held-out negatives and the thresholds are the scores at those ranks. Writing
+a round number like 0.5 would be inventing an operating point nobody measured,
+and the whole argument for shipping this rests on the measurement.
 
 The output contains 262,144 int8 weights and no domains. A linear model over
 hashed n-grams cannot be inverted to enumerate what it was trained on, which is
@@ -38,12 +36,24 @@ from domain_features import TABLE_SIZE, vectorize  # noqa: E402
 REPO = Path(__file__).resolve().parent.parent
 OUT = REPO / "packages" / "core" / "src" / "model"
 
-# category -> how deep the ranking was reviewed and found clean. See the plan.
-# list2: all eight non-obvious names in the top 1200 are gambling on inspection
-#        (`bk8686.com`, `jiliphc8.com`, `kelas4d.vip`, `blackjackgiris.site`).
-# list3: clean to ~400 and degrading fast after — 87% on-subject by rank 1000 —
-#        so it is held much shallower even though its recall curve is better.
-SHIP = {"list2": 1200, "list3": 400}
+# category -> (block rank, warn rank) in the held-out negatives.
+#
+# Two tiers, because "possibly" and "almost certainly" are different claims and
+# only one of them may take a site away without asking.
+#
+# **warn** is how deep the ranking was reviewed and found free of genuine false
+# positives. list2: all eight non-keyword names in its top 1200 are gambling on
+# inspection (`bk8686.com`, `jiliphc8.com`, `kelas4d.vip`,
+# `blackjackgiris.site`). list3 is held much shallower than its recall curve
+# would allow because it degrades fast — 87% on-subject by rank 1000.
+#
+# **block** is deliberately far stricter than the review requires. Blocking on a
+# guess is the one thing this model was not built to do, so the bar is not "no
+# false positive was found" but "nothing near the boundary". It costs most of
+# the recall — 24% down to 8% for gambling — and that is the trade: the other
+# 16% still warns, and a warn the user clicks through is a far smaller failure
+# than a site taken away wrongly.
+SHIP = {"list2": (300, 1200), "list3": (200, 400)}
 
 # Hosts pinned by every port's tests. Deliberately mixed: two that must score
 # high, ordinary sites that must not, a many-labelled name, punycode, a shared
@@ -82,7 +92,7 @@ def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
 
     pinned: dict[str, dict[str, float]] = {}
-    for cat, rank in SHIP.items():
+    for cat, (block_rank, warn_rank) in SHIP.items():
         d = np.load(models / f"{cat}.npz")
         w, b = d["w"].astype(np.float32), float(d["b"])
 
@@ -94,29 +104,33 @@ def main() -> int:
         # what ship. Deriving it from the float model would leave every port
         # slightly off the operating point that was measured.
         dequant = q.astype(np.float32) * scale
-        scores = (neg_x @ dequant) + b
-        threshold = float(np.sort(scores)[::-1][rank - 1])
+        scores = np.sort((neg_x @ dequant) + b)[::-1]
+        block_threshold = float(scores[block_rank - 1])
+        warn_threshold = float(scores[warn_rank - 1])
 
         pos = [l for l in (corpus / f"{cat}.test.txt").read_text(encoding="utf8").splitlines() if l]
-        recall = 0.0
+        blocked = warned = 0.0
         for i in range(0, len(pos), 200_000):
-            m = vectorize(pos[i : i + 200_000])
-            recall += float(((m @ dequant) + b >= threshold).sum())
-        recall /= max(1, len(pos))
+            s = (vectorize(pos[i : i + 200_000]) @ dequant) + b
+            blocked += float((s >= block_threshold).sum())
+            warned += float((s >= warn_threshold).sum())
+        blocked /= max(1, len(pos))
+        warned /= max(1, len(pos))
 
         payload = {
             "category": cat,
             "tableSize": TABLE_SIZE,
             "scale": scale,
             "bias": b,
-            "threshold": threshold,
+            "blockThreshold": block_threshold,
+            "threshold": warn_threshold,
             "weights": base64.b64encode(q.tobytes()).decode("ascii"),
         }
         path = OUT / f"{cat}.json"
         path.write_text(json.dumps(payload) + "\n", encoding="utf8")
         print(
-            f"{cat}: threshold {threshold:.6f} at rank {rank}/{len(neg)} "
-            f"({rank * 1_000_000 // len(neg)}/M), recall {recall:.2%}, "
+            f"{cat}: block >={block_threshold:.6f} (rank {block_rank}, recall {blocked:.2%}) "
+            f"warn >={warn_threshold:.6f} (rank {warn_rank}, recall {warned:.2%}) "
             f"{path.stat().st_size // 1024} KB"
         )
 

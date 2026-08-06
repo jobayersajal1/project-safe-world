@@ -22,6 +22,7 @@ const blurOptionsEl = document.getElementById("blurOptions")!;
 const advisoryEnabledEl = document.getElementById("advisoryEnabled") as HTMLInputElement;
 const advisoryList2El = document.getElementById("advisoryList2") as HTMLInputElement;
 const advisoryList3El = document.getElementById("advisoryList3") as HTMLInputElement;
+const advisoryBlockEl = document.getElementById("advisoryBlock") as HTMLInputElement;
 const advisoryOptionsEl = document.getElementById("advisoryOptions")!;
 
 const categoryToggles = new Map<string, HTMLInputElement>();
@@ -60,6 +61,7 @@ async function render(): Promise<void> {
   advisoryEnabledEl.checked = advisory.enabled;
   advisoryList2El.checked = advisory.categories.list2 === true;
   advisoryList3El.checked = advisory.categories.list3 === true;
+  advisoryBlockEl.checked = advisory.blockConfident;
   advisoryOptionsEl.hidden = !advisory.enabled;
 
   const blur = await getBlurSettings();
@@ -98,6 +100,7 @@ document.getElementById("save")!.addEventListener("click", async () => {
   await saveAdvisorySettings({
     enabled: advisoryEnabledEl.checked,
     categories: { list2: advisoryList2El.checked, list3: advisoryList3El.checked },
+    blockConfident: advisoryBlockEl.checked,
   });
 
   // Stored under its own key, never merged into `settings`. See

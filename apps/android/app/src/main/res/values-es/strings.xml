@@ -235,4 +235,8 @@
     <string name="onb_blur_women">Difuminar mujeres</string>
     <string name="onb_blur_men">Difuminar hombres</string>
     <string name="onb_blur_no">No</string>
+    <string name="advisory_title">Bloquear sitios nuevos probables</string>
+    <string name="advisory_description">Bloquea sitios de apuestas y para adultos que aún no están en ninguna lista, analizando la propia dirección.</string>
+    <string name="advisory_off_pin_message">Introduce tu PIN para dejar de bloquear sitios que aún no están en una lista.</string>
+    <string name="advisory_note">Esto es una estimación, no una lista. Solo actúa cuando está casi seguro, así que detecta algunos sitios nuevos, no todos.</string>
 </resources>

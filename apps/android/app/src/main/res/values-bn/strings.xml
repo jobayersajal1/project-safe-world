@@ -235,4 +235,8 @@
     <string name="onb_blur_women">নারীদের ঝাপসা করুন</string>
     <string name="onb_blur_men">পুরুষদের ঝাপসা করুন</string>
     <string name="onb_blur_no">না</string>
+    <string name="advisory_title">সম্ভাব্য নতুন সাইট ব্লক করুন</string>
+    <string name="advisory_description">ঠিকানা দেখেই এমন জুয়া ও অ্যাডাল্ট সাইট ব্লক করে যেগুলো এখনো কোনো তালিকায় নেই।</string>
+    <string name="advisory_off_pin_message">তালিকায় নেই এমন সাইট ব্লক করা বন্ধ করতে আপনার পিন দিন।</string>
+    <string name="advisory_note">এটি তালিকা নয়, অনুমান। প্রায় নিশ্চিত হলেই কেবল কাজ করে, তাই কিছু নতুন সাইট ধরা পড়ে, সবগুলো নয়।</string>
 </resources>

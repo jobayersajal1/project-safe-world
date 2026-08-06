@@ -256,4 +256,8 @@
     <string name="onb_blur_women">Blur women</string>
     <string name="onb_blur_men">Blur men</string>
     <string name="onb_blur_no">No</string>
+    <string name="advisory_title">Block likely new sites</string>
+    <string name="advisory_description">Blocks gambling and adult sites that are not on any list yet, by looking at the address itself.</string>
+    <string name="advisory_off_pin_message">Enter your PIN to stop blocking sites that are not yet on a list.</string>
+    <string name="advisory_note">This is a guess, not a list. It is set to only act when it is almost certain, so it catches some new sites and not all of them.</string>
 </resources>

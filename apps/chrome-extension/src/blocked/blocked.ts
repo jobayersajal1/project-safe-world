@@ -13,13 +13,28 @@ const categoryParam = params.get("category") ?? "";
  * first is how a guess spends trust it has not earned — and once a user has
  * been wrongly stopped on a site they know, every later block reads as noise.
  */
-const isAdvisory = params.get("advisory") === "1";
+const advisoryParam = params.get("advisory") ?? "";
+const isAdvisory = advisoryParam === "1";
+/**
+ * A model block, not a listed one. Framed like an ordinary block because that is
+ * what happened, but it still says the site is on no list — a user who is told
+ * why can make sense of a wrong block instead of losing faith in all of them.
+ */
+const isStrictAdvisory = advisoryParam === "strict";
 
 const categoryEl = document.getElementById("category")!;
 
 const labels: Record<string, string> = { custom: "Your block list" };
 for (const c of CATEGORIES) labels[c.id] = c.label;
 categoryEl.textContent = labels[categoryParam] ?? "Blocked";
+
+if (isStrictAdvisory) {
+  document.getElementById("advisoryNote")!.hidden = false;
+  document.getElementById("advisoryNote")!.textContent =
+    "This site isn’t on any block list. Safe World blocked it because the address " +
+    "looks almost certainly like one — if that’s wrong, allow it below.";
+  categoryEl.textContent = `Looks like: ${labels[categoryParam] ?? "blocked"}`;
+}
 
 if (isAdvisory) {
   document.getElementById("shield")!.textContent = "🤔";

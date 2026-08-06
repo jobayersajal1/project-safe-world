@@ -71,10 +71,15 @@ async function checkAdvisory(tabId: number, url: string): Promise<void> {
   const models = await loadAdvisoryModels();
   if (models.length === 0) return;
 
-  const verdict = advisoryCache.get(host, () => advise(host, models, settings));
+  const verdict = advisoryCache.get(host, () =>
+    advise(host, models, settings, { allowBlocking: settings.blockConfident }),
+  );
   if (!verdict.advise) return;
 
-  const target = `${BLOCKED_PAGE}?category=${verdict.category}&advisory=1`;
+  // A model block still reaches the blocked page rather than a dead tab: it is
+  // a guess, so "always allow this site" has to stay one click away.
+  const advisory = verdict.action === "warn" ? "&advisory=1" : "&advisory=strict";
+  const target = `${BLOCKED_PAGE}?category=${verdict.category}${advisory}`;
   await chrome.tabs.update(tabId, { url: chrome.runtime.getURL(target) }).catch(() => {});
 }
 

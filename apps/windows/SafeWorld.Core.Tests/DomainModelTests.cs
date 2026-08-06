@@ -117,12 +117,47 @@ public class DomainModelTests
         // depending on a generated model being present.
         var always = new DomainModel.Weights(
             CategoryId.Gambling, 1.0, 1.0, 0.0, new sbyte[DomainModel.TableSize]);
-        Assert.Equal(CategoryId.Gambling, DomainModel.Advise("anything.example", new[] { always }));
+        Assert.Equal(CategoryId.Gambling, DomainModel.Advise("anything.example", new[] { always })?.Category);
         Assert.Null(DomainModel.Advise("anyone.blogspot.com", new[] { always }));
         Assert.Null(DomainModel.Advise("", new[] { always }));
 
         var never = new DomainModel.Weights(
             CategoryId.Gambling, 1.0, 0.0, 1.0, new sbyte[DomainModel.TableSize]);
         Assert.Null(DomainModel.Advise("anything.example", new[] { never }));
+    }
+
+    [Fact]
+    public void OnlyWarnsUntilBlockingIsAskedFor()
+    {
+        // The stricter tier must stay inert unless the caller opts in: taking a
+        // site away on a guess is the thing this model was not built for.
+        var model = new DomainModel.Weights(
+            CategoryId.Gambling, 1.0, 1.0, 0.0, new sbyte[DomainModel.TableSize], 0.5);
+        Assert.Equal(DomainModel.Action.Warn, DomainModel.Advise("x.example", new[] { model })?.Action);
+        Assert.Equal(
+            DomainModel.Action.Block,
+            DomainModel.Advise("x.example", new[] { model }, allowBlocking: true)?.Action);
+    }
+
+    [Fact]
+    public void WarnsRatherThanBlocksBetweenTheThresholds()
+    {
+        var model = new DomainModel.Weights(
+            CategoryId.Gambling, 1.0, 0.0, -1.0, new sbyte[DomainModel.TableSize], 1.0);
+        Assert.Equal(
+            DomainModel.Action.Warn,
+            DomainModel.Advise("x.example", new[] { model }, allowBlocking: true)?.Action);
+    }
+
+    [Fact]
+    public void MissingBlockTierNeverBlocks()
+    {
+        // The default is infinity, not zero — a model file predating the block
+        // tier must not mean "block everything".
+        var model = new DomainModel.Weights(
+            CategoryId.Gambling, 1.0, 1.0, 0.0, new sbyte[DomainModel.TableSize]);
+        Assert.Equal(
+            DomainModel.Action.Warn,
+            DomainModel.Advise("x.example", new[] { model }, allowBlocking: true)?.Action);
     }
 }

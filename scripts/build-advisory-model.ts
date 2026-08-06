@@ -12,6 +12,10 @@ import { ADVISORY_CATEGORIES } from "../packages/core/src/advisory.js";
  * 682 KB into the service worker's bundle. `background.ts` fetches them with
  * `chrome.runtime.getURL`.
  *
+ * Android gets the same files as `:core` resources, which are on the classpath
+ * for `:core:test` and packaged into the APK — the path `Blocklists` already
+ * uses for the fuse filters.
+ *
  * The models themselves come from `scripts/export-domain-model.py`, which needs
  * the trained weights and therefore the private lists. This step only moves
  * them, so it is a no-op — not an error — when they are absent: an extension
@@ -21,7 +25,10 @@ import { ADVISORY_CATEGORIES } from "../packages/core/src/advisory.js";
 const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = join(here, "..");
 const modelDir = join(repoRoot, "packages", "core", "src", "model");
-const outDir = join(repoRoot, "apps", "chrome-extension", "public", "model");
+const chromeDir = join(repoRoot, "apps", "chrome-extension", "public", "model");
+// Kotlin reads it off the classpath, exactly as `Blocklists` reads the filters,
+// so `:core:test` and the packaged APK take the same path.
+const androidDir = join(repoRoot, "apps", "android", "core", "src", "main", "resources", "model");
 
 async function build(): Promise<void> {
   if (!existsSync(modelDir)) {
@@ -29,7 +36,8 @@ async function build(): Promise<void> {
     return;
   }
 
-  await mkdir(outDir, { recursive: true });
+  await mkdir(chromeDir, { recursive: true });
+  await mkdir(androidDir, { recursive: true });
   let copied = 0;
   for (const category of ADVISORY_CATEGORIES) {
     const src = join(modelDir, `${category}.json`);
@@ -37,10 +45,11 @@ async function build(): Promise<void> {
       console.log(`${category}: no model, skipping`);
       continue;
     }
-    const dest = join(outDir, `${category}.json`);
-    await copyFile(src, dest);
-    const { size } = await stat(dest);
-    console.log(`${category}: ${Math.round(size / 1024)} KB`);
+    for (const dir of [chromeDir, androidDir]) {
+      await copyFile(src, join(dir, `${category}.json`));
+    }
+    const { size } = await stat(join(chromeDir, `${category}.json`));
+    console.log(`${category}: ${Math.round(size / 1024)} KB -> chrome, android`);
     copied++;
   }
 
@@ -53,9 +62,11 @@ async function build(): Promise<void> {
   // served, and the extension would go on warning from weights nobody meant to
   // ship. Named categories are the whole set, so anything else here is stale.
   const allowed = new Set(ADVISORY_CATEGORIES.map((c) => `${c}.json`));
-  for (const name of await readdir(outDir)) {
-    if (!allowed.has(name)) {
-      throw new Error(`${join(outDir, name)} is not a shipped advisory model — delete it`);
+  for (const dir of [chromeDir, androidDir]) {
+    for (const name of await readdir(dir)) {
+      if (!allowed.has(name)) {
+        throw new Error(`${join(dir, name)} is not a shipped advisory model — delete it`);
+      }
     }
   }
 }

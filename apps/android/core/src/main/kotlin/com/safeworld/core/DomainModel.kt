@@ -1,8 +1,11 @@
 package com.safeworld.core
 
+import java.util.Base64
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sqrt
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 
 /**
  * The advisory model's feature map and scoring — the Kotlin half of a spec that
@@ -142,11 +145,19 @@ object DomainModel {
         return acc
     }
 
+    /**
+     * [threshold] is where warning is defensible; [blockThreshold] is where
+     * blocking outright is. They are different claims, not degrees of one, and
+     * only the second may take a site away without asking — so it is held far
+     * stricter than the hand review requires. Gambling gives up 24% recall for
+     * 8% to earn it.
+     */
     data class Weights(
         val category: CategoryId,
         val scale: Double,
         val bias: Double,
         val threshold: Double,
+        val blockThreshold: Double,
         val values: ByteArray,
     ) {
         // ByteArray gives identity equals/hashCode, which a data class would
@@ -188,13 +199,106 @@ object DomainModel {
         return SHARED_PLATFORMS.any { clean == it || clean.endsWith(".$it") }
     }
 
-    /** The second stage. Call only for a host [Matcher.decide] returned allowed. */
-    fun advise(host: String, models: List<Weights>): CategoryId? {
+    /**
+     * What the model is willing to claim about a host.
+     *
+     * `WARN` and `BLOCK` are different claims, not degrees of the same one.
+     */
+    enum class Action { WARN, BLOCK }
+
+    data class Verdict(val action: Action, val category: CategoryId, val score: Double)
+
+    /**
+     * The second stage. Call only for a host [Matcher.decide] returned allowed.
+     *
+     * [allowBlocking] gates the stricter tier. The tunnel passes true because a
+     * DNS answer has nowhere to put "continue anyway"; Chrome passes it only
+     * when the user has asked for blocking on top of warnings.
+     */
+    fun advise(host: String, models: List<Weights>, allowBlocking: Boolean = false): Verdict? {
         val clean = normalize(host)
         if (clean.isEmpty() || isSharedPlatformHost(clean)) return null
         for (model in models) {
-            if (score(model, clean) >= model.threshold) return model.category
+            val s = score(model, clean)
+            if (allowBlocking && s >= model.blockThreshold) {
+                return Verdict(Action.BLOCK, model.category, s)
+            }
+            if (s >= model.threshold) return Verdict(Action.WARN, model.category, s)
         }
         return null
+    }
+
+    /**
+     * The bundled models, read off the classpath exactly as [Blocklists] reads
+     * the fuse filters — so `:core:test` and the packaged APK take one path.
+     *
+     * A missing file is not an error worth raising. The models are a generated
+     * artifact, and a build without them must behave exactly like a build from
+     * before this feature existed.
+     */
+    val bundled: List<Weights> by lazy {
+        listOf(CategoryId.GAMBLING, CategoryId.ADULT).mapNotNull { load(it) }
+    }
+
+    private val json = Json { ignoreUnknownKeys = true }
+
+    private fun load(category: CategoryId): Weights? {
+        val stream = DomainModel::class.java.getResourceAsStream("/model/${category.id}.json")
+            ?: return null
+        val raw = stream.use { it.readBytes().decodeToString() }
+        val file = runCatching { json.decodeFromString<ModelFile>(raw) }.getOrNull() ?: return null
+
+        // Refusing beats scoring against a mismatched table, which produces
+        // confident nonsense rather than an obvious failure.
+        if (file.tableSize != TABLE_SIZE) return null
+        val values = runCatching { Base64.getDecoder().decode(file.weights) }.getOrNull() ?: return null
+        if (values.size != TABLE_SIZE) return null
+
+        return Weights(
+            category = category,
+            scale = file.scale,
+            bias = file.bias,
+            threshold = file.threshold,
+            // A model file predating the block tier must never fall back to
+            // zero, which would block everything. Infinity means "warn only".
+            blockThreshold = file.blockThreshold ?: Double.POSITIVE_INFINITY,
+            values = values,
+        )
+    }
+
+    @Serializable
+    private data class ModelFile(
+        val category: String,
+        val tableSize: Int,
+        val scale: Double,
+        val bias: Double,
+        val threshold: Double,
+        val blockThreshold: Double? = null,
+        val weights: String,
+    )
+}
+
+/**
+ * Whether the advisory model is allowed to act, and for which categories.
+ *
+ * Its own stored value, never fields on [Settings] — the same reason
+ * [BlurSettings] is separate, and mirrors `ADVISORY_STORAGE_KEY` in
+ * `packages/core/src/advisory.ts`.
+ *
+ * Ships **off**. Everything else in this app answers from a list and is a fact;
+ * this one guesses, and a guess should be opted into.
+ */
+@Serializable
+data class AdvisorySettings(
+    val enabled: Boolean = false,
+    val categories: Map<CategoryId, Boolean> = mapOf(
+        CategoryId.GAMBLING to true,
+        CategoryId.ADULT to true,
+    ),
+) {
+    fun enabledFor(category: CategoryId): Boolean = enabled && categories[category] == true
+
+    companion object {
+        fun defaults(): AdvisorySettings = AdvisorySettings()
     }
 }

@@ -22,6 +22,8 @@ import com.safeworld.app.MainActivity
 import com.safeworld.app.R
 import com.safeworld.app.SettingsStore
 import com.safeworld.app.SubscriptionStore
+import com.safeworld.core.AdvisorySettings
+import com.safeworld.core.DomainModel
 import com.safeworld.core.Matcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.runBlocking
@@ -69,6 +71,17 @@ class SafeWorldVpnService : VpnService() {
     }
 
     private lateinit var store: SettingsStore
+
+    /**
+     * Advisory verdicts, keyed by host. Bounded and cleared wholesale rather
+     * than evicted one at a time: it is a hot path, the working set of names a
+     * device resolves is small, and the cost of a rare cold rebuild is one
+     * score per name.
+     */
+    private val advisoryCache = HashMap<String, Boolean>()
+
+    /** What [advisoryCache] was filled under, so a settings change invalidates it. */
+    private var advisoryCacheKey: AdvisorySettings? = null
 
     /**
      * UIDs to blackhole, resolved at [start] and refreshed by `ACTION_REFRESH`.
@@ -420,7 +433,7 @@ class SafeWorldVpnService : VpnService() {
         }
 
         val decision = Matcher.decide(host, store.settings.value, store.blocklists)
-        if (!decision.blocked) {
+        if (!decision.blocked && !advisoryBlocks(host)) {
             forward(datagram, output)
             return
         }
@@ -428,6 +441,48 @@ class SafeWorldVpnService : VpnService() {
         val response = DnsMessage.nxDomainResponse(datagram.payload) ?: return
         writePacket(output, Ipv4Udp.buildResponse(datagram, response))
         store.incrementBlockedToday()
+    }
+
+    /**
+     * The advisory model's second opinion, for a host no list covers.
+     *
+     * **Here it can only ever hard-block, and that is why it uses the stricter
+     * of the model's two thresholds.** A DNS answer is yes or no: there is
+     * nowhere in it to put "probably, but have a look", which is what Chrome's
+     * interstitial offers and is the tier this model was really built for. So
+     * the tunnel takes only the part of the ranking where a hand review of the
+     * held-out negatives found nothing near the boundary — gambling at ~8%
+     * recall instead of 24%, adult at ~16% instead of 24%. Most of what the
+     * model knows is deliberately given up, because a site wrongly taken away
+     * with no way to say "let me through" is a far worse failure than one that
+     * slips past.
+     *
+     * Cached per host: `decide` runs once per query, but scoring is orders of
+     * magnitude dearer than a fuse lookup and a name's verdict cannot change
+     * between queries unless the settings do.
+     */
+    private fun advisoryBlocks(host: String): Boolean {
+        val settings = store.advisory.value
+        if (!settings.enabled) return false
+
+        val models = DomainModel.bundled.filter { settings.enabledFor(it.category) }
+        if (models.isEmpty()) return false
+
+        // Turning a category off must take effect on the next query, not once
+        // the cache happens to fill up.
+        if (advisoryCacheKey != settings) {
+            advisoryCache.clear()
+            advisoryCacheKey = settings
+        }
+
+        val cached = advisoryCache[host]
+        if (cached != null) return cached
+
+        val verdict = DomainModel.advise(host, models, allowBlocking = true)
+        val blocked = verdict?.action == DomainModel.Action.BLOCK
+        if (advisoryCache.size >= ADVISORY_CACHE_LIMIT) advisoryCache.clear()
+        advisoryCache[host] = blocked
+        return blocked
     }
 
     /**
@@ -598,6 +653,9 @@ class SafeWorldVpnService : VpnService() {
 
         /** Rebuild the tunnel with current routes, without changing whether protection is on. */
         const val ACTION_REFRESH = "com.safeworld.app.action.REFRESH"
+
+        /** Roughly a day of unique names on a busy device, at ~40 bytes each. */
+        private const val ADVISORY_CACHE_LIMIT = 4096
 
         private const val NOTIFICATION_ID = 1
         private const val CHANNEL_ID = "protection"

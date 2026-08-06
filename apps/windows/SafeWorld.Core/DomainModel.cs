@@ -156,12 +156,29 @@ public static class DomainModel
         return acc;
     }
 
+    /// <summary>
+    /// <paramref name="Threshold"/> is where warning is defensible;
+    /// <paramref name="BlockThreshold"/> is where blocking outright is. Different
+    /// claims, not degrees of one — only the second may take a site away without
+    /// asking, so it is held far stricter than the hand review requires.
+    /// Gambling gives up 24% recall for 8% to earn it. The default of infinity
+    /// means "warn only", so a model file predating the tier cannot block.
+    /// </summary>
     public sealed record Weights(
         CategoryId Category,
         double Scale,
         double Bias,
         double Threshold,
-        sbyte[] Values);
+        sbyte[] Values,
+        double BlockThreshold = double.PositiveInfinity);
+
+    /// <summary>
+    /// What the model is willing to claim. Warn and Block are different claims,
+    /// not degrees of the same one.
+    /// </summary>
+    public enum Action { Warn, Block }
+
+    public readonly record struct Verdict(Action Action, CategoryId Category, double Score);
 
     public static double Score(Weights weights, string host)
     {
@@ -206,13 +223,23 @@ public static class DomainModel
     }
 
     /// <summary>The second stage. Call only for a host <c>Matcher.Decide</c> returned allowed.</summary>
-    public static CategoryId? Advise(string host, IReadOnlyList<Weights> models)
+    /// <remarks>
+    /// <paramref name="allowBlocking"/> gates the stricter tier. A surface with
+    /// no way to offer "continue anyway" — a DNS reply, a resolver answer — must
+    /// pass true and accept the much lower recall that buys.
+    /// </remarks>
+    public static Verdict? Advise(string host, IReadOnlyList<Weights> models, bool allowBlocking = false)
     {
         var clean = Normalize(host);
         if (clean.Length == 0 || IsSharedPlatformHost(clean)) return null;
         foreach (var model in models)
         {
-            if (Score(model, clean) >= model.Threshold) return model.Category;
+            var s = Score(model, clean);
+            if (allowBlocking && s >= model.BlockThreshold)
+            {
+                return new Verdict(Action.Block, model.Category, s);
+            }
+            if (s >= model.Threshold) return new Verdict(Action.Warn, model.Category, s);
         }
         return null;
     }

@@ -243,4 +243,8 @@
     <string name="onb_blur_women">تمويه النساء</string>
     <string name="onb_blur_men">تمويه الرجال</string>
     <string name="onb_blur_no">لا</string>
+    <string name="advisory_title">حظر المواقع الجديدة المحتملة</string>
+    <string name="advisory_description">يحظر مواقع القمار والمواقع الإباحية غير المدرجة في أي قائمة بعد، بالاعتماد على العنوان نفسه.</string>
+    <string name="advisory_off_pin_message">أدخل رمز PIN لإيقاف حظر المواقع غير المدرجة في القائمة بعد.</string>
+    <string name="advisory_note">هذا تخمين وليس قائمة. لا يتصرف إلا عندما يكون شبه متأكد، لذا يكتشف بعض المواقع الجديدة وليس كلها.</string>
 </resources>

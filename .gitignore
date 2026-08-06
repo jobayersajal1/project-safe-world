@@ -79,3 +79,5 @@ packages/core/src/model/
 
 # Advisory model, copied into the extension by scripts/build-advisory-model.ts.
 apps/chrome-extension/public/model/
+
+apps/android/core/src/main/resources/model/

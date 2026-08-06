@@ -109,16 +109,67 @@ class DomainModelTest {
         // depending on a generated model being present.
         val always = DomainModel.Weights(
             CategoryId.GAMBLING, scale = 1.0, bias = 1.0, threshold = 0.0,
-            values = ByteArray(DomainModel.TABLE_SIZE),
+            blockThreshold = Double.POSITIVE_INFINITY, values = ByteArray(DomainModel.TABLE_SIZE),
         )
-        assertEquals(CategoryId.GAMBLING, DomainModel.advise("anything.example", listOf(always)))
+        assertEquals(CategoryId.GAMBLING, DomainModel.advise("anything.example", listOf(always))?.category)
         assertNull(DomainModel.advise("anyone.blogspot.com", listOf(always)))
         assertNull(DomainModel.advise("", listOf(always)))
 
         val never = DomainModel.Weights(
             CategoryId.GAMBLING, scale = 1.0, bias = 0.0, threshold = 1.0,
-            values = ByteArray(DomainModel.TABLE_SIZE),
+            blockThreshold = Double.POSITIVE_INFINITY, values = ByteArray(DomainModel.TABLE_SIZE),
         )
         assertNull(DomainModel.advise("anything.example", listOf(never)))
+    }
+
+    @Test
+    fun `only warns until blocking is asked for`() {
+        // The stricter tier must stay inert unless the caller opts in: taking a
+        // site away on a guess is the thing this model was not built for.
+        val model = DomainModel.Weights(
+            CategoryId.GAMBLING, scale = 1.0, bias = 1.0, threshold = 0.0,
+            blockThreshold = 0.5, values = ByteArray(DomainModel.TABLE_SIZE),
+        )
+        assertEquals(DomainModel.Action.WARN, DomainModel.advise("x.example", listOf(model))?.action)
+        assertEquals(
+            DomainModel.Action.BLOCK,
+            DomainModel.advise("x.example", listOf(model), allowBlocking = true)?.action,
+        )
+    }
+
+    @Test
+    fun `warns rather than blocks between the two thresholds`() {
+        val model = DomainModel.Weights(
+            CategoryId.GAMBLING, scale = 1.0, bias = 0.0, threshold = -1.0,
+            blockThreshold = 1.0, values = ByteArray(DomainModel.TABLE_SIZE),
+        )
+        assertEquals(
+            DomainModel.Action.WARN,
+            DomainModel.advise("x.example", listOf(model), allowBlocking = true)?.action,
+        )
+    }
+
+    @Test
+    fun `bundled models agree with the other ports where they are present`() {
+        // Generated artifact: absent on a fresh clone, so this asserts only when
+        // `npm run build:model` has run.
+        val models = DomainModel.bundled
+        if (models.isEmpty()) return
+
+        assertEquals(2, models.size)
+        for (m in models) {
+            assertEquals(DomainModel.TABLE_SIZE, m.values.size)
+            assertTrue("block tier must be stricter for ${m.category}", m.blockThreshold > m.threshold)
+        }
+
+        // The names pinned across all four ports, at the operating point that
+        // actually ships.
+        assertEquals(
+            DomainModel.Action.BLOCK,
+            DomainModel.advise("best-casino-slots-bonus.com", models, allowBlocking = true)?.action,
+        )
+        for (host in listOf("github.com", "wikipedia.org", "nhs.uk", "acme-plumbing-services.com")) {
+            assertNull(host, DomainModel.advise(host, models, allowBlocking = true))
+        }
     }
 }

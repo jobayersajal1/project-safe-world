@@ -196,6 +196,16 @@ fun HomeScreen(
         // it does not block anything, it covers people wherever they already
         // are. Blocking and blurring are independent — either works with the
         // other off.
+        // Its own card, above blurring and below the subject rows: it is not a
+        // subject and not a separate feature either — it is the same blocking,
+        // reaching sites the lists have not caught up with yet.
+        Text(stringResource(R.string.advisory_title), style = MaterialTheme.typography.titleSmall)
+        Card {
+            Column(Modifier.padding(vertical = 8.dp)) {
+                AdvisorySection(store = store, requestPin = requestPin)
+            }
+        }
+
         Text(stringResource(R.string.blur_title), style = MaterialTheme.typography.titleSmall)
         Card {
             Column(Modifier.padding(vertical = 8.dp)) {
@@ -684,6 +694,59 @@ private fun PrivateDnsWarning() {
  * offers one tap to start it again — the alternative, silently turning the
  * setting off on every restart, would be a promise quietly withdrawn.
  */
+/**
+ * The advisory model's switch.
+ *
+ * **On this platform it can only hard-block.** A DNS answer is yes or no, so
+ * there is nowhere to put the "continue anyway" that Chrome offers — which is
+ * why the tunnel uses only the strictest part of the model's ranking, the part
+ * where a hand review of 1.79M held-out names found nothing near the boundary.
+ * It therefore catches noticeably less than the model knows, on purpose: a site
+ * wrongly taken away with no way through is a far worse failure here than one
+ * that slips past.
+ *
+ * The copy says "guess" rather than dressing it up. Every other switch in this
+ * app blocks from a list and is a fact; this one is not, and a user who is told
+ * so can make sense of a wrong block instead of losing faith in all of it.
+ */
+@Composable
+private fun AdvisorySection(store: SettingsStore, requestPin: RequestPin) {
+    val advisory by store.advisory.collectAsStateWithLifecycle()
+
+    val offTitle = stringResource(R.string.advisory_title)
+    // Its own string. The category one reads "unblock these sites and apps",
+    // which is not what this does — it stops guessing, and a PIN prompt that
+    // misdescribes what it is about to do is the last place to be sloppy.
+    val offMessage = stringResource(R.string.advisory_off_pin_message)
+
+    ToggleRow(
+        label = offTitle,
+        description = stringResource(R.string.advisory_description),
+        checked = advisory.enabled,
+        onCheckedChange = { on ->
+            // Strengthening is free, weakening costs the PIN — the same rule
+            // every other gate in this app follows.
+            if (on) {
+                store.updateAdvisory { it.copy(enabled = true) }
+            } else {
+                requestPin(offTitle, offMessage) {
+                    store.updateAdvisory { it.copy(enabled = false) }
+                }
+            }
+        },
+    )
+
+    if (advisory.enabled) {
+        HorizontalDivider()
+        Text(
+            stringResource(R.string.advisory_note),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+        )
+    }
+}
+
 @Composable
 private fun BlurSection(store: SettingsStore, requestPin: RequestPin) {
     val context = LocalContext.current

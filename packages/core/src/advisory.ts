@@ -47,10 +47,18 @@ export interface AdvisorySettings {
   enabled: boolean;
   /** Per-category, because the two shipped models are not equally good. */
   categories: Partial<Record<CategoryId, boolean>>;
+  /**
+   * Let the stricter tier block outright instead of warning.
+   *
+   * A second opt-in on top of `enabled`, and off by default even once the
+   * feature is on: warning is what this model was built for, and someone who
+   * turned on "warn me" has not thereby agreed to have sites taken away.
+   */
+  blockConfident: boolean;
 }
 
 export function defaultAdvisorySettings(): AdvisorySettings {
-  return { enabled: false, categories: { list2: true, list3: true } };
+  return { enabled: false, categories: { list2: true, list3: true }, blockConfident: false };
 }
 
 export function withAdvisoryDefaults(stored: Partial<AdvisorySettings> | null | undefined): AdvisorySettings {
@@ -59,6 +67,8 @@ export function withAdvisoryDefaults(stored: Partial<AdvisorySettings> | null | 
   return {
     enabled: typeof stored.enabled === "boolean" ? stored.enabled : base.enabled,
     categories: { ...base.categories, ...(stored.categories ?? {}) },
+    blockConfident:
+      typeof stored.blockConfident === "boolean" ? stored.blockConfident : base.blockConfident,
   };
 }
 
@@ -170,8 +180,21 @@ export interface DomainModel {
   /** int8 weights times this. One shared scale: a per-block scale would have to be reproduced exactly by four ports for one decimal place of nothing. */
   scale: number;
   bias: number;
-  /** Score at or above which the host is worth warning about. Chosen at export time from the measured operating point, not guessed. */
+  /**
+   * Score at or above which the host is worth *warning* about. Measured at
+   * export time as the score at a hand-reviewed rank, not guessed.
+   */
   threshold: number;
+  /**
+   * Score at or above which blocking outright is defensible.
+   *
+   * Deliberately far stricter than the review requires — the bar is not "no
+   * false positive was found" but "nothing near the boundary". It costs most of
+   * the recall (gambling 24% down to 8%), and that is the trade: everything
+   * between the two thresholds still warns, and a warn the user clicks through
+   * is a far smaller failure than a site taken away wrongly.
+   */
+  blockThreshold: number;
   weights: Int8Array;
 }
 
@@ -181,6 +204,7 @@ export interface SerializedDomainModel {
   scale: number;
   bias: number;
   threshold: number;
+  blockThreshold: number;
   /** base64 of `tableSize` int8 weights. */
   weights: string;
 }
@@ -202,6 +226,10 @@ export function loadDomainModel(data: SerializedDomainModel): DomainModel {
     scale: data.scale,
     bias: data.bias,
     threshold: data.threshold,
+    // An older model file without the stricter tier must never fall back to
+    // zero, which would block everything. Infinity means "this model has no
+    // block tier", so it can only ever warn.
+    blockThreshold: typeof data.blockThreshold === "number" ? data.blockThreshold : Infinity,
     weights,
   };
 }
@@ -268,11 +296,27 @@ export function isSharedPlatformHost(host: string): boolean {
   return false;
 }
 
+/**
+ * What the model is willing to claim about a host.
+ *
+ * `"warn"` and `"block"` are different claims, not degrees of the same one:
+ * only the second may take a site away without asking, and it is held to a much
+ * stricter threshold for exactly that reason.
+ */
+export type AdvisoryAction = "warn" | "block";
+
 export type AdvisoryVerdict =
   | { advise: false }
-  | { advise: true; category: CategoryId; score: number };
+  | { advise: true; action: AdvisoryAction; category: CategoryId; score: number };
 
 export interface AdviseOptions {
+  /**
+   * Allow the stricter tier to block outright. Off unless a platform asks for
+   * it: Chrome makes it a separate opt-in, Android's tunnel has no way to offer
+   * "continue anyway" and so uses this tier alone.
+   */
+  allowBlocking?: boolean;
+
   /**
    * Return true for a host that must never be advised against — a popular-sites
    * allowlist, typically a fuse filter built alongside the blocklists.
@@ -304,7 +348,12 @@ export function advise(
   for (const model of models) {
     if (settings.categories[model.category] !== true) continue;
     const score = scoreHost(model, clean);
-    if (score >= model.threshold) return { advise: true, category: model.category, score };
+    if (options.allowBlocking === true && score >= model.blockThreshold) {
+      return { advise: true, action: "block", category: model.category, score };
+    }
+    if (score >= model.threshold) {
+      return { advise: true, action: "warn", category: model.category, score };
+    }
   }
   return { advise: false };
 }

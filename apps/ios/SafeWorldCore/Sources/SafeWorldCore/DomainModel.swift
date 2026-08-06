@@ -134,20 +134,44 @@ public enum DomainModel {
 
     // MARK: - Scoring
 
+    /// `threshold` is where warning is defensible; `blockThreshold` is where
+    /// blocking outright is. Different claims, not degrees of one — only the
+    /// second may take a site away without asking, so it is held far stricter
+    /// than the hand review requires. Gambling gives up 24% recall for 8% to
+    /// earn it.
     public struct Weights {
         public let category: CategoryId
         public let scale: Double
         public let bias: Double
         public let threshold: Double
+        public let blockThreshold: Double
         public let values: [Int8]
 
-        public init(category: CategoryId, scale: Double, bias: Double, threshold: Double, values: [Int8]) {
+        public init(
+            category: CategoryId,
+            scale: Double,
+            bias: Double,
+            threshold: Double,
+            blockThreshold: Double = .infinity,
+            values: [Int8]
+        ) {
             self.category = category
             self.scale = scale
             self.bias = bias
             self.threshold = threshold
+            self.blockThreshold = blockThreshold
             self.values = values
         }
+    }
+
+    /// What the model is willing to claim about a host. `warn` and `block` are
+    /// different claims, not degrees of the same one.
+    public enum Action: Sendable { case warn, block }
+
+    public struct Verdict: Sendable {
+        public let action: Action
+        public let category: CategoryId
+        public let score: Double
     }
 
     public static func score(_ weights: Weights, _ host: String) -> Double {
@@ -185,11 +209,25 @@ public enum DomainModel {
     }
 
     /// The second stage. Call only for a host `Matcher.decide` returned allowed.
-    public static func advise(_ host: String, models: [Weights]) -> CategoryId? {
+    ///
+    /// `allowBlocking` gates the stricter tier. A surface with no way to offer
+    /// "continue anyway" — a DNS reply, a content-blocker rule — must pass true
+    /// and accept the much lower recall that buys.
+    public static func advise(
+        _ host: String,
+        models: [Weights],
+        allowBlocking: Bool = false
+    ) -> Verdict? {
         let clean = normalize(host)
         if clean.isEmpty || isSharedPlatformHost(clean) { return nil }
-        for model in models where score(model, clean) >= model.threshold {
-            return model.category
+        for model in models {
+            let s = score(model, clean)
+            if allowBlocking && s >= model.blockThreshold {
+                return Verdict(action: .block, category: model.category, score: s)
+            }
+            if s >= model.threshold {
+                return Verdict(action: .warn, category: model.category, score: s)
+            }
         }
         return nil
     }

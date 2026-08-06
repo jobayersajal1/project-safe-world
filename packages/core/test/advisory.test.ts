@@ -41,8 +41,11 @@ const PINNED: ReadonlyArray<readonly [string, number, number]> = [
   ["", -4.597354, -3.278166],
 ];
 
-/** Thresholds baked by the exporter from the reviewed rank, not chosen. */
-const THRESHOLDS = { list2: 6.899581, list3: 7.415458 } as const;
+/** Thresholds baked by the exporter from reviewed ranks, not chosen. */
+const THRESHOLDS = {
+  list2: { warn: 6.899581, block: 8.680285 },
+  list3: { warn: 7.415458, block: 8.655724 },
+} as const;
 
 function loadShipped(): DomainModel[] | null {
   // Read from disk rather than `import`: the path is dynamic, and bundlers
@@ -135,13 +138,15 @@ describe("settings", () => {
 
 describe("advise", () => {
   const on: AdvisorySettings = { enabled: true, categories: { list2: true, list3: true } };
-  const fake = (category: "list2" | "list3", threshold: number): DomainModel => ({
+  const fake = (category: "list2" | "list3", threshold: number, blockThreshold = Infinity): DomainModel => ({
     category,
     scale: 1,
     bias: 0,
     threshold,
-    // One weight set high so a known host clears the bar deterministically,
-    // without depending on the generated model being present.
+    blockThreshold,
+    // All-zero weights score every host at the bias, so the thresholds alone
+    // decide — enough to check the plumbing without depending on the generated
+    // model being present.
     weights: new Int8Array(TABLE_SIZE),
   });
 
@@ -172,6 +177,33 @@ describe("advise", () => {
   it("returns the first enabled category to clear its threshold", () => {
     const models = [fake("list2", -1e9), fake("list3", -1e9)];
     expect(advise("x.example", models, on)).toMatchObject({ advise: true, category: "list2" });
+  });
+
+  it("only warns until blocking is asked for", () => {
+    // The stricter tier exists but must stay inert unless a platform opts in:
+    // taking a site away on a guess is the thing this model was not built for.
+    const models = [fake("list2", -1e9, -1e9)];
+    expect(advise("x.example", models, on)).toMatchObject({ action: "warn" });
+    expect(advise("x.example", models, on, { allowBlocking: true })).toMatchObject({
+      action: "block",
+    });
+  });
+
+  it("warns rather than blocks between the two thresholds", () => {
+    // bias 0, so every host scores exactly 0: over the warn bar, under the block one.
+    const models = [fake("list2", -1, 1)];
+    expect(advise("x.example", models, on, { allowBlocking: true })).toMatchObject({
+      action: "warn",
+    });
+  });
+
+  it("never blocks from a model file that predates the block tier", () => {
+    // blockThreshold defaults to Infinity, not 0 — a missing field must not
+    // mean "block everything".
+    const models = [fake("list2", -1e9)];
+    expect(advise("x.example", models, on, { allowBlocking: true })).toMatchObject({
+      action: "warn",
+    });
   });
 
   it("says nothing for an empty host", () => {
@@ -219,8 +251,14 @@ describe("the shipped models", () => {
       expect(scoreHost(list2, host), `list2 ${host}`).toBeCloseTo(expected2, 4);
       expect(scoreHost(list3, host), `list3 ${host}`).toBeCloseTo(expected3, 4);
     }
-    expect(list2.threshold).toBeCloseTo(THRESHOLDS.list2, 6);
-    expect(list3.threshold).toBeCloseTo(THRESHOLDS.list3, 6);
+    expect(list2.threshold).toBeCloseTo(THRESHOLDS.list2.warn, 6);
+    expect(list3.threshold).toBeCloseTo(THRESHOLDS.list3.warn, 6);
+    expect(list2.blockThreshold).toBeCloseTo(THRESHOLDS.list2.block, 6);
+    expect(list3.blockThreshold).toBeCloseTo(THRESHOLDS.list3.block, 6);
+
+    // The stricter tier must actually be stricter, in both models.
+    expect(list2.blockThreshold).toBeGreaterThan(list2.threshold);
+    expect(list3.blockThreshold).toBeGreaterThan(list3.threshold);
   });
 
   it("warns about names of the right shape and leaves ordinary sites alone", () => {
@@ -228,12 +266,21 @@ describe("the shipped models", () => {
     if (!models) return;
     const on: AdvisorySettings = { enabled: true, categories: { list2: true, list3: true } };
 
+    // Both score well clear of the stricter tier, so they block where blocking
+    // is allowed and warn where it is not.
     expect(advise("best-casino-slots-bonus.com", models, on)).toMatchObject({
       advise: true,
+      action: "warn",
       category: "list2",
     });
-    expect(advise("adult-xxx-tube-videos.com", models, on)).toMatchObject({
+    expect(advise("best-casino-slots-bonus.com", models, on, { allowBlocking: true })).toMatchObject({
       advise: true,
+      action: "block",
+      category: "list2",
+    });
+    expect(advise("adult-xxx-tube-videos.com", models, on, { allowBlocking: true })).toMatchObject({
+      advise: true,
+      action: "block",
       category: "list3",
     });
 

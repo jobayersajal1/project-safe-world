@@ -2,6 +2,7 @@ package com.safeworld.app
 
 import android.content.Context
 import com.safeworld.core.AppGroups.AppGroup
+import com.safeworld.core.AdvisorySettings
 import com.safeworld.core.BlurSettings
 import com.safeworld.core.Blocklists
 import com.safeworld.core.Categories
@@ -318,6 +319,28 @@ class SettingsStore private constructor(context: Context) {
         _blur.value = next
     }
 
+    // MARK: Advisory model
+    //
+    // Its own key too — see the note on `AdvisorySettings`. The tunnel reads
+    // this store per query, so a change here applies without restarting it.
+
+    private val _advisory = MutableStateFlow(loadAdvisory())
+    val advisory: StateFlow<AdvisorySettings> = _advisory.asStateFlow()
+
+    private fun loadAdvisory(): AdvisorySettings {
+        val raw = prefs.getString(KEY_ADVISORY, null) ?: return AdvisorySettings.defaults()
+        // Defaults leave it off, which the user can see and turn back on —
+        // better than leaving a guessing filter on in a state nobody chose.
+        return runCatching { json.decodeFromString<AdvisorySettings>(raw) }
+            .getOrElse { AdvisorySettings.defaults() }
+    }
+
+    fun updateAdvisory(mutate: (AdvisorySettings) -> AdvisorySettings) {
+        val next = mutate(_advisory.value)
+        prefs.edit().putString(KEY_ADVISORY, json.encodeToString(next)).apply()
+        _advisory.value = next
+    }
+
     // MARK: PIN
     //
     // Kept out of `Settings` on purpose: that type is the cross-platform shape
@@ -581,6 +604,7 @@ class SettingsStore private constructor(context: Context) {
 
         private const val KEY_SETTINGS = "settings"
         private const val KEY_BLUR = "blurSettings"
+        private const val KEY_ADVISORY = "advisorySettings"
         private const val KEY_STATS = "stats"
         private const val KEY_REMOTE_DOMAINS = "remoteDomains"
         private const val KEY_BLOCKED_APP_GROUPS = "blockedAppGroups"
