@@ -179,6 +179,12 @@ def vectorize(hosts: list[str]):
         cols_all.append(np.array(s_cols, dtype=np.int64))
         vals_all.append(np.array(s_vals, dtype=np.float64))
 
+    if not rows_all:
+        # Every host in the batch featurised to nothing — an empty string, or a
+        # name too short for a 3-gram. An all-zero matrix scores to the bias,
+        # which is what `features()` implies too.
+        return csr_matrix((len(hosts), TABLE_SIZE), dtype=np.float64)
+
     rows = np.concatenate(rows_all)
     cols = np.concatenate(cols_all)
     vals = np.concatenate(vals_all)

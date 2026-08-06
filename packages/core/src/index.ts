@@ -7,6 +7,7 @@ export * from "./scramble.js";
 export * from "./feed.js";
 export * from "./subscriptions.js";
 export * from "./blur.js";
+export * from "./advisory.js";
 
 // No `blocklists` module. It used to statically `import` the five JSON files so
 // that `bundledDomains()` could return them — but nothing ever called it, and
